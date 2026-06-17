@@ -1,6 +1,8 @@
-# Enderas Website Rebuild & Content Management System
+# Enderas Asset Management Website Rebuild
 
-## Technical Architecture Document
+## Project Overview & Architecture Document
+
+### Version 1.0
 
 ---
 
@@ -8,18 +10,44 @@
 
 ## Objective
 
-Rebuild the Enderas website as a modern, scalable, enterprise-grade platform consisting of:
+Rebuild the existing Enderas Asset Management website using a modern technology stack while preserving its content structure and visual identity.
 
-1. Public Website
-2. Admin Management System (CMS)
-3. REST API Backend
-4. MySQL Database
+The new platform shall consist of:
 
-The platform must allow administrators to manage all website content dynamically without requiring code changes.
+* Public Website
+* Admin Management Panel
+* REST API Backend
+* MySQL Database
+
+All website content must be manageable through the Admin Panel without modifying source code.
+
+The system must be scalable, maintainable, and deployment-friendly.
 
 ---
 
-# 2. Technology Stack
+# 2. Project Goals
+
+### Primary Goals
+
+* Rebuild existing website
+* Improve maintainability
+* Centralize content management
+* Eliminate hardcoded content
+* Modernize technology stack
+* Improve performance
+* Improve SEO structure
+* Enable future expansion
+
+### Secondary Goals
+
+* Better content editing workflow
+* Easier image management
+* Improved responsiveness
+* Simplified deployment
+
+---
+
+# 3. Technology Stack
 
 ## Backend
 
@@ -30,730 +58,293 @@ The platform must allow administrators to manage all website content dynamically
 * MySQL
 * JWT Authentication
 
-## Frontend
+## Frontend Website
 
-* Vite
 * React
-* React Router
+* Vite
 * Axios
-* React Query (optional)
-* Zustand or Context API
+* React Router
 
 ## Admin Panel
 
-* React + Vite
-* Shared API with frontend
-* Role-based access control
+* React
+* Vite
+* Axios
 
 ## Database
 
 * MySQL
-* Sequelize ORM
-* Migrations
-* Seeders
 
 ---
 
-# 3. High-Level Architecture
+# 4. Website Structure
 
-Frontend Website
-↓
-REST API
-↓
-Service Layer
-↓
-Sequelize ORM
-↓
-MySQL Database
+## Public Pages
 
-Admin Panel
-↓
-REST API
-↓
-Service Layer
-↓
-Database
+### Home
+
+Landing page containing:
+
+* Hero Section
+* Company Introduction
+* Services Overview
+* Featured Gallery Items
+* Latest Blog Posts
+* Call To Action
 
 ---
 
-# 4. Monorepo Structure
+### Services
 
-project-root/
+Displays all company services.
 
-backend/
-frontend/
-admin/
-docs/
+Each service contains:
 
----
-
-# 5. Backend Structure
-
-backend/
-
-src/
-
-config/
-database.js
-env.js
-
-controllers/
-
-services/
-
-models/
-
-routes/
-
-middleware/
-
-validations/
-
-utils/
-
-constants/
-
-migrations/
-
-seeders/
-
-uploads/
-
-app.js
-server.js
+* Title
+* Description
+* Image
+* Display Order
 
 ---
 
-# 6. Environment Variables
+### Gallery
 
-All configurable values must come from .env.
+Displays company gallery.
 
-## Required Variables
+Gallery items contain:
 
-PORT=
-NODE_ENV=
-
-DB_HOST=
-DB_PORT=
-DB_NAME=
-DB_USER=
-DB_PASSWORD=
-
-JWT_SECRET=
-JWT_EXPIRES_IN=
-
-CLIENT_URL=
-ADMIN_URL=
-API_BASE_URL=
-
-UPLOAD_PATH=
-MAX_FILE_SIZE=
-
-EMAIL_HOST=
-EMAIL_PORT=
-EMAIL_USER=
-EMAIL_PASSWORD=
-
-CLOUD_STORAGE_KEY=
-CLOUD_STORAGE_SECRET=
-
-LOG_LEVEL=
-
-No values may be hardcoded.
+* Image
+* Title
+* Description
+* Category
 
 ---
 
-# 7. Authentication & Authorization
+### Blog
 
-## Authentication
-
-JWT-based authentication
+Displays all published articles.
 
 Features:
 
-* Login
-* Logout
-* Refresh Token
-* Password Reset
-* Change Password
+* Pagination
+* Search
+* Categories
+* Featured Image
 
-## Authorization
+---
 
-Roles:
+### Blog Details
 
-### Super Admin
+Single article page.
 
-* Full access
+Contains:
 
-### Content Manager
+* Article Content
+* Author
+* Publish Date
+* Related Posts
 
-* Manage content
+---
+
+### About
+
+Company information page.
+
+Contains:
+
+* Company Overview
+* Mission
+* Vision
+* Team Section
+
+---
+
+### Contact
+
+Contains:
+
+* Contact Information
+* Contact Form
+* Location Information
+
+---
+
+# 5. System Components
+
+## Public Website
+
+Used by visitors.
+
+Functions:
+
+* View website content
+* Browse gallery
+* Read blog posts
+* Contact company
+
+---
+
+## Admin Panel
+
+Used by administrators.
+
+Functions:
+
+* Manage website content
+* Manage blog posts
+* Manage gallery
+* Manage services
 * Manage media
-* Manage pages
-
-### Editor
-
-* Create and edit content
-
-### Viewer
-
-* Read-only dashboard
+* Manage settings
 
 ---
 
-# 8. Database Design
+## Backend API
 
-## Users
+Central data layer.
 
-* id (UUID)
-* name
-* email
-* password
-* role
-* isActive
-* timestamps
-
----
-
-## Roles
-
-* id
-* name
-* permissions
-
----
-
-## Pages
-
-Dynamic page management.
-
-Fields:
-
-* id
-* title
-* slug
-* metaTitle
-* metaDescription
-* content
-* status
-* publishedAt
-* timestamps
-
----
-
-## Media
-
-* id
-* fileName
-* originalName
-* filePath
-* mimeType
-* fileSize
-* uploadedBy
-* timestamps
-
----
-
-## News
-
-* id
-* title
-* slug
-* excerpt
-* content
-* featuredImage
-* status
-* publishedAt
-
----
-
-## Events
-
-* id
-* title
-* description
-* startDate
-* endDate
-* location
-* image
-
----
-
-## Programs
-
-* id
-* title
-* slug
-* description
-* image
-* status
-
----
-
-## Team Members
-
-* id
-* name
-* position
-* bio
-* image
-* socialLinks
-
----
-
-## Partners
-
-* id
-* name
-* logo
-* website
-
----
-
-## Testimonials
-
-* id
-* name
-* position
-* quote
-* image
-
----
-
-## Contact Messages
-
-* id
-* name
-* email
-* phone
-* subject
-* message
-* status
-
----
-
-## Settings
-
-Global website configuration.
-
-Fields:
-
-* id
-* siteName
-* logo
-* favicon
-* address
-* email
-* phone
-* socialLinks
-* footerText
-
----
-
-# 9. Sequelize Relationships
-
-User
-→ uploads many Media
-
-Page
-→ has many Media
-
-News
-→ has many Media
-
-Program
-→ has many Media
-
-Event
-→ has many Media
-
-Role
-→ has many Users
-
----
-
-# 10. Backend Layer Responsibilities
-
-## Controllers
-
-Responsibilities:
-
-* Request handling
-* Input validation trigger
-* Call service layer
-* Return response
-
-No business logic.
-
----
-
-## Services
-
-Responsibilities:
-
-* Business rules
-* Database operations
-* Complex workflows
-
-All business logic belongs here.
-
----
-
-## Middleware
+Functions:
 
 * Authentication
-* Authorization
-* Validation
-* Error handling
-* Rate limiting
-* Logging
+* Content management
+* Data storage
+* Media management
 
 ---
 
-## Utilities
+# 6. User Roles
 
-* Response helper
-* JWT helper
-* File helper
-* Slug generator
-* Pagination helper
+## Super Admin
 
----
+Full system access.
 
-# 11. API Design
+Can:
 
-Base URL
-
-/api/v1
-
-## Authentication
-
-POST /auth/login
-
-POST /auth/logout
-
-POST /auth/refresh-token
-
-POST /auth/forgot-password
-
-POST /auth/reset-password
+* Manage users
+* Manage settings
+* Manage content
+* Manage media
 
 ---
 
-## Pages
+## Editor
 
-GET /pages
+Can:
 
-GET /pages/:slug
+* Manage blog posts
+* Manage gallery
+* Manage services
+* Manage pages
 
-POST /pages
+Cannot:
 
-PUT /pages/:id
-
-DELETE /pages/:id
-
----
-
-## News
-
-GET /news
-
-GET /news/:slug
-
-POST /news
-
-PUT /news/:id
-
-DELETE /news/:id
+* Manage users
+* Manage system settings
 
 ---
 
-## Programs
+# 7. Content Management Philosophy
 
-GET /programs
+No website content shall be hardcoded.
 
-POST /programs
+All editable content must originate from database records.
 
-PUT /programs/:id
+Examples:
 
-DELETE /programs/:id
-
----
-
-## Events
-
-GET /events
-
-POST /events
-
-PUT /events/:id
-
-DELETE /events/:id
-
----
-
-## Team Members
-
-GET /team
-
-POST /team
-
-PUT /team/:id
-
-DELETE /team/:id
-
----
-
-## Media
-
-GET /media
-
-POST /media
-
-DELETE /media/:id
-
----
-
-## Contact
-
-POST /contact
-
-GET /contact
-
----
-
-## Settings
-
-GET /settings
-
-PUT /settings
-
----
-
-# 12. Security Requirements
-
-Must Implement:
-
-* bcrypt password hashing
-* JWT authentication
-* Helmet
-* CORS
-* Rate limiting
-* Input sanitization
-* Validation middleware
-* SQL injection protection
-* Secure file uploads
-* XSS protection
-
----
-
-# 13. Frontend Website Structure
-
-frontend/
-
-src/
-
-api/
-
-components/
-
-layouts/
-
-pages/
-
-hooks/
-
-services/
-
-utils/
-
-assets/
-
-routes/
-
-store/
-
----
-
-# 14. Public Website Pages
-
-Home
-
-About Us
-
-Programs
-
-Projects
-
-Events
-
-News
-
-Resources
-
-Partners
-
-Team
-
-Contact
-
-Privacy Policy
-
-Terms
-
-404 Page
-
----
-
-# 15. Admin Panel Structure
-
-admin/
-
-src/
-
-pages/
-
-components/
-
-layouts/
-
-routes/
-
-api/
-
-services/
-
-store/
-
-hooks/
-
-utils/
-
----
-
-# 16. Admin Dashboard Features
-
-## Dashboard
-
-* Statistics
-* Recent activities
-* Contact message count
-* Content summary
-
-## User Management
-
-* Create users
-* Edit users
-* Assign roles
-* Disable users
-
-## Page Management
-
-* Create page
-* Edit page
-* Publish page
-
-## News Management
-
-* Create article
-* Edit article
-* Publish article
-
-## Program Management
-
-* CRUD programs
-
-## Event Management
-
-* CRUD events
-
-## Team Management
-
-* CRUD team members
-
-## Media Library
-
-* Upload images
-* Delete images
-* Organize files
-
-## Contact Messages
-
-* View messages
-* Mark as resolved
-
-## Website Settings
-
-* Logo
-* Contact info
+* Homepage hero content
+* Service descriptions
+* Gallery images
+* About page content
+* Contact information
+* Blog content
 * Footer content
-* Social media links
-* SEO defaults
 
 ---
 
-# 17. SEO Requirements
+# 8. Media Management
 
-Dynamic:
+All uploaded assets managed centrally.
 
-* Meta title
-* Meta description
-* Open Graph tags
-* Twitter cards
-* Sitemap generation
-* Robots.txt
+Supported Types:
 
----
+* JPG
+* JPEG
+* PNG
+* WEBP
 
-# 18. Scalability Considerations
+Media can be reused across:
 
-Future Ready For:
-
-* Multiple languages
-* Multiple administrators
-* Multiple websites
-* CDN integration
-* Cloud storage
-* Audit logs
-* Notification system
-* Analytics integration
+* Services
+* Gallery
+* Blog
+* About Page
 
 ---
 
-# 19. Deployment
+# 9. SEO Requirements
 
-Frontend
+Each page must support:
 
-* Vercel
-* Netlify
-* Nginx
+* Meta Title
+* Meta Description
 
-Backend
+Blog posts must support:
 
-* VPS
-* Docker
-* Render
-* Railway
-
-Database
-
-* MySQL Server
-* Managed MySQL
-
-All deployments must use environment variables.
-
-No source code modification should be required between environments.
+* Custom SEO Title
+* Custom SEO Description
 
 ---
 
-# 20. Success Criteria
+# 10. Deployment Requirements
 
-The completed platform must:
+Environment Variables Required:
 
-* Fully reproduce Enderas website functionality
-* Allow all content to be managed from Admin CMS
-* Require zero hardcoded content
-* Support environment-based deployment
-* Follow enterprise-grade architecture
-* Be maintainable by multiple developers
-* Be scalable for future organizational growth
+PORT
+NODE_ENV
+
+DB_HOST
+DB_PORT
+DB_NAME
+DB_USER
+DB_PASSWORD
+
+JWT_SECRET
+JWT_EXPIRES_IN
+
+CLIENT_URL
+API_BASE_URL
+
+All deployments must be configurable using only .env values.
+
+No source code changes should be required when changing environments.
+
+---
+
+# 11. Success Criteria
+
+The project will be considered complete when:
+
+* All 6 public pages are rebuilt
+* All content is manageable through Admin Panel
+* Blog functionality is fully operational
+* Gallery functionality is operational
+* Services management is operational
+* Authentication is secure
+* Website is responsive
+* Application is deployable through environment configuration
+* Codebase follows clean architecture principles
+
+---
+
+# 12. Future Expansion Support
+
+Architecture should allow future addition of:
+
+* Testimonials
+* Team Management
+* Newsletter
+* Multi-language support
+* Analytics Dashboard
+* Additional Pages
+
+without major restructuring.
