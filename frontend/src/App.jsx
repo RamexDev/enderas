@@ -1,11 +1,10 @@
-import React from 'react'
+import { HelmetProvider } from 'react-helmet-async'
+import AppRouter from '@/routes/AppRouter'
 
-const App = () => {
-  return (
-    <div>
-      <h1 className='text-red-500'>frontend</h1>
-    </div>
-  )
-}
+const App = () => (
+  <HelmetProvider>
+    <AppRouter />
+  </HelmetProvider>
+)
 
 export default App
