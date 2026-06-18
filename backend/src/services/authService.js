@@ -4,19 +4,14 @@
  */
 
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import { User, RefreshToken } from '../models/index.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
+import { hashRefreshToken } from '../utils/tokenHash.js';
 import { validatePasswordStrength } from '../utils/password.js';
 import { expiresAtFromDuration } from '../utils/duration.js';
 import env from '../config/env.js';
 
 const SALT_ROUNDS = 12;
-
-/** Hash a refresh token for secure database storage */
-function hashToken(token) {
-  return crypto.createHash('sha256').update(token).digest('hex');
-}
 
 /** Compute DB expiry date aligned with JWT refresh token TTL */
 function refreshTokenExpiresAt() {
@@ -51,7 +46,7 @@ export async function loginUser(email, password) {
 
   await RefreshToken.create({
     user_id: user.id,
-    token_hash: hashToken(refreshToken),
+    token_hash: hashRefreshToken(refreshToken),
     expires_at: refreshTokenExpiresAt(),
   });
 
@@ -74,7 +69,7 @@ export async function refreshAccessToken(refreshTokenStr) {
   }
 
   const storedToken = await RefreshToken.findOne({
-    where: { token_hash: hashToken(refreshTokenStr) },
+    where: { token_hash: hashRefreshToken(refreshTokenStr) },
   });
 
   if (!storedToken) {
@@ -100,7 +95,7 @@ export async function refreshAccessToken(refreshTokenStr) {
 
   await RefreshToken.create({
     user_id: user.id,
-    token_hash: hashToken(newRefreshToken),
+    token_hash: hashRefreshToken(newRefreshToken),
     expires_at: refreshTokenExpiresAt(),
   });
 
@@ -112,7 +107,7 @@ export async function logoutUser(refreshTokenStr) {
   if (!refreshTokenStr) {
     return { message: 'Logged out successfully' };
   }
-  await RefreshToken.destroy({ where: { token_hash: hashToken(refreshTokenStr) } });
+  await RefreshToken.destroy({ where: { token_hash: hashRefreshToken(refreshTokenStr) } });
   return { message: 'Logged out successfully' };
 }
 

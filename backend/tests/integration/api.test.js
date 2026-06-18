@@ -2,12 +2,12 @@
  * Integration tests for API endpoints using supertest + in-memory SQLite.
  */
 
-import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import bcrypt from 'bcrypt';
 import app from '../../app.js';
 import { User } from '../../src/models/index.js';
-import { setupTestDb, teardownTestDb } from '../helpers/db.js';
+import { setupTestDb } from '../helpers/db.js';
 
 const TEST_PASSWORD = 'TestAdmin123!@#';
 
@@ -26,10 +26,6 @@ beforeAll(async () => {
     is_active: true,
     must_change_password: false,
   });
-});
-
-afterAll(async () => {
-  await teardownTestDb();
 });
 
 describe('Health Check', () => {

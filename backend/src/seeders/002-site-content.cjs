@@ -161,8 +161,6 @@ module.exports = {
             postCategoryRows.push({
               post_id: posts[index].id,
               category_id: blogCategoryIds[slug],
-              created_at: ts,
-              updated_at: ts,
             });
           }
         });
@@ -191,6 +189,24 @@ module.exports = {
       console.log(`Seeded ${content.testimonials.length} testimonials`);
     }
 
+    // Team members
+    const teamCount = await queryInterface.rawSelect('team_members', { where: {} }, ['id']);
+    if (!teamCount) {
+      await queryInterface.bulkInsert('team_members', stamp(
+        content.teamMembers.map((member) => ({ id: uuid(), ...member }))
+      ));
+      console.log(`Seeded ${content.teamMembers.length} team members`);
+    }
+
+    // Partners
+    const partnerCount = await queryInterface.rawSelect('partners', { where: {} }, ['id']);
+    if (!partnerCount) {
+      await queryInterface.bulkInsert('partners', stamp(
+        content.partners.map((partner) => ({ id: uuid(), ...partner }))
+      ));
+      console.log(`Seeded ${content.partners.length} partners`);
+    }
+
     console.log('Site content seeding complete');
   },
 
@@ -200,6 +216,8 @@ module.exports = {
     await queryInterface.bulkDelete('categories', null, {});
     await queryInterface.bulkDelete('gallery_items', null, {});
     await queryInterface.bulkDelete('gallery_categories', null, {});
+    await queryInterface.bulkDelete('partners', null, {});
+    await queryInterface.bulkDelete('team_members', null, {});
     await queryInterface.bulkDelete('testimonials', null, {});
     await queryInterface.bulkDelete('faqs', null, {});
     await queryInterface.bulkDelete('core_values', null, {});

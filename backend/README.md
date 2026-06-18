@@ -82,7 +82,23 @@ Two seeders run with `npm run seed`:
 | `001-super-admin` | `src/seeders/001-super-admin.cjs` | Creates the super admin user |
 | `002-site-content` | `src/seeders/002-site-content.cjs` | Populates CMS from `docs/existing/*.html` |
 
-The site content seeder is **idempotent** — it skips tables that already have data. Content is sourced from the existing Enderas website HTML export (homepage, services, about, contact, blog, gallery, FAQs, etc.).
+The site content seeder is **idempotent** — it skips tables that already have data. Content is sourced from the existing Enderas website HTML export (`docs/existing/*.html`), supplemented with placeholder team and testimonial data where the export had no CMS entries.
+
+| Content | Count | Source |
+| ------- | ----- | ------ |
+| Site settings | 1 | HTML + logo/favicon URLs |
+| Home page | 1 | index.html |
+| Hero slides | 3 | index.html |
+| Statistics | 4 | index.html |
+| Services | 5 | index.html, service.html |
+| About page + core values | 1 + 5 | about.html |
+| Contact page | 1 | contact.html |
+| Gallery categories + items | 3 + 12 | gallery.html |
+| Blog categories + posts | 3 + 3 | blog.html |
+| FAQs | 8 | HTML + business context |
+| Team members | 6 | Placeholder (editable in CMS) |
+| Testimonials | 5 | Placeholder (editable in CMS) |
+| Partners | 4 | about.html logos |
 
 **Super admin behavior by environment:**
 
@@ -118,10 +134,15 @@ npm run db:reset   # migrate:fresh + seed
 npm test
 ```
 
-Tests use an in-memory SQLite database (no MySQL required). Coverage includes:
+**115 tests** across three layers (see `tests/README.md`):
 
-- Unit tests: duration parsing, password validation, field whitelisting
-- Integration tests: auth flow, public endpoints, admin CRUD, validation, 404 handling
+| Layer | Files | Coverage |
+| ----- | ----- | -------- |
+| Unit | `tests/unit/` | JWT sign/verify/expiry, token hashing, password edge cases, pickFields security, duration parsing, slugs |
+| Contract | `tests/contract/` | Service ↔ controller error mapping, validation middleware shape |
+| Integration | `tests/integration/` | Full HTTP flows, utilities inside auth/service/user creation |
+
+Tests use a shared in-memory SQLite database (no MySQL required). Environment is configured in `tests/setup.js`; the DB connection closes once via `tests/globalTeardown.js`.
 
 ### Manual API Testing (Postman)
 
