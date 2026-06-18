@@ -10,7 +10,6 @@ import {
   mapSettings,
   mapHomePageData,
   mapAboutPageData,
-  mapContactPageData,
 } from '@/utils/mappers'
 
 describe('mapStatistic', () => {
@@ -192,7 +191,7 @@ describe('mapHomePageData', () => {
 })
 
 describe('mapAboutPageData', () => {
-  it('maps core values and partner names', () => {
+  it('maps core values, partner names, team members, and cta', () => {
     const result = mapAboutPageData({
       about: {
         history: 'Founded in 2007',
@@ -203,25 +202,21 @@ describe('mapAboutPageData', () => {
       },
       coreValues: [{ id: 'v1', title: 'Integrity', description: 'We act with integrity.' }],
       partners: [{ name: 'Partner A' }, { name: 'Partner B' }],
+      teamMembers: [{ id: 'tm1', full_name: 'John Doe', position: 'CEO', profile_image: 'https://example.com/john.jpg', biography: 'Bio', email: 'john@enderas.org' }],
+      show_team: true,
+      cta: { title: 'Contact us today', body: 'Reach out now', primary_label: 'Contact', primary_link: '/contact' },
     })
     expect(result.history).toBe('Founded in 2007')
     expect(result.heroTitle).toBe('Your partner in success.')
     expect(result.values[0].title).toBe('Integrity')
     expect(result.partners).toEqual(['Partner A', 'Partner B'])
+    expect(result.team).toHaveLength(1)
+    expect(result.team[0].name).toBe('John Doe')
+    expect(result.cta).not.toBeNull()
+    expect(result.cta.title).toBe('Contact us today')
+    expect(result.cta.primary.label).toBe('Contact')
+    expect(result.cta.primary.to).toBe('/contact')
   })
 })
 
-describe('mapContactPageData', () => {
-  it('maps contact page fields', () => {
-    const result = mapContactPageData({
-      address: 'Addis Ababa',
-      phone: '+251 935',
-      email: 'info@enderas.org',
-      google_map_embed: 'https://maps/embed',
-      meta_title: 'Contact',
-      meta_description: 'Reach us',
-    })
-    expect(result.mapEmbedUrl).toBe('https://maps/embed')
-    expect(result.seo.title).toBe('Contact')
-  })
-})
+

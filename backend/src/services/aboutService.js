@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { AboutPage, CoreValue, Partner } from '../models/index.js';
+import { AboutPage, CoreValue, Partner, TeamMember, HomePage } from '../models/index.js';
 
 export async function getAboutPage() {
   let about = await AboutPage.findOne();
@@ -67,5 +67,21 @@ export async function getPublicAbout() {
   const about = await getAboutPage();
   const coreValues = await CoreValue.findAll({ order: [['created_at', 'ASC']] });
   const partners = await Partner.findAll({ where: { is_active: true }, order: [['name', 'ASC']] });
-  return { about, coreValues, partners };
+
+  let homePage = await HomePage.findOne();
+  if (!homePage) homePage = await HomePage.create({ id: uuidv4() });
+
+  let teamMembers = [];
+  if (homePage.show_team) {
+    teamMembers = await TeamMember.findAll({ where: { is_active: true }, order: [['created_at', 'ASC']] });
+  }
+
+  const cta = {
+    title: homePage.contact_cta_title,
+    body: homePage.contact_cta_description,
+    primary_label: homePage.contact_cta_button_text,
+    primary_link: homePage.contact_cta_button_link,
+  };
+
+  return { about, coreValues, partners, teamMembers, show_team: homePage.show_team, cta };
 }

@@ -259,30 +259,6 @@ export default function ContactPage() {
                 </ul>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-primary-100 bg-primary-100 dark:border-primary-800 dark:bg-primary-800">
-                <div className="aspect-[4/3] min-h-[220px] w-full">
-                  <iframe
-                    title={`Enderas office preview — ${settings.city}`}
-                    src={settings.mapEmbedUrl}
-                    className="h-full w-full border-0"
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                  />
-                </div>
-                <div className="flex flex-col gap-2 border-t border-primary-200/80 bg-white px-4 py-3 dark:border-primary-700 dark:bg-primary-900 sm:flex-row sm:items-center sm:justify-between">
-                  <p className="text-xs text-primary-700 dark:text-primary-200">
-                    {settings.city}, {settings.country}
-                  </p>
-                  <a
-                    href={settings.mapDirectionsUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-medium text-gold-600 hover:text-gold-500 dark:text-gold-400"
-                  >
-                    Directions <Icon name="arrowUpRight" className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
             </aside>
           </div>
         </Container>

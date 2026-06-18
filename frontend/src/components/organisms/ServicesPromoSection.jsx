@@ -2,6 +2,7 @@
  * @fileoverview Auction & valuation promo block on the services page.
  */
 
+import { MotionDiv } from '@/components/motion'
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
@@ -36,11 +37,11 @@ export default function ServicesPromoSection({ promo }) {
               Request a valuation
             </Button>
           </div>
-          <div className="reveal reveal-delay-1">
+          <MotionDiv delay={0.1}>
             <div className="aspect-[4/3] overflow-hidden rounded-2xl shadow-2xl">
               <img src={promo.image} alt="Property valuation" className="h-full w-full object-cover" />
             </div>
-          </div>
+          </MotionDiv>
         </div>
       </Container>
     </section>

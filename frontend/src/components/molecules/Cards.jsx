@@ -2,20 +2,21 @@ import { Link } from 'react-router-dom'
 import Icon from '@/components/atoms/Icon'
 import Badge from '@/components/atoms/Badge'
 import Button from '@/components/atoms/Button'
+import { MotionDiv } from '@/components/motion'
 import { useCountUp, useCountdown } from '@/hooks/useCountUp'
 import { formatDate } from '@/utils/formatDate'
 
 export function ServiceCard({ service }) {
   return (
     <article
-      className="group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900"
+      className="group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900"
     >
       <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 dark:bg-primary-800">
         <img
           src={service.image}
           alt={service.title}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-950/40 via-transparent to-transparent" />
         <div className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-xl bg-white/95 text-gold-600 shadow-md backdrop-blur dark:bg-primary-900/95">
@@ -52,7 +53,7 @@ export function PropertyCard({ item, onOpen }) {
         src={item.image}
         alt={item.title}
         loading="lazy"
-        className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
+        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/30 to-transparent" />
       <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
@@ -79,7 +80,7 @@ export function BlogCard({ post, featured = false }) {
 
   return (
     <article
-      className={`group overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900 ${featured ? 'flex flex-col lg:flex-row' : ''}`}
+      className={`group overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900 ${featured ? 'flex flex-col lg:flex-row' : ''}`}
     >
       <Link
         to={`/blog/${post.slug}`}
@@ -89,7 +90,7 @@ export function BlogCard({ post, featured = false }) {
           src={post.image}
           alt=""
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute left-3 top-3">
           <Badge variant="gold">{post.category}</Badge>
@@ -136,9 +137,10 @@ export function BlogCard({ post, featured = false }) {
 }
 
 export function StatCard({ stat }) {
-  const decimals = stat.value % 1 !== 0 ? 1 : 0
-  const [ref, display] = useCountUp(stat.value, { decimals })
-  const finalDisplay = Number(stat.value).toLocaleString('en-US', {
+  const safeValue = Number(stat.value ?? 0)
+  const decimals = safeValue % 1 !== 0 ? 1 : 0
+  const [ref, display] = useCountUp(safeValue, { decimals })
+  const finalDisplay = safeValue.toLocaleString('en-US', {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
   })
@@ -166,13 +168,13 @@ export function StatCard({ stat }) {
 
 export function TeamCard({ member, index = 0 }) {
   return (
-    <article className="reveal group" style={{ transitionDelay: `${index * 60}ms` }}>
+    <MotionDiv delay={index * 0.04} className="group">
       <div className="relative mb-4 aspect-[3/4] overflow-hidden rounded-2xl bg-primary-100 dark:bg-primary-800">
         <img
           src={member.image}
           alt={member.name}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-5 text-white">
@@ -181,7 +183,7 @@ export function TeamCard({ member, index = 0 }) {
         </div>
       </div>
       <p className="text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{member.bio}</p>
-    </article>
+    </MotionDiv>
   )
 }
 
@@ -197,13 +199,13 @@ export function AuctionAssetCard({ asset }) {
   const closeLabel = formatDate(asset.closeDate)
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/10 dark:border-primary-800 dark:bg-primary-900">
+    <article       className="group flex h-full flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/10 dark:border-primary-800 dark:bg-primary-900">
       <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 dark:bg-primary-800">
         <img
           src={asset.image}
           alt={asset.title}
           loading="lazy"
-          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+          className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-primary-950/10 to-transparent" />
         <div className="absolute left-3 top-3 flex flex-wrap gap-2">

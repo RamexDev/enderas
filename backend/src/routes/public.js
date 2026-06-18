@@ -11,10 +11,12 @@ import * as galleryController from '../controllers/public/galleryController.js';
 import * as blogController from '../controllers/public/blogController.js';
 import * as contactController from '../controllers/public/contactController.js';
 import * as settingController from '../controllers/public/settingController.js';
+import * as ctaController from '../controllers/public/ctaController.js';
 import { contactFormValidation } from '../validations/contact.js';
 
 const router = Router();
 
+router.get('/cta', ctaController.index);
 router.get('/home', homeController.index);
 router.get('/about', aboutController.index);
 router.get('/services', serviceController.index);

@@ -1,9 +1,9 @@
 /**
  * @fileoverview Sidebar service selector for the services page.
- * Reveal animation lives on a static wrapper so React re-renders do not strip `in-view`.
  * Mobile: horizontal icon strip. Tablet: compact pills. Desktop: full sidebar cards.
  */
 
+import { MotionDiv } from '@/components/motion'
 import Icon from '@/components/atoms/Icon'
 
 /**
@@ -68,7 +68,7 @@ export default function ServiceNav({ services, activeId, onSelect }) {
           const isActive = activeId === service.id
 
           return (
-            <div key={service.id} className="reveal" style={{ transitionDelay: `${index * 40}ms` }}>
+            <MotionDiv key={service.id} delay={index * 0.03}>
               <button
                 type="button"
                 onClick={() => onSelect(service.id)}
@@ -99,7 +99,7 @@ export default function ServiceNav({ services, activeId, onSelect }) {
                   </span>
                 </span>
               </button>
-            </div>
+            </MotionDiv>
           )
         })}
       </nav>

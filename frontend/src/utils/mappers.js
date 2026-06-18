@@ -100,7 +100,7 @@ export function mapGalleryItem(item) {
     image: item.image,
     description: item.description,
     category: item.category?.name || 'Gallery',
-    location: item.description?.split('.')[0] || '',
+    location: item.description ? item.description.replace(/<[^>]+>/g, '').split(/[.,\n]/)[0]?.trim() || '' : '',
   }
 }
 
@@ -304,7 +304,7 @@ export function mapHomePageData(payload) {
  * @returns {object}
  */
 export function mapAboutPageData(payload) {
-  const { about, coreValues, partners } = payload
+  const { about, coreValues, partners, teamMembers, cta } = payload
   return {
     heroEyebrow: 'About Enderas',
     heroTitle: 'Your partner in success.',
@@ -322,8 +322,17 @@ export function mapAboutPageData(payload) {
       body: v.description,
       order: i,
     })),
-    team: [],
+    team: (teamMembers || []).map(mapTeamMember),
     partners: (partners || []).map((p) => p.name),
+    cta: cta ? {
+      title: cta.title || 'Ready to talk to our team?',
+      body: cta.body || '',
+      primary: {
+        label: cta.primary_label || 'Contact us',
+        to: cta.primary_link || '/contact',
+      },
+      secondary: { label: 'Explore our services', to: '/services' },
+    } : null,
     seo: {
       title: about?.meta_title,
       description: about?.meta_description,
@@ -332,19 +341,20 @@ export function mapAboutPageData(payload) {
 }
 
 /**
- * Maps the `/public/contact` response into contact page view data.
- * @param {object} contactPage
+ * Maps the `/public/cta` response into the CTASection component shape.
+ * @param {object} cta
  * @returns {object}
  */
-export function mapContactPageData(contactPage) {
+export function mapCtaData(cta) {
   return {
-    address: contactPage?.address || '',
-    phone: contactPage?.phone || '',
-    email: contactPage?.email || '',
-    mapEmbedUrl: contactPage?.google_map_embed || '',
-    seo: {
-      title: contactPage?.meta_title,
-      description: contactPage?.meta_description,
+    title: cta?.title || 'Ready to talk to our team?',
+    body: cta?.body || '',
+    primary: {
+      label: cta?.primary_label || 'Contact us',
+      to: cta?.primary_link || '/contact',
     },
+    secondary: { label: 'Explore our services', to: '/services' },
   }
 }
+
+

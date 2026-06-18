@@ -2,7 +2,7 @@
  * @fileoverview Gallery page with category filtering and lightbox preview.
  */
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import SeoHead from '@/components/organisms/SeoHead'
 import { PageHero, CTASection } from '@/components/organisms/CTASection'
 import Lightbox from '@/components/organisms/Lightbox'
@@ -11,11 +11,13 @@ import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
 import Icon from '@/components/atoms/Icon'
-import { PageLoader } from '@/components/atoms/Loader'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
+import { motion, AnimatePresence } from 'framer-motion'
+import { CardSkeleton, Skeleton, GoldSpinner } from '@/components/atoms/Loader'
+import { MotionDiv } from '@/components/motion'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { getGalleryItems } from '@/services/galleryService'
-import { getHomePage } from '@/services/homeService'
+import { ctaApi } from '@/services/publicApi'
+import { mapCtaData } from '@/utils/mappers'
 
 const ALL_FILTER = 'All'
 const ASPECT_CLASSES = ['aspect-[4/5]', 'aspect-[4/3]', 'aspect-square', 'aspect-[3/4]', 'aspect-[4/3]', 'aspect-[5/6]']
@@ -44,46 +46,66 @@ function filterGalleryItems(items, activeFilter) {
  * Masonry gallery grid with category filters and expandable lightbox.
  */
 export default function GalleryPage() {
-  const [activeFilter, setActiveFilter] = useState(ALL_FILTER)
+  const [filterIntent, setFilterIntent] = useState(ALL_FILTER)
   const [openIndex, setOpenIndex] = useState(null)
 
   const fetchGallery = useCallback(async () => {
-    const [galleryResult, home] = await Promise.all([
+    const [galleryResult, cta] = await Promise.all([
       getGalleryItems({ limit: 100 }),
-      getHomePage(),
+      ctaApi.get(),
     ])
-    return { gallery: galleryResult.data, cta: home.cta }
+    return { gallery: galleryResult.data, cta: mapCtaData(cta) }
   }, [])
 
   const { data, loading, error, reload } = useAsyncData(fetchGallery)
 
   const galleryItems = data?.gallery ?? []
   const categories = useMemo(() => buildCategoryFilters(galleryItems), [galleryItems])
+  const activeFilter = categories.includes(filterIntent) ? filterIntent : ALL_FILTER
   const filteredItems = useMemo(
     () => filterGalleryItems(galleryItems, activeFilter),
     [activeFilter, galleryItems],
   )
 
-  useEffect(() => {
-    if (activeFilter !== ALL_FILTER && !categories.includes(activeFilter)) {
-      setActiveFilter(ALL_FILTER)
-      setOpenIndex(null)
-    }
-  }, [activeFilter, categories])
-
-  useScrollReveal([data, activeFilter, filteredItems.length])
-
   const openItem = openIndex !== null ? filteredItems[openIndex] : null
 
   const selectFilter = (category) => {
-    setActiveFilter(category)
+    setFilterIntent(category)
     setOpenIndex(null)
   }
 
   const next = () => setOpenIndex((i) => (i + 1) % filteredItems.length)
   const prev = () => setOpenIndex((i) => (i - 1 + filteredItems.length) % filteredItems.length)
 
-  if (loading) return <PageLoader />
+  if (loading) return (
+    <div>
+      <div className="relative overflow-hidden bg-primary-900 pb-12 pt-24 text-white sm:pb-14 sm:pt-28 lg:pb-20 lg:pt-36">
+        <Skeleton className="absolute inset-0 !rounded-none !bg-primary-800" />
+        <Container className="relative">
+          <GoldSpinner className="mb-6" />
+          <div className="max-w-3xl space-y-4">
+            <Skeleton gold className="h-5 w-24" />
+            <Skeleton gold className="h-12 w-2/3" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </Container>
+      </div>
+      <div className="section-padding">
+        <Container>
+          <div className="mb-8 flex gap-2">
+            {[1,2,3,4].map(i => (
+              <CardSkeleton key={i} className="h-10 w-20 rounded-full" />
+            ))}
+          </div>
+          <div className="masonry">
+            {[1,2,3,4,5,6].map(i => (
+              <CardSkeleton key={i} className="aspect-[4/5] rounded-xl" />
+            ))}
+          </div>
+        </Container>
+      </div>
+    </div>
+  )
   if (error || !data) {
     return (
       <Container className="section-padding">
@@ -107,8 +129,8 @@ export default function GalleryPage() {
 
       <section className="py-14 sm:py-16 lg:py-24">
         <Container>
-          <div
-            className="reveal no-scrollbar -mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-1 sm:mb-10 sm:flex-wrap sm:overflow-visible"
+          <MotionDiv
+            className="no-scrollbar -mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-1 sm:mb-10 sm:flex-wrap sm:overflow-visible"
             role="group"
             aria-label="Filter by category"
           >
@@ -127,48 +149,57 @@ export default function GalleryPage() {
                 {category}
               </button>
             ))}
-          </div>
+          </MotionDiv>
 
           {filteredItems.length === 0 ? (
             <EmptyState icon="search" title="No assets in this category" message="Try selecting a different category filter." />
           ) : (
-            <div className="masonry" key={activeFilter}>
-              {filteredItems.map((item, i) => (
-                <article
-                  key={item.id}
-                  className={`reveal group relative ${ASPECT_CLASSES[i % ASPECT_CLASSES.length]} cursor-pointer overflow-hidden rounded-xl bg-primary-900`}
-                  style={{ transitionDelay: `${(i % 6) * 50}ms` }}
-                  onClick={() => setOpenIndex(i)}
-                  onKeyDown={(e) => e.key === 'Enter' && setOpenIndex(i)}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${item.title}`}
-                >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    loading="lazy"
-                    className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/20 to-transparent opacity-90" />
-                  <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
-                    <div className="mb-1.5 flex items-center gap-2">
-                      <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
-                        {item.category}
-                      </Badge>
-                    </div>
-                    <h3 className="font-heading text-base font-semibold leading-tight sm:text-lg">{item.title}</h3>
-                    {item.location && (
-                      <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
-                        <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
-                      </p>
-                    )}
-                  </div>
-                  <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-primary-900 opacity-0 transition-opacity group-hover:opacity-100">
-                    <Icon name="eye" className="w-4 h-4" />
-                  </div>
-                </article>
-              ))}
+            <div className="masonry">
+              <AnimatePresence mode="popLayout">
+                {filteredItems.map((item, i) => (
+                  <motion.div
+                    key={item.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <article
+                      className={`group relative ${ASPECT_CLASSES[i % ASPECT_CLASSES.length]} cursor-pointer overflow-hidden rounded-xl bg-primary-900`}
+                      onClick={() => setOpenIndex(i)}
+                      onKeyDown={(e) => e.key === 'Enter' && setOpenIndex(i)}
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`View ${item.title}`}
+                    >
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        loading="lazy"
+                        className="absolute inset-0 h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/20 to-transparent opacity-90" />
+                      <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
+                            {item.category}
+                          </Badge>
+                        </div>
+                        <h3 className="font-heading text-base font-semibold leading-tight sm:text-lg">{item.title}</h3>
+                        {item.location && (
+                          <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
+                            <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
+                          </p>
+                        )}
+                      </div>
+                      <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-primary-900 opacity-0 transition-opacity group-hover:opacity-100">
+                        <Icon name="eye" className="w-4 h-4" />
+                      </div>
+                    </article>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
             </div>
           )}
         </Container>

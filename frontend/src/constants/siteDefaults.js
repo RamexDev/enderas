@@ -8,6 +8,8 @@
 export const DEFAULT_SITE_SETTINGS = {
   appName: 'Enderas',
   tagline: 'Asset Management',
+  logo: 'https://enderas.org/wp-content/uploads/2023/07/Blue-600x.png',
+  favicon: 'https://enderas.org/wp-content/uploads/2023/07/cropped-Blue-1000x-32x32.png',
   phone: '+251 935 401 131',
   phoneAlt: '+251 116 180 843',
   email: 'info@enderas.org',

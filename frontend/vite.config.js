@@ -33,6 +33,9 @@ export default defineConfig({
           if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('react-router-dom')) {
             return 'react-vendor'
           }
+          if (id.includes('node_modules/framer-motion')) {
+            return 'motion-vendor'
+          }
         },
       },
     },

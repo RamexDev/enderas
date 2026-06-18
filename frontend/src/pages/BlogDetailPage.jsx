@@ -12,7 +12,7 @@ import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
 import Icon from '@/components/atoms/Icon'
-import { PageLoader } from '@/components/atoms/Loader'
+import { CardSkeleton, TextSkeleton, Skeleton, GoldSpinner } from '@/components/atoms/Loader'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { getBlogPostBySlug, getBlogPosts } from '@/services/blogService'
 import { useSiteStore } from '@/store/useSiteStore'
@@ -36,7 +36,34 @@ export default function BlogDetailPage() {
 
   const { data, loading, error } = useAsyncData(fetchPost, [slug])
 
-  if (loading) return <PageLoader />
+  if (loading) return (
+    <div>
+      <div className="relative overflow-hidden bg-primary-900 pb-10 pt-24 sm:pb-12 sm:pt-28 lg:pb-16 lg:pt-36">
+        <Skeleton className="absolute inset-0 !rounded-none !bg-primary-800" />
+        <Container className="relative">
+          <GoldSpinner className="mb-6" />
+          <div className="max-w-3xl space-y-4">
+            <Skeleton gold className="h-5 w-32" />
+            <Skeleton gold className="h-14 w-full" />
+            <TextSkeleton lines={2} />
+          </div>
+        </Container>
+      </div>
+      <Container className="relative -mt-6 sm:-mt-8 lg:-mt-12">
+        <CardSkeleton gold className="aspect-[16/9] rounded-2xl" />
+      </Container>
+      <Container className="py-12 sm:py-16 lg:py-24">
+        <div className="mx-auto max-w-3xl space-y-4">
+          <Skeleton className="h-5 w-full" />
+          <Skeleton className="h-5 w-5/6" />
+          <Skeleton className="h-5 w-4/6" />
+          <div className="pt-4 space-y-3">
+            <TextSkeleton lines={6} />
+          </div>
+        </div>
+      </Container>
+    </div>
+  )
 
   if (error || !data?.post) {
     return (

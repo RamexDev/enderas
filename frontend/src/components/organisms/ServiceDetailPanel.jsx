@@ -28,18 +28,6 @@ export default function ServiceDetailPanel({ service }) {
           <p className="mt-3 text-sm leading-relaxed text-primary-800/80 sm:mt-4 sm:text-base dark:text-primary-200/75">
             {service.description}
           </p>
-          {service.features?.length > 0 && (
-            <ul className="mt-6 grid gap-2.5 sm:mt-8 sm:grid-cols-2 sm:gap-3">
-              {service.features.map((feature) => (
-                <li key={feature} className="flex items-start gap-2.5 text-sm text-primary-800 dark:text-primary-100">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gold-500/15 text-gold-600 dark:text-gold-400">
-                    <Icon name="check" className="h-3.5 w-3.5" strokeWidth={2.5} />
-                  </span>
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          )}
           <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">
             <Button to="/contact" variant="primary" iconRight="arrowRight" className="w-full sm:w-auto">
               Engage Enderas

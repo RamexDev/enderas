@@ -10,9 +10,9 @@ import EmptyState from '@/components/organisms/EmptyState'
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
-import { PageLoader } from '@/components/atoms/Loader'
+import { CardSkeleton, Skeleton, GoldSpinner } from '@/components/atoms/Loader'
+import { MotionDiv } from '@/components/motion'
 import { BlogCard } from '@/components/molecules/Cards'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { getBlogPosts } from '@/services/blogService'
 import { formatDate } from '@/utils/formatDate'
@@ -30,8 +30,6 @@ export default function BlogPage() {
 
   const fetchPosts = useCallback(() => getBlogPosts({ limit: 50 }), [])
   const { data: result, loading, error, reload } = useAsyncData(fetchPosts)
-
-  useScrollReveal([result])
 
   const blog = result?.data ?? []
   const categories = useMemo(() => ['All', ...Array.from(new Set(blog.map((p) => p.category)))], [blog])
@@ -58,7 +56,37 @@ export default function BlogPage() {
   const popular = [...blog].sort((a, b) => b.readTime - a.readTime).slice(0, 4)
   const recent = blog.slice(0, 4)
 
-  if (loading) return <PageLoader />
+  if (loading) return (
+    <div>
+      <div className="relative overflow-hidden bg-primary-900 pb-12 pt-24 text-white sm:pb-14 sm:pt-28 lg:pb-20 lg:pt-36">
+        <Skeleton className="absolute inset-0 !rounded-none !bg-primary-800" />
+        <Container className="relative">
+          <GoldSpinner className="mb-6" />
+          <div className="max-w-3xl space-y-4">
+            <Skeleton gold className="h-5 w-24" />
+            <Skeleton gold className="h-12 w-2/3" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </Container>
+      </div>
+      <div className="section-padding">
+        <Container>
+          <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+            <div className="lg:col-span-8">
+              <CardSkeleton className="mb-8 h-12 w-full rounded-lg" />
+              <CardSkeleton gold className="mb-6 h-80 rounded-2xl" />
+              <div className="grid gap-6 sm:grid-cols-2">
+                {[1,2].map(i => <CardSkeleton key={i} className="h-72 rounded-2xl" />)}
+              </div>
+            </div>
+            <div className="lg:col-span-4">
+              <CardSkeleton className="h-96 rounded-2xl" />
+            </div>
+          </div>
+        </Container>
+      </div>
+    </div>
+  )
   if (error) {
     return (
       <Container className="section-padding">
@@ -83,7 +111,7 @@ export default function BlogPage() {
         <Container>
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
             <div className="min-w-0 lg:col-span-8">
-              <div className="reveal mb-8 flex flex-col gap-3 sm:mb-10">
+              <MotionDiv className="mb-8 flex flex-col gap-3 sm:mb-10">
                 <div className="relative w-full">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary-400">
                     <Icon name="search" className="w-4 h-4" />
@@ -120,7 +148,7 @@ export default function BlogPage() {
                     </button>
                   ))}
                 </div>
-              </div>
+              </MotionDiv>
 
               {filtered.length === 0 ? (
                 <EmptyState
@@ -169,7 +197,7 @@ export default function BlogPage() {
             </div>
 
             <aside className="min-w-0 space-y-6 lg:col-span-4 lg:space-y-8">
-              <div className="reveal space-y-6 lg:sticky lg:top-28 lg:space-y-8">
+              <MotionDiv className="space-y-6 lg:sticky lg:top-28 lg:space-y-8">
                 <div className="rounded-2xl border border-primary-100 bg-white p-5 dark:border-primary-800 dark:bg-primary-900 sm:p-6">
                   <h3 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">
                     <Icon name="clock" className="w-5 h-5 text-gold-500" /> Recent posts
@@ -232,7 +260,7 @@ export default function BlogPage() {
                     Subscribe
                   </Button>
                 </div>
-              </div>
+              </MotionDiv>
             </aside>
           </div>
         </Container>

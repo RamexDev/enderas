@@ -13,9 +13,9 @@ import TestimonialsSection from '@/components/organisms/TestimonialsSection'
 import FaqSection from '@/components/organisms/FaqSection'
 import { CTASection } from '@/components/organisms/CTASection'
 import SectionHeading from '@/components/molecules/SectionHeading'
-import { ServiceCard, PropertyCard, StatCard, BlogCard, TeamCard } from '@/components/molecules/Cards'
+import { ServiceCard, PropertyCard, StatCard, BlogCard } from '@/components/molecules/Cards'
 import Icon from '@/components/atoms/Icon'
-import { PageLoader } from '@/components/atoms/Loader'
+import { Skeleton, TextSkeleton, GoldSpinner } from '@/components/atoms/Loader'
 import EmptyState from '@/components/organisms/EmptyState'
 import { MotionDiv, MotionSection, MotionStagger, MotionItem } from '@/components/motion'
 import { useAsyncData } from '@/hooks/useAsyncData'
@@ -39,7 +39,75 @@ export default function HomePage() {
 
   const { data, loading, error, reload } = useAsyncData(fetchHome)
 
-  if (loading) return <PageLoader />
+  if (loading) return (
+    <div>
+      <div className="relative h-[100svh] min-h-[520px] overflow-hidden bg-primary-900 sm:min-h-[600px] lg:min-h-[640px]">
+        <Skeleton className="absolute inset-0 h-full w-full !rounded-none !bg-primary-800" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary-950/88 via-primary-950/65 to-primary-900/45" />
+        <GoldSpinner className="absolute left-1/2 top-1/3 -translate-x-1/2 -translate-y-1/2" />
+        <Container className="relative flex h-full flex-col justify-end pb-20 sm:pb-24 lg:pb-28">
+          <div className="max-w-3xl space-y-5">
+            <Skeleton gold className="h-6 w-32 rounded-full" />
+            <Skeleton gold className="h-16 w-full sm:h-20" />
+            <Skeleton className="h-4 w-3/4" />
+          </div>
+        </Container>
+      </div>
+      <div className="section-padding">
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <div className="space-y-5 lg:col-span-6">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-10 w-3/4" />
+              <TextSkeleton lines={3} />
+              <div className="mt-8 grid gap-5 sm:grid-cols-2">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Skeleton className="h-10 w-10 shrink-0 rounded-lg" />
+                    <div className="flex-1 space-y-1.5">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-full" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="lg:col-span-6">
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                <div className="space-y-3 sm:space-y-4">
+                  <Skeleton className="aspect-[4/5] rounded-2xl" />
+                  <Skeleton className="aspect-square rounded-2xl" />
+                </div>
+                <div className="space-y-3 pt-6 sm:space-y-4 sm:pt-8">
+                  <Skeleton className="aspect-square rounded-2xl" />
+                  <Skeleton className="aspect-[4/5] rounded-2xl" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </div>
+      <div className="border-y border-primary-100/70 bg-white py-16 dark:border-primary-800/70 dark:bg-primary-900/40 sm:py-20 lg:py-28">
+        <Container>
+          <div className="mb-10 lg:mb-12">
+            <Skeleton className="h-6 w-24" />
+            <Skeleton className="mt-2 h-10 w-64" />
+          </div>
+          <div className="grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border border-primary-100/80 bg-white dark:border-primary-800 dark:bg-primary-900">
+                <Skeleton className="aspect-[16/10] !rounded-none" />
+                <div className="space-y-3 p-5 sm:p-6">
+                  <Skeleton className="h-5 w-3/4" />
+                  <TextSkeleton lines={2} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </Container>
+      </div>
+    </div>
+  )
   if (error || !data) {
     return (
       <Container className="section-padding">
@@ -61,7 +129,6 @@ export default function HomePage() {
     gallery,
     stats,
     latestPosts,
-    team,
     testimonials,
     faqs,
     visibility,

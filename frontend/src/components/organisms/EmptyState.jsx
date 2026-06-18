@@ -1,8 +1,9 @@
+import { MotionDiv } from '@/components/motion'
 import Icon from '@/components/atoms/Icon'
 
 export default function EmptyState({ icon = 'search', title, message, action }) {
   return (
-    <div className="reveal py-16 text-center">
+    <MotionDiv className="py-16 text-center">
       <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-primary-100 text-primary-600 dark:bg-primary-800 dark:text-primary-300">
         <Icon name={icon} className="w-7 h-7" />
       </div>
@@ -11,6 +12,6 @@ export default function EmptyState({ icon = 'search', title, message, action }) 
         <p className="mx-auto mt-2 max-w-md text-sm text-primary-700/80 dark:text-primary-200/70">{message}</p>
       )}
       {action && <div className="mt-6">{action}</div>}
-    </div>
+    </MotionDiv>
   )
 }

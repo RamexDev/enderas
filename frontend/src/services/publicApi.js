@@ -43,6 +43,13 @@ export const blogApi = {
   getBySlug: (slug) => api.get(`/public/posts/${slug}`).then(unwrap),
 }
 
+// ─── CTA ──────────────────────────────────────────────────────────────────────
+
+/** Shared call-to-action data for inner pages. */
+export const ctaApi = {
+  get: () => api.get('/public/cta').then(unwrap),
+}
+
 // ─── Contact ──────────────────────────────────────────────────────────────────
 
 /** Contact page info and inquiry submission. */

@@ -1,7 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import MainLayout from '@/layouts/MainLayout'
-import { PageLoader } from '@/components/atoms/Loader'
+import { PageSkeleton } from '@/components/atoms/Loader'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const AboutPage = lazy(() => import('@/pages/AboutPage'))
@@ -23,7 +23,7 @@ export default function PublicRoutes() {
         <Route
           index
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <HomePage />
             </Suspense>
           }
@@ -31,7 +31,7 @@ export default function PublicRoutes() {
         <Route
           path="about"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <AboutPage />
             </Suspense>
           }
@@ -39,7 +39,7 @@ export default function PublicRoutes() {
         <Route
           path="services"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <ServicesPage />
             </Suspense>
           }
@@ -47,7 +47,7 @@ export default function PublicRoutes() {
         <Route
           path="gallery"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <GalleryPage />
             </Suspense>
           }
@@ -55,7 +55,7 @@ export default function PublicRoutes() {
         <Route
           path="blog"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <BlogPage />
             </Suspense>
           }
@@ -63,7 +63,7 @@ export default function PublicRoutes() {
         <Route
           path="blog/:slug"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <BlogDetailPage />
             </Suspense>
           }
@@ -71,7 +71,7 @@ export default function PublicRoutes() {
         <Route
           path="contact"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <ContactPage />
             </Suspense>
           }
@@ -79,7 +79,7 @@ export default function PublicRoutes() {
         <Route
           path="*"
           element={
-            <Suspense fallback={<PageLoader />}>
+                <Suspense fallback={<PageSkeleton />}>
               <NotFoundPage />
             </Suspense>
           }

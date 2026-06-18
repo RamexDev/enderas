@@ -11,20 +11,20 @@ import ServicesPromoSection from '@/components/organisms/ServicesPromoSection'
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import EmptyState from '@/components/organisms/EmptyState'
-import { PageLoader } from '@/components/atoms/Loader'
+import { CardSkeleton, TextSkeleton, Skeleton, GoldSpinner } from '@/components/atoms/Loader'
 import { SERVICES_PROMO } from '@/constants/homeSections'
-import { useScrollReveal } from '@/hooks/useScrollReveal'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { getServices } from '@/services/serviceService'
-import { getHomePage } from '@/services/homeService'
+import { ctaApi } from '@/services/publicApi'
+import { mapCtaData } from '@/utils/mappers'
 
 /**
  * Displays all active services with an interactive detail panel.
  */
 export default function ServicesPage() {
   const fetchServices = useCallback(async () => {
-    const [servicesResult, home] = await Promise.all([getServices({ limit: 50 }), getHomePage()])
-    return { services: servicesResult.data, cta: home.cta }
+    const [servicesResult, cta] = await Promise.all([getServices({ limit: 50 }), ctaApi.get()])
+    return { services: servicesResult.data, cta: mapCtaData(cta) }
   }, [])
 
   const { data, loading, error, reload } = useAsyncData(fetchServices)
@@ -37,9 +37,36 @@ export default function ServicesPage() {
     [resolvedActiveId, services],
   )
 
-  useScrollReveal([data])
-
-  if (loading) return <PageLoader />
+  if (loading) return (
+    <div>
+      <div className="relative overflow-hidden bg-primary-900 pb-12 pt-24 text-white sm:pb-14 sm:pt-28 lg:pb-20 lg:pt-36">
+        <Skeleton className="absolute inset-0 !rounded-none !bg-primary-800" />
+        <Container className="relative">
+          <GoldSpinner className="mb-6" />
+          <div className="max-w-3xl space-y-4">
+            <Skeleton gold className="h-5 w-32" />
+            <Skeleton gold className="h-12 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        </Container>
+      </div>
+      <div className="section-padding">
+        <Container>
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-14">
+            <div className="hidden space-y-3 lg:col-span-4 lg:block">
+              {[1,2,3,4].map(i => (
+                <CardSkeleton key={i} className="h-24 rounded-xl" />
+              ))}
+            </div>
+            <div className="lg:col-span-8">
+              <Skeleton gold className="mb-4 h-8 w-64" />
+              <TextSkeleton lines={5} />
+            </div>
+          </div>
+        </Container>
+      </div>
+    </div>
+  )
   if (error || !data) {
     return (
       <Container className="section-padding">

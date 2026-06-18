@@ -20,5 +20,5 @@ export function slugify(text) {
 }
 
 export function generateId(items) {
-  return items.length ? Math.max(...items.map((i) => i.id || 0)) + 1 : 1
+  return items.reduce((max, i) => Math.max(max, i.id || 0), 0) + 1
 }

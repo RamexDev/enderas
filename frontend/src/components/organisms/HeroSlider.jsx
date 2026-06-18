@@ -49,7 +49,7 @@ export default function HeroSlider({ slides = [] }) {
       {slides.map((s, i) => (
         <div
           key={s.id}
-          className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+          className={`absolute inset-0 transition-opacity duration-500 ease-out ${
             i === active ? 'z-10 opacity-100' : 'z-0 opacity-0'
           }`}
           aria-hidden={i !== active}
@@ -74,7 +74,7 @@ export default function HeroSlider({ slides = [] }) {
           {slides.map((s, i) => (
             <div
               key={s.id}
-              className={`transition-opacity duration-500 ease-out ${
+              className={`transition-opacity duration-300 ease-out ${
                 i === active
                   ? 'relative z-10 opacity-100'
                   : 'pointer-events-none absolute inset-0 z-0 opacity-0'
