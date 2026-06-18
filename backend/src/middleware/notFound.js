@@ -1,0 +1,10 @@
+/**
+ * 404 Not Found handler — catches unmatched routes after all route mounts.
+ */
+
+export function notFound(req, res) {
+  return res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+  });
+}
