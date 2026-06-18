@@ -96,11 +96,11 @@ export default function ContactPage() {
         intro={CONTACT_PAGE_COPY.intro}
       />
 
-      <section className="py-14 sm:py-16 lg:py-24">
+      <section className="section-padding">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-7">
-              <div className="rounded-3xl border border-primary-100/80 bg-white p-6 shadow-sm dark:border-primary-800 dark:bg-primary-900 sm:p-8 lg:p-10">
+          <div className="grid gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="min-w-0 lg:col-span-7">
+              <div className="rounded-3xl border border-primary-100/80 bg-white p-5 shadow-sm dark:border-primary-800 dark:bg-primary-900 sm:p-8 lg:p-10">
                 {submitted ? (
                   <div className="py-10 text-center">
                     <div className="mb-5 inline-flex h-16 w-16 items-center justify-center rounded-full bg-gold-500/15 text-gold-600 dark:text-gold-400">
@@ -189,11 +189,11 @@ export default function ContactPage() {
                           {submitError}
                         </p>
                       )}
-                      <div className="flex flex-wrap items-center gap-3 pt-2">
-                        <Button type="submit" variant="primary" size="lg" disabled={submitting} iconRight="arrowRight">
+                      <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap sm:items-center">
+                        <Button type="submit" variant="primary" size="lg" disabled={submitting} iconRight="arrowRight" className="w-full sm:w-auto">
                           {submitting ? 'Sending…' : 'Send message'}
                         </Button>
-                        <p className="text-xs text-primary-600/70 dark:text-primary-300/60">
+                        <p className="text-center text-xs text-primary-600/70 sm:text-left dark:text-primary-300/60">
                           We typically respond within one business day.
                         </p>
                       </div>
@@ -203,8 +203,8 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <aside className="space-y-6 lg:col-span-5">
-              <div className="rounded-2xl bg-primary-900 p-6 text-white sm:p-7">
+            <aside className="min-w-0 space-y-5 sm:space-y-6 lg:col-span-5">
+              <div className="rounded-2xl bg-primary-900 p-5 text-white sm:p-7">
                 <h3 className="mb-5 font-heading text-lg font-semibold">Contact information</h3>
                 <ul className="space-y-4 text-sm">
                   <li className="flex items-start gap-3">
@@ -269,7 +269,7 @@ export default function ContactPage() {
                     referrerPolicy="no-referrer-when-downgrade"
                   />
                 </div>
-                <div className="flex items-center justify-between gap-3 border-t border-primary-200/80 bg-white px-4 py-3 dark:border-primary-700 dark:bg-primary-900">
+                <div className="flex flex-col gap-2 border-t border-primary-200/80 bg-white px-4 py-3 dark:border-primary-700 dark:bg-primary-900 sm:flex-row sm:items-center sm:justify-between">
                   <p className="text-xs text-primary-700 dark:text-primary-200">
                     {settings.city}, {settings.country}
                   </p>

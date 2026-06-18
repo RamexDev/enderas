@@ -48,25 +48,25 @@ export default function AboutPage() {
       <SeoHead title={about.seo?.title || 'About'} description={about.seo?.description} image={about.heroImage} />
       <PageHero eyebrow={about.heroEyebrow} title={about.heroTitle} intro={about.heroIntro} image={about.heroImage} />
 
-      <section className="py-20 lg:py-28">
+      <section className="section-padding">
         <Container>
-          <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-            <div className="lg:col-span-7">
+          <div className="grid gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="min-w-0 lg:col-span-7">
               <SectionHeading eyebrow="History" title="Our story." />
               <div className="reveal reveal-delay-1 mt-6 space-y-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
                 <p>{about.history}</p>
                 {about.historyExtended && <p>{about.historyExtended}</p>}
               </div>
             </div>
-            <div className="space-y-6 lg:col-span-5">
-              <div className="reveal reveal-delay-1 rounded-2xl border border-primary-100/80 bg-white p-7 dark:border-primary-800 dark:bg-primary-900">
+            <div className="space-y-4 sm:space-y-6 lg:col-span-5">
+              <div className="reveal reveal-delay-1 rounded-2xl border border-primary-100/80 bg-white p-5 dark:border-primary-800 dark:bg-primary-900 sm:p-7">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500/15 text-gold-600 dark:text-gold-400">
                   <Icon name="sparkles" className="w-5 h-5" />
                 </div>
                 <h3 className="mb-2 font-heading text-xl font-semibold text-primary-900 dark:text-white">Mission</h3>
                 <p className="text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{about.mission}</p>
               </div>
-              <div className="reveal reveal-delay-2 rounded-2xl bg-primary-900 p-7 text-white dark:bg-primary-800">
+              <div className="reveal reveal-delay-2 rounded-2xl bg-primary-900 p-5 text-white dark:bg-primary-800 sm:p-7">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500/20 text-gold-300">
                   <Icon name="eye" className="w-5 h-5" />
                 </div>
@@ -78,17 +78,17 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="border-y border-primary-100/70 bg-white py-20 dark:border-primary-800/70 dark:bg-primary-900/40 lg:py-28">
+      <section className="border-y border-primary-100/70 bg-white py-14 dark:border-primary-800/70 dark:bg-primary-900/40 sm:py-20 lg:py-28">
         <Container>
           <SectionHeading eyebrow="What we stand for" title="Core values that shape every engagement." align="center" />
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-10 grid gap-4 sm:mt-14 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
             {about.values.map((v, i) => (
               <div
                 key={v.id}
-                className="reveal group rounded-2xl border border-primary-100/70 bg-sand-50 p-7 transition-colors hover:border-gold-300 dark:border-primary-800 dark:bg-primary-900 dark:hover:border-gold-700"
+                className="reveal group rounded-2xl border border-primary-100/70 bg-sand-50 p-5 transition-colors hover:border-gold-300 dark:border-primary-800 dark:bg-primary-900 dark:hover:border-gold-700 sm:p-7"
                 style={{ transitionDelay: `${i * 70}ms` }}
               >
-                <div className="mb-3 font-heading text-5xl font-semibold tabular-nums text-gold-500/30">
+                <div className="mb-3 font-heading text-4xl font-semibold tabular-nums text-gold-500/30 sm:text-5xl">
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">{v.title}</h3>
@@ -100,14 +100,14 @@ export default function AboutPage() {
       </section>
 
       {about.team.length > 0 && (
-        <section className="py-20 lg:py-28">
+        <section className="section-padding">
           <Container>
             <SectionHeading
               eyebrow="Leadership"
               title="The team behind the practice."
               intro="Experienced professionals dedicated to delivering exceptional asset management and advisory services."
             />
-            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-10 grid gap-5 sm:mt-14 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">
               {about.team.map((m, i) => (
                 <TeamCard key={m.id} member={m} index={i} />
               ))}

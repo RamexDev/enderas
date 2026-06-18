@@ -93,7 +93,7 @@ export default function AuctionBanner({ highlight }) {
 
           <MotionDiv className="lg:col-span-5" delay={0.1}>
             <div className="relative aspect-[4/5] max-h-[520px] overflow-hidden rounded-2xl bg-primary-900 shadow-2xl sm:max-h-none">
-              <img src={highlight.image} alt={highlight.title} className="absolute inset-0 h-full w-full object-cover" />
+              <img src={highlight.image} alt={highlight.title} width={800} height={1000} loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
                 <Badge variant="gold" className="!mb-3 !bg-gold-500/20 !text-gold-200 !ring-gold-400/40">
@@ -105,18 +105,18 @@ export default function AuctionBanner({ highlight }) {
                     <Icon name="mapPin" className="h-3.5 w-3.5" /> {highlight.location}
                   </p>
                 )}
-                <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
+                <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
                   {highlight.reserve && (
                     <div>
                       <div className="text-[10px] uppercase tracking-widest text-primary-200/60">Reserve</div>
-                      <div className="font-heading text-xl text-gold-300">{highlight.reserve}</div>
+                      <div className="font-heading text-lg text-gold-300 sm:text-xl">{highlight.reserve}</div>
                     </div>
                   )}
                   <Button
                     to={AUCTION_LINK}
                     variant="ghost"
                     size="sm"
-                    className="!text-white hover:!text-gold-300"
+                    className="!w-full !justify-center !text-white hover:!text-gold-300 sm:!w-auto sm:!justify-start"
                     iconRight="arrowUpRight"
                   >
                     View listing

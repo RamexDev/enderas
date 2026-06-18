@@ -24,7 +24,7 @@ export default function ContactMap({ settings }) {
               visit or open directions in your preferred maps app.
             </p>
           </div>
-          <Button href={directionsUrl} variant="outline" iconRight="arrowUpRight" className="shrink-0">
+          <Button href={directionsUrl} variant="outline" iconRight="arrowUpRight" className="w-full shrink-0 sm:w-auto">
             Get directions
           </Button>
         </div>
@@ -41,7 +41,7 @@ export default function ContactMap({ settings }) {
             />
           </div>
 
-          <div className="absolute inset-x-4 bottom-4 max-w-md rounded-xl border border-white/20 bg-primary-950/90 p-4 text-white shadow-xl backdrop-blur-md sm:inset-x-auto sm:left-6 sm:bottom-6 sm:p-5">
+          <div className="absolute inset-x-3 bottom-3 max-w-none rounded-xl border border-white/20 bg-primary-950/90 p-3 text-white shadow-xl backdrop-blur-md sm:inset-x-auto sm:bottom-6 sm:left-6 sm:max-w-md sm:p-5">
             <div className="flex items-start gap-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-500/20 text-gold-300">
                 <Icon name="mapPin" className="h-5 w-5" />

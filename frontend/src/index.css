@@ -59,12 +59,20 @@
 
   @keyframes ken-burns {
     0% { transform: scale(1) translate(0, 0); }
-    100% { transform: scale(1.12) translate(-1%, -1%); }
+    100% { transform: scale(1.08) translate(-0.5%, -0.5%); }
   }
 
   @keyframes marquee {
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+  }
+}
+
+@layer utilities {
+  @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
+    .animate-ken-burns {
+      animation: none !important;
+    }
   }
 }
 
@@ -83,7 +91,7 @@
   }
 
   body {
-    @apply bg-sand-50 text-primary-900 antialiased dark:bg-primary-950 dark:text-primary-100;
+    @apply overflow-x-hidden bg-sand-50 text-primary-900 antialiased dark:bg-primary-950 dark:text-primary-100;
     min-height: 100dvh;
   }
 

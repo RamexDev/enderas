@@ -23,6 +23,6 @@ export const slideInRight = {
 export const staggerContainer = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.08, delayChildren: 0.05 },
+    transition: { staggerChildren: 0.04, delayChildren: 0.02 },
   },
 }

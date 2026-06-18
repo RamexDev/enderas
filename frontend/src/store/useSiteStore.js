@@ -9,9 +9,10 @@ import { getServices } from '@/services/serviceService'
 import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
 
 export const useSiteStore = create((set, get) => ({
-  settings: null,
+  settings: DEFAULT_SITE_SETTINGS,
   services: [],
   isLoading: true,
+  hasFetched: false,
   error: null,
 
   /**
@@ -19,7 +20,7 @@ export const useSiteStore = create((set, get) => ({
    * Contact info/map always have static defaults even if the API fails.
    */
   initialize: async () => {
-    if (get().settings) return
+    if (get().hasFetched) return
     set({ isLoading: true, error: null })
 
     const [settingsResult, servicesResult] = await Promise.allSettled([
@@ -32,6 +33,7 @@ export const useSiteStore = create((set, get) => ({
         settingsResult.status === 'fulfilled' ? settingsResult.value : { ...DEFAULT_SITE_SETTINGS },
       services: servicesResult.status === 'fulfilled' ? servicesResult.value.data : [],
       isLoading: false,
+      hasFetched: true,
       error: settingsResult.status === 'rejected' ? settingsResult.reason?.message : null,
     })
   },

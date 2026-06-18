@@ -86,7 +86,7 @@ export default function BlogDetailPage() {
         jsonLd={articleJsonLd}
       />
       <article>
-        <header className="relative overflow-hidden bg-primary-950 pb-12 pt-28 text-white lg:pb-16 lg:pt-36">
+        <header className="relative overflow-hidden bg-primary-950 pb-10 pt-24 text-white sm:pb-12 sm:pt-28 lg:pb-16 lg:pt-36">
           <img src={post.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
           <div className="absolute inset-0 bg-gradient-to-br from-primary-950 via-primary-950/85 to-primary-900/70" />
           <Container className="relative">
@@ -100,7 +100,7 @@ export default function BlogDetailPage() {
               <Badge variant="gold" className="!mb-4 !bg-gold-500/15 !text-gold-300 !ring-gold-400/30">
                 {post.category}
               </Badge>
-              <h1 className="font-heading text-3xl font-semibold leading-[1.1] tracking-tight sm:text-4xl lg:text-5xl">
+              <h1 className="font-heading text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-[1.1] tracking-tight">
                 {post.title}
               </h1>
               <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-primary-100/70">
@@ -123,17 +123,17 @@ export default function BlogDetailPage() {
           </Container>
         </header>
 
-        <Container className="relative -mt-8 lg:-mt-12">
+        <Container className="relative -mt-6 sm:-mt-8 lg:-mt-12">
           <div className="aspect-[16/9] overflow-hidden rounded-2xl bg-primary-100 shadow-xl dark:bg-primary-800">
             <img src={post.image} alt={post.title} className="h-full w-full object-cover" />
           </div>
         </Container>
 
-        <Container className="py-16 lg:py-24">
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-8 lg:col-start-3">
+        <Container className="py-12 sm:py-16 lg:py-24">
+          <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
+            <div className="min-w-0 lg:col-span-8 lg:col-start-3">
               <div className="max-w-none">
-                <p className="mb-8 text-xl font-medium leading-relaxed text-primary-800 dark:text-primary-100">
+                <p className="mb-6 text-lg font-medium leading-relaxed text-primary-800 sm:mb-8 sm:text-xl dark:text-primary-100">
                   {post.excerpt}
                 </p>
                 {isHtml ? (
@@ -150,7 +150,7 @@ export default function BlogDetailPage() {
                 )}
               </div>
 
-              <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-primary-100 pt-8 dark:border-primary-800">
+              <div className="mt-10 flex flex-col gap-4 border-t border-primary-100 pt-6 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:pt-8 dark:border-primary-800">
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-primary-600 dark:text-primary-300">Share:</span>
                   {social.map((s) => (
@@ -169,9 +169,9 @@ export default function BlogDetailPage() {
                 <Badge variant="gold">{post.category}</Badge>
               </div>
 
-              <div className="mt-10 flex items-start gap-4 rounded-2xl border border-primary-100 bg-sand-50 p-6 dark:border-primary-800 dark:bg-primary-900">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-primary-200">
-                  <Icon name="user" className="w-7 h-7" />
+              <div className="mt-8 flex items-start gap-3 rounded-2xl border border-primary-100 bg-sand-50 p-5 dark:border-primary-800 dark:bg-primary-900 sm:mt-10 sm:gap-4 sm:p-6">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-primary-200 sm:h-14 sm:w-14">
+                  <Icon name="user" className="h-6 w-6 sm:h-7 sm:w-7" />
                 </span>
                 <div>
                   <p className="mb-1 text-xs uppercase tracking-wider text-primary-600/70 dark:text-primary-300/60">
@@ -188,10 +188,10 @@ export default function BlogDetailPage() {
         </Container>
 
         {finalRelated.length > 0 && (
-          <section className="border-t border-primary-100/70 bg-white py-16 dark:border-primary-800/70 dark:bg-primary-900/40 lg:py-24">
+          <section className="border-t border-primary-100/70 bg-white py-12 dark:border-primary-800/70 dark:bg-primary-900/40 sm:py-16 lg:py-24">
             <Container>
               <SectionHeading eyebrow="Keep reading" title="Related articles" />
-              <div className="mt-10 grid gap-6 md:grid-cols-3">
+              <div className="mt-8 grid gap-5 sm:mt-10 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
                 {finalRelated.map((p) => (
                   <BlogCard key={p.id} post={p} />
                 ))}

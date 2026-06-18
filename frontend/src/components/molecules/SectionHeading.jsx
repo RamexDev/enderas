@@ -12,7 +12,7 @@ export default function SectionHeading({ eyebrow, title, intro, align = 'left', 
         </div>
       )}
       <h2
-        className={`font-heading text-3xl font-semibold leading-[1.1] sm:text-4xl lg:text-[2.75rem] ${light ? 'text-white' : 'text-primary-900 dark:text-white'}`}
+        className={`font-heading text-[clamp(1.625rem,4vw,2.75rem)] font-semibold leading-[1.1] ${light ? 'text-white' : 'text-primary-900 dark:text-white'}`}
       >
         {title}
       </h2>

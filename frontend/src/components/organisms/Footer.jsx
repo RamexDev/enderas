@@ -22,9 +22,9 @@ export default function Footer() {
 
   return (
     <footer className="bg-primary-950 text-primary-100">
-      <Container className="py-16 lg:py-20">
-        <div className="grid gap-12 lg:grid-cols-12">
-          <div className="lg:col-span-4">
+      <Container className="py-12 sm:py-16 lg:py-20">
+        <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="col-span-2 lg:col-span-4">
             <Logo light />
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-200/70">{settings.footerDescription}</p>
             <div className="mt-6 flex items-center gap-3">
@@ -119,11 +119,11 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-primary-800/60 pt-8 sm:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-primary-800/60 pt-8 text-center sm:flex-row sm:text-left">
           <p className="text-xs text-primary-300/60">
             © {new Date().getFullYear()} {settings.appName} Asset Management. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-xs text-primary-300/60">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-primary-300/60 sm:justify-end">
             <a href="#" className="hover:text-gold-300">
               Privacy Policy
             </a>

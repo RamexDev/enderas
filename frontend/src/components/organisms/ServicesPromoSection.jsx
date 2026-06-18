@@ -13,15 +13,15 @@ import Icon from '@/components/atoms/Icon'
  */
 export default function ServicesPromoSection({ promo }) {
   return (
-    <section id="auctions" className="scroll-mt-28 bg-primary-950 py-20 text-white lg:py-28">
+    <section id="auctions" className="scroll-mt-28 bg-primary-950 py-16 text-white sm:py-20 lg:py-28">
       <Container>
-        <div className="grid items-center gap-12 lg:grid-cols-2">
+        <div className="grid items-center gap-8 sm:gap-10 lg:grid-cols-2 lg:gap-12">
           <div>
             <Badge variant="gold" className="!mb-4 !bg-gold-500/15 !text-gold-300 !ring-gold-400/30">
               <Icon name="scale" className="h-3 w-3" /> {promo.eyebrow}
             </Badge>
-            <h2 className="font-heading text-3xl font-semibold leading-tight lg:text-4xl">{promo.title}</h2>
-            <p className="mt-4 leading-relaxed text-primary-100/80">{promo.body}</p>
+            <h2 className="font-heading text-[clamp(1.5rem,4vw,2.25rem)] font-semibold leading-tight">{promo.title}</h2>
+            <p className="mt-4 text-sm leading-relaxed text-primary-100/80 sm:text-base">{promo.body}</p>
             <ul className="mb-8 mt-6 space-y-2.5">
               {promo.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-2.5 text-sm text-primary-100/90">
@@ -32,7 +32,7 @@ export default function ServicesPromoSection({ promo }) {
                 </li>
               ))}
             </ul>
-            <Button to="/contact" variant="primary" size="lg" iconRight="arrowRight">
+            <Button to="/contact" variant="primary" size="lg" iconRight="arrowRight" className="w-full sm:w-auto">
               Request a valuation
             </Button>
           </div>

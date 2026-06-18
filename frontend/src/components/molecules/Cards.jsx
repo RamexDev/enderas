@@ -7,7 +7,9 @@ import { formatDate } from '@/utils/formatDate'
 
 export function ServiceCard({ service }) {
   return (
-    <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900">
+    <article
+      className="group relative flex h-full min-h-[280px] flex-col overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900"
+    >
       <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 dark:bg-primary-800">
         <img
           src={service.image}
@@ -20,8 +22,8 @@ export function ServiceCard({ service }) {
           <Icon name={service.icon} className="w-6 h-6" />
         </div>
       </div>
-      <div className="flex flex-1 flex-col p-6">
-        <h3 className="mb-2 font-heading text-xl font-semibold text-primary-900 dark:text-white">{service.title}</h3>
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
+        <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 sm:text-xl dark:text-white">{service.title}</h3>
         <p className="mb-5 flex-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
           {service.excerpt}
         </p>
@@ -39,7 +41,7 @@ export function ServiceCard({ service }) {
 export function PropertyCard({ item, onOpen }) {
   return (
     <article
-      className="group relative cursor-pointer overflow-hidden rounded-xl bg-primary-900"
+      className="group relative aspect-[4/3] min-h-[220px] cursor-pointer overflow-hidden rounded-xl bg-primary-900 sm:min-h-[260px]"
       onClick={() => onOpen?.(item)}
       onKeyDown={(e) => e.key === 'Enter' && onOpen?.(item)}
       role="button"
@@ -53,14 +55,14 @@ export function PropertyCard({ item, onOpen }) {
         className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/30 to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 p-5 text-white">
-        <div className="mb-1.5 flex items-center gap-2">
+      <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
+        <div className="mb-1.5 flex flex-wrap items-center gap-2">
           <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
             {item.category}
           </Badge>
           {item.value && <span className="text-xs font-medium text-primary-100/70">{item.value}</span>}
         </div>
-        <h3 className="font-heading text-lg font-semibold leading-tight">{item.title}</h3>
+        <h3 className="font-heading text-base font-semibold leading-tight sm:text-lg">{item.title}</h3>
         <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
           <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
         </p>
@@ -77,7 +79,7 @@ export function BlogCard({ post, featured = false }) {
 
   return (
     <article
-      className={`group overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900 ${featured ? 'lg:flex' : ''}`}
+      className={`group overflow-hidden rounded-2xl border border-primary-100/80 bg-white transition-all duration-500 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary-900/5 dark:border-primary-800 dark:bg-primary-900 ${featured ? 'flex flex-col lg:flex-row' : ''}`}
     >
       <Link
         to={`/blog/${post.slug}`}
@@ -93,8 +95,8 @@ export function BlogCard({ post, featured = false }) {
           <Badge variant="gold">{post.category}</Badge>
         </div>
       </Link>
-      <div className={`flex flex-col p-6 ${featured ? 'lg:w-1/2 lg:justify-center' : ''}`}>
-        <div className="mb-3 flex items-center gap-3 text-xs text-primary-600/70 dark:text-primary-300/60">
+      <div className={`flex flex-col p-5 sm:p-6 ${featured ? 'lg:w-1/2 lg:justify-center' : ''}`}>
+        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-primary-600/70 dark:text-primary-300/60">
           <span className="flex items-center gap-1">
             <Icon name="calendar" className="w-3.5 h-3.5" />
             {dateStr}
@@ -106,7 +108,7 @@ export function BlogCard({ post, featured = false }) {
         </div>
         <Link to={`/blog/${post.slug}`} className="text-left">
           <h3
-            className={`mb-2 font-heading font-semibold leading-tight text-primary-900 transition-colors group-hover:text-gold-600 dark:text-white dark:group-hover:text-gold-400 ${featured ? 'text-2xl lg:text-3xl' : 'text-lg'}`}
+            className={`mb-2 font-heading font-semibold leading-tight text-primary-900 transition-colors group-hover:text-gold-600 dark:text-white dark:group-hover:text-gold-400 ${featured ? 'text-xl sm:text-2xl lg:text-3xl' : 'text-lg'}`}
           >
             {post.title}
           </h3>
@@ -114,12 +116,12 @@ export function BlogCard({ post, featured = false }) {
         <p className="mb-4 flex-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
           {post.excerpt}
         </p>
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <span className="flex items-center gap-2 text-sm">
-            <span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-primary-200">
+            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary-100 text-primary-700 dark:bg-primary-800 dark:text-primary-200">
               <Icon name="user" className="w-3.5 h-3.5" />
             </span>
-            <span className="font-medium text-primary-800 dark:text-primary-100">{post.author}</span>
+            <span className="truncate font-medium text-primary-800 dark:text-primary-100">{post.author}</span>
           </span>
           <Link
             to={`/blog/${post.slug}`}
@@ -136,13 +138,24 @@ export function BlogCard({ post, featured = false }) {
 export function StatCard({ stat }) {
   const decimals = stat.value % 1 !== 0 ? 1 : 0
   const [ref, display] = useCountUp(stat.value, { decimals })
+  const finalDisplay = Number(stat.value).toLocaleString('en-US', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
 
   return (
     <div ref={ref} className="text-center sm:text-left">
-      <div className="font-heading text-4xl font-semibold tabular-nums text-gold-500 lg:text-5xl">
-        {stat.prefix}
-        {display}
-        {stat.suffix}
+      <div className="relative font-heading text-4xl font-semibold tabular-nums text-gold-500 lg:text-5xl">
+        <span className="invisible" aria-hidden="true">
+          {stat.prefix}
+          {finalDisplay}
+          {stat.suffix}
+        </span>
+        <span className="absolute inset-0">
+          {stat.prefix}
+          {display}
+          {stat.suffix}
+        </span>
       </div>
       <div className="mt-2 text-sm uppercase tracking-wider text-primary-700/80 dark:text-primary-200/70">
         {stat.label}
@@ -247,7 +260,8 @@ export function AuctionAssetCard({ asset }) {
             iconRight="arrowUpRight"
             className="shrink-0"
           >
-            {isClosed ? 'Similar assets' : 'Inquire'}
+            <span className="sm:hidden">{isClosed ? 'Similar' : 'Inquire'}</span>
+            <span className="hidden sm:inline">{isClosed ? 'Similar assets' : 'Inquire'}</span>
           </Button>
         </div>
       </div>

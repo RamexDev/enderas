@@ -79,12 +79,12 @@ export default function BlogPage() {
         intro="Our research desk publishes quarterly briefings, sector deep-dives and practical guidance for owners, lenders and allocators of real-asset capital."
       />
 
-      <section className="py-16 lg:py-24">
+      <section className="section-padding">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-            <div className="lg:col-span-8">
-              <div className="reveal mb-10 flex flex-col gap-3 sm:flex-row">
-                <div className="relative flex-1">
+          <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+            <div className="min-w-0 lg:col-span-8">
+              <div className="reveal mb-8 flex flex-col gap-3 sm:mb-10">
+                <div className="relative w-full">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-primary-400">
                     <Icon name="search" className="w-4 h-4" />
                   </span>
@@ -100,7 +100,7 @@ export default function BlogPage() {
                     aria-label="Search articles"
                   />
                 </div>
-                <div className="scrollx no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
+                <div className="no-scrollbar flex items-center gap-2 overflow-x-auto pb-1">
                   {categories.map((c) => (
                     <button
                       key={c}
@@ -110,7 +110,7 @@ export default function BlogPage() {
                         setPage(1)
                       }}
                       aria-pressed={category === c}
-                      className={`whitespace-nowrap rounded-full border px-3.5 py-2 text-xs font-medium transition-all ${
+                      className={`shrink-0 whitespace-nowrap rounded-full border px-3 py-2 text-xs font-medium transition-all sm:px-3.5 ${
                         category === c
                           ? 'border-primary-900 bg-primary-900 text-white dark:border-primary-700 dark:bg-primary-700'
                           : 'border-primary-200 bg-white text-primary-700 hover:border-gold-400 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-200'
@@ -168,9 +168,9 @@ export default function BlogPage() {
               )}
             </div>
 
-            <aside className="space-y-8 lg:col-span-4">
-              <div className="reveal space-y-8 lg:sticky lg:top-28">
-                <div className="rounded-2xl border border-primary-100 bg-white p-6 dark:border-primary-800 dark:bg-primary-900">
+            <aside className="min-w-0 space-y-6 lg:col-span-4 lg:space-y-8">
+              <div className="reveal space-y-6 lg:sticky lg:top-28 lg:space-y-8">
+                <div className="rounded-2xl border border-primary-100 bg-white p-5 dark:border-primary-800 dark:bg-primary-900 sm:p-6">
                   <h3 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">
                     <Icon name="clock" className="w-5 h-5 text-gold-500" /> Recent posts
                   </h3>
@@ -199,7 +199,7 @@ export default function BlogPage() {
                   </ul>
                 </div>
 
-                <div className="rounded-2xl bg-primary-900 p-6 text-white">
+                <div className="rounded-2xl bg-primary-900 p-5 text-white sm:p-6">
                   <h3 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
                     <Icon name="sparkles" className="w-5 h-5 text-gold-400" /> Popular reads
                   </h3>
@@ -221,7 +221,7 @@ export default function BlogPage() {
                   </ul>
                 </div>
 
-                <div className="rounded-2xl border border-gold-200 bg-gradient-to-br from-gold-500/15 to-primary-100 p-6 dark:border-gold-700/40 dark:from-gold-900/30 dark:to-primary-900">
+                <div className="rounded-2xl border border-gold-200 bg-gradient-to-br from-gold-500/15 to-primary-100 p-5 dark:border-gold-700/40 dark:from-gold-900/30 dark:to-primary-900 sm:p-6">
                   <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">
                     Quarterly market briefing
                   </h3>

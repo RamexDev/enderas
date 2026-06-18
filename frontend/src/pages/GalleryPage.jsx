@@ -105,16 +105,20 @@ export default function GalleryPage() {
         intro="A cross-section of the properties and portfolios that have moved through our valuation, management and auction desks. Click any tile to expand."
       />
 
-      <section className="py-16 lg:py-24">
+      <section className="py-14 sm:py-16 lg:py-24">
         <Container>
-          <div className="reveal mb-10 flex flex-wrap items-center gap-2" role="group" aria-label="Filter by category">
+          <div
+            className="reveal no-scrollbar -mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-1 sm:mb-10 sm:flex-wrap sm:overflow-visible"
+            role="group"
+            aria-label="Filter by category"
+          >
             {categories.map((category) => (
               <button
                 key={category}
                 type="button"
                 onClick={() => selectFilter(category)}
                 aria-pressed={activeFilter === category}
-                className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                className={`shrink-0 rounded-full border px-3.5 py-2 text-xs font-medium transition-all sm:px-4 sm:text-sm ${
                   activeFilter === category
                     ? 'border-primary-900 bg-primary-900 text-white dark:border-primary-700 dark:bg-primary-700'
                     : 'border-primary-200 bg-white text-primary-800 hover:border-gold-400 hover:text-gold-600 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-100 dark:hover:text-gold-400'
@@ -147,13 +151,13 @@ export default function GalleryPage() {
                     className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/20 to-transparent opacity-90" />
-                  <div className="absolute inset-x-0 bottom-0 p-5 text-white">
+                  <div className="absolute inset-x-0 bottom-0 p-4 text-white sm:p-5">
                     <div className="mb-1.5 flex items-center gap-2">
                       <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
                         {item.category}
                       </Badge>
                     </div>
-                    <h3 className="font-heading text-lg font-semibold leading-tight">{item.title}</h3>
+                    <h3 className="font-heading text-base font-semibold leading-tight sm:text-lg">{item.title}</h3>
                     {item.location && (
                       <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
                         <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}

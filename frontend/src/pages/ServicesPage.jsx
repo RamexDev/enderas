@@ -68,9 +68,9 @@ export default function ServicesPage() {
         intro="Enderas covers valuation, monetization, operational stewardship, advisory, research and diligence — so owners, lenders and allocators can work with a single trusted counterparty across every stage."
       />
 
-      <section className="py-20 lg:py-28">
+      <section className="section-padding">
         <Container>
-          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+          <div className="grid gap-6 sm:gap-8 lg:grid-cols-12 lg:gap-14">
             <ServiceNav services={services} activeId={resolvedActiveId} onSelect={setActiveId} />
             <ServiceDetailPanel service={currentService} />
           </div>

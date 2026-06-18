@@ -148,7 +148,7 @@ export default function HomePage() {
                   </div>
                 </div>
                 {intro.statHighlight?.value && (
-                  <div className="absolute -bottom-4 left-0 sm:-bottom-6 sm:-left-6 md:block">
+                  <div className="relative mt-4 sm:absolute sm:-bottom-6 sm:left-0 sm:right-auto sm:mt-0 lg:-left-6">
                     <div className="glass rounded-2xl p-4 sm:p-5">
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/15 text-gold-600 dark:text-gold-400 sm:h-12 sm:w-12">
@@ -232,7 +232,7 @@ export default function HomePage() {
         </Container>
       </MotionSection>
 
-      {visibility.showTeam && team.length > 0 && (
+      {/* {visibility.showTeam && team.length > 0 && (
         <MotionSection className="border-y border-primary-100/70 bg-white py-16 dark:border-primary-800/70 dark:bg-primary-900/40 sm:py-20 lg:py-28">
           <Container>
             <SectionHeading eyebrow="Leadership" title="Meet our team." align="center" />
@@ -245,7 +245,7 @@ export default function HomePage() {
             </MotionStagger>
           </Container>
         </MotionSection>
-      )}
+      )} */}
 
       {visibility.showTestimonials && (
         <TestimonialsSection title={testimonialsTitle} items={testimonials} />
