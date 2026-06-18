@@ -1,34 +1,50 @@
-# Enderas Asset Management Website
+# ENDERAS ASSET MANAGEMENT WEBSITE
 
 # Backend Technical Specification
 
-## Version 1.0
+**Project:** Enderas Asset Management Website
+**Backend Version:** 1.0
+**Document Status:** Approved for Development
 
 ---
 
 # 1. Backend Overview
 
-The backend serves as the central API layer for both:
+The backend serves as the central API layer for:
 
 * Public Website
 * Admin Dashboard
 
-Responsibilities:
-
-* Authentication
-* Content Management
-* Blog Management
-* Gallery Management
-* Services Management
-* Media Management
-* Contact Management
-* Site Settings Management
+The system is designed as a content management backend that allows administrators to manage website content without modifying code.
 
 The backend must expose REST APIs consumed by both frontend applications.
 
 ---
 
-# 2. Technology Stack
+# 2. Core Responsibilities
+
+The backend is responsible for:
+
+* Authentication & Authorization
+* Homepage Content Management
+* Hero Slider Management
+* Services Management
+* Gallery Management
+* Blog Management
+* Team Management
+* Testimonials Management
+* FAQ Management
+* About Page Management
+* Partners Management
+* Contact Page Management
+* Contact Message Management
+* Media Management
+* Site Settings Management
+* SEO Management
+
+---
+
+# 3. Technology Stack
 
 ## Runtime
 
@@ -88,240 +104,190 @@ bcrypt
 
 ## Security
 
-helmet
-cors
-express-rate-limit
+* helmet
+* cors
+* express-rate-limit
 
 ---
 
-# 3. Project Structure
+# 4. Project Structure
 
+```plaintext
 backend/
 
 src/
+├── config/
+├── controllers/
+├── services/
+├── models/
+├── routes/
+├── middleware/
+├── validations/
+├── utils/
+├── constants/
+├── migrations/
+├── seeders/
+├── uploads/
 
-config/
-
-controllers/
-
-services/
-
-models/
-
-routes/
-
-middleware/
-
-validations/
-
-utils/
-
-constants/
-
-migrations/
-
-seeders/
-
-uploads/
-
-app.js
-
-server.js
+├── app.js
+└── server.js
+```
 
 ---
 
-# 4. Folder Responsibilities
+# 5. Architecture Rules
 
-## controllers
+## Controllers
 
-Handle:
+Responsible for:
 
-* Request parsing
-* Service invocation
+* Parsing requests
+* Calling services
 * Returning responses
 
-Must NOT contain business logic.
+Controllers must not contain business logic.
 
 ---
 
-## services
+## Services
 
-Handle:
+Responsible for:
 
-* Business rules
-* Database interactions
-* Data transformations
-
-All business logic belongs here.
+* Business logic
+* Data processing
+* Database operations
 
 ---
 
-## models
+## Models
 
-Contains Sequelize models and associations.
+Responsible for:
 
----
-
-## routes
-
-Route definitions only.
+* Database schema
+* Associations
+* Constraints
 
 ---
 
-## middleware
+## Routes
+
+Responsible only for endpoint registration.
+
+---
+
+## Middleware
 
 Contains:
 
-* JWT Authentication
+* Authentication
 * Authorization
 * Validation
 * Error Handling
+* Upload Processing
 
 ---
 
-## validations
+# 6. Environment Variables
 
-Request validation schemas.
-
----
-
-## utils
-
-Reusable helper functions.
-
-Examples:
-
-* Pagination
-* Slug Generation
-* Response Helpers
-
----
-
-# 5. Environment Variables
-
-Required:
-
+```env
 PORT=
 
 NODE_ENV=
 
 DB_HOST=
-
 DB_PORT=
-
 DB_NAME=
-
 DB_USER=
-
 DB_PASSWORD=
 
 JWT_SECRET=
-
 JWT_EXPIRES_IN=
 
 CLIENT_URL=
-
 API_BASE_URL=
 
 UPLOAD_PATH=
-
 MAX_FILE_SIZE=
+```
 
 ---
 
-# 6. API Standards
+# 7. API Standards
 
-Base URL
+## Base URL
 
+```plaintext
 /api/v1
+```
 
 ---
 
-Response Format
+## Success Response
 
-Success
-
+```json
 {
-"success": true,
-"message": "Success",
-"data": {}
+  "success": true,
+  "message": "Success",
+  "data": {}
 }
+```
 
 ---
 
-Error
+## Error Response
 
+```json
 {
-"success": false,
-"message": "Validation Error",
-"errors": []
+  "success": false,
+  "message": "Validation Error",
+  "errors": []
 }
+```
 
 ---
 
-# 7. Authentication
+# 8. Authentication & Authorization
 
 JWT Authentication.
 
-Protected routes require:
+Protected endpoints require:
 
+```http
 Authorization: Bearer TOKEN
+```
 
 ---
 
-Authentication Flow
+## Roles
 
-Login
-
-↓
-
-Validate Credentials
-
-↓
-
-Generate JWT
-
-↓
-
-Return User + Token
-
-↓
-
-Frontend Stores Token
-
-↓
-
-Protected Requests Include Token
-
----
-
-# 8. User Roles
-
-## Super Admin
-
-Full Access
+### Super Admin
 
 Can:
 
 * Manage Users
 * Manage Settings
 * Manage Content
+* Manage Media
 
 ---
 
-## Editor
+### Editor
 
 Can:
 
+* Manage Homepage Content
+* Manage Blog
 * Manage Services
-* Manage Blog Posts
 * Manage Gallery
-* Manage Pages
+* Manage Team
+* Manage Testimonials
+* Manage FAQ
+* Manage Partners
 
 Cannot:
 
 * Manage Users
-* Manage Settings
+* Manage Site Settings
 
 ---
 
@@ -331,102 +297,287 @@ Cannot:
 
 ## users
 
+```plaintext
+id
+name
+email
+password
+role
+is_active
+created_at
+updated_at
+```
+
+---
+
+## home_page
+
+Stores homepage content.
+
+```plaintext
 id
 
-name
+company_intro_title
+company_intro_description
+company_intro_cta_text
+company_intro_cta_link
 
-email
+auction_title
+auction_description
+auction_cta_text
+auction_cta_link
 
-password
+contact_cta_title
+contact_cta_description
+contact_cta_button_text
+contact_cta_button_link
 
-role
+show_team
+show_testimonials
+show_faq
+
+meta_title
+meta_description
+
+updated_at
+```
+
+Single Record Table
+
+---
+
+## statistics
+
+```plaintext
+id
+label
+value
+icon
+
+created_at
+updated_at
+```
+
+---
+
+## hero_slides
+
+```plaintext
+id
+
+title
+subtitle
+
+image
+
+button_text
+button_link
 
 is_active
 
 created_at
-
 updated_at
-
----
-
-## pages
-
-Used for About Page and Contact Page content.
-
-Fields:
-
-id
-
-slug
-
-title
-
-content
-
-meta_title
-
-meta_description
-
-created_at
-
-updated_at
+```
 
 ---
 
 ## services
 
+```plaintext
 id
 
 title
-
 slug
 
 short_description
-
 description
 
 image
 
-display_order
+cta_text
+cta_link
+
+meta_title
+meta_description
 
 is_active
 
 created_at
-
 updated_at
+```
+
+---
+
+## gallery_categories
+
+```plaintext
+id
+
+name
+slug
+
+created_at
+updated_at
+```
 
 ---
 
 ## gallery_items
 
+```plaintext
 id
 
 title
-
 description
 
 image
 
-category
-
-display_order
+category_id
 
 created_at
+updated_at
+```
+
+---
+
+## team_members
+
+```plaintext
+id
+
+full_name
+email
+position
+biography
+
+profile_image
+
+is_active
+
+created_at
+updated_at
+```
+
+---
+
+## testimonials
+
+```plaintext
+id
+
+client_name
+company
+
+content
+
+client_image
+
+is_active
+
+created_at
+updated_at
+```
+
+---
+
+## faqs
+
+```plaintext
+id
+
+question
+answer
+
+is_active
+
+created_at
+updated_at
+```
+
+---
+
+## about_page
+
+```plaintext
+id
+
+history
+mission
+vision
+
+meta_title
+meta_description
 
 updated_at
+```
+
+Single Record Table
+
+---
+
+## core_values
+
+```plaintext
+id
+
+title
+description
+
+created_at
+updated_at
+```
+
+---
+
+## partners
+
+```plaintext
+id
+
+name
+
+logo
+
+website_url
+
+is_active
+
+created_at
+updated_at
+```
+
+---
+
+## contact_page
+
+```plaintext
+id
+
+address
+phone
+email
+
+google_map_embed
+
+meta_title
+meta_description
+
+updated_at
+```
+
+Single Record Table
 
 ---
 
 ## posts
 
+```plaintext
 id
 
 title
-
 slug
 
 excerpt
-
 content
 
 featured_image
@@ -434,7 +585,6 @@ featured_image
 status
 
 meta_title
-
 meta_description
 
 author_id
@@ -442,477 +592,584 @@ author_id
 published_at
 
 created_at
-
 updated_at
+```
 
 ---
 
 ## categories
 
+```plaintext
 id
 
 name
-
 slug
 
 created_at
-
 updated_at
+```
 
 ---
 
 ## post_categories
 
+```plaintext
 post_id
-
 category_id
-
----
-
-## media
-
-id
-
-filename
-
-original_name
-
-path
-
-mime_type
-
-file_size
-
-uploaded_by
-
-created_at
+```
 
 ---
 
 ## contact_messages
 
+```plaintext
 id
 
 name
-
 email
-
 phone
 
 subject
-
 message
 
 is_read
 
 created_at
+```
+
+---
+
+## media
+
+```plaintext
+id
+
+filename
+original_name
+
+path
+
+mime_type
+file_size
+
+uploaded_by
+
+created_at
+```
 
 ---
 
 ## site_settings
 
+```plaintext
 id
 
 site_name
-
 site_description
 
 logo
-
-phone
-
-email
-
-address
-
-facebook_url
-
-linkedin_url
-
-twitter_url
+favicon
 
 footer_text
+copyright_text
+
+facebook_url
+linkedin_url
+instagram_url
+twitter_url
+youtube_url
 
 updated_at
+```
+
+Single Record Table
 
 ---
 
-# 10. Sequelize Relationships
+# 10. Database Relationships
 
-User
+User hasMany Posts
 
-hasMany Posts
+Post belongsTo User
 
----
+Post belongsToMany Categories
 
-Post
+Category belongsToMany Posts
 
-belongsTo User
+GalleryCategory hasMany GalleryItems
 
----
-
-Post
-
-belongsToMany Categories
+GalleryItem belongsTo GalleryCategory
 
 ---
 
-Category
+# 11. Public API Endpoints
 
-belongsToMany Posts
-
----
-
-# 11. API Endpoints
-
-# Authentication
-
-POST /auth/login
-
-GET /auth/me
-
-POST /auth/change-password
+These endpoints are consumed by the public website.
 
 ---
 
-# Users
+## Homepage
 
-GET /users
+```http
+GET /public/home
+```
 
-GET /users/:id
+Returns:
 
-POST /users
-
-PUT /users/:id
-
-DELETE /users/:id
-
-PATCH /users/:id/status
-
----
-
-# Services
-
-GET /services
-
-GET /services/:id
-
-GET /services/slug/:slug
-
-POST /services
-
-PUT /services/:id
-
-DELETE /services/:id
-
-PATCH /services/:id/order
+* Homepage Content
+* Hero Slides
+* Statistics
+* Featured Services
+* Featured Gallery Items
+* Team Members (if enabled)
+* Testimonials (if enabled)
+* FAQs (if enabled)
 
 ---
 
-Request Example
+## About
 
-POST /services
+```http
+GET /public/about
+```
 
-{
-"title":"Portfolio Management",
-"shortDescription":"Professional asset management.",
-"description":"Full service portfolio management.",
-"image":"media-id"
-}
+Returns:
 
----
-
-# Gallery
-
-GET /gallery
-
-GET /gallery/:id
-
-POST /gallery
-
-PUT /gallery/:id
-
-DELETE /gallery/:id
-
-PATCH /gallery/:id/order
+* About Content
+* Core Values
+* Partners
 
 ---
 
-Request Example
+## Services
 
-POST /gallery
-
-{
-"title":"Investment Seminar",
-"description":"Annual investor conference.",
-"image":"media-id",
-"category":"Events"
-}
+```http
+GET /public/services
+GET /public/services/:slug
+```
 
 ---
 
-# Blog Categories
+## Gallery
 
-GET /categories
+```http
+GET /public/gallery
+```
 
-POST /categories
+Supports:
 
-PUT /categories/:id
-
-DELETE /categories/:id
-
----
-
-# Blog Posts
-
-GET /posts
-
-GET /posts/:id
-
-GET /posts/slug/:slug
-
-POST /posts
-
-PUT /posts/:id
-
-DELETE /posts/:id
-
-PATCH /posts/:id/publish
-
-PATCH /posts/:id/unpublish
+```http
+?page=
+&limit=
+&category=
+```
 
 ---
 
-Create Post Example
+## Blog
 
-{
-"title":"Market Outlook 2026",
-"excerpt":"Economic outlook for investors.",
-"content":"Post content...",
-"featuredImage":"media-id",
-"categoryIds":[1,2]
-}
+```http
+GET /public/posts
+GET /public/posts/:slug
+```
 
----
+Supports:
 
-# Pages
-
-GET /pages
-
-GET /pages/:slug
-
-POST /pages
-
-PUT /pages/:id
-
-DELETE /pages/:id
+```http
+?search=
+?category=
+?page=
+&limit=
+```
 
 ---
 
-Examples:
+## Contact
 
-about
-
-contact
-
----
-
-# Media
-
-GET /media
-
-GET /media/:id
-
-POST /media/upload
-
-DELETE /media/:id
-
----
-
-Upload Rules
-
-Allowed:
-
-jpg
-
-jpeg
-
-png
-
-webp
-
-Maximum Size:
-
-Defined by MAX_FILE_SIZE
-
----
-
-# Contact
-
-Public Endpoint
-
+```http
+GET /public/contact
 POST /contact
-
-Request
-
-{
-"name":"John Doe",
-"email":"[john@example.com](mailto:john@example.com)",
-"phone":"123456789",
-"subject":"Inquiry",
-"message":"Hello"
-}
+```
 
 ---
 
-Admin Endpoints
+## Site Settings
 
+```http
+GET /public/settings
+```
+
+---
+
+# 12. Admin API Endpoints
+
+## Authentication
+
+```http
+POST /auth/login
+GET /auth/me
+POST /auth/change-password
+```
+
+---
+
+## Users
+
+```http
+GET /users
+POST /users
+PUT /users/:id
+DELETE /users/:id
+PATCH /users/:id/status
+```
+
+---
+
+## Homepage
+
+```http
+GET /home-page
+PUT /home-page
+```
+
+---
+
+## Statistics
+
+```http
+GET /statistics
+POST /statistics
+PUT /statistics/:id
+DELETE /statistics/:id
+```
+
+---
+
+## Hero Slides
+
+```http
+GET /hero-slides
+POST /hero-slides
+PUT /hero-slides/:id
+DELETE /hero-slides/:id
+PATCH /hero-slides/:id/status
+```
+
+---
+
+## Services
+
+```http
+GET /services
+POST /services
+PUT /services/:id
+DELETE /services/:id
+```
+
+---
+
+## Gallery Categories
+
+```http
+GET /gallery-categories
+POST /gallery-categories
+PUT /gallery-categories/:id
+DELETE /gallery-categories/:id
+```
+
+---
+
+## Gallery Items
+
+```http
+GET /gallery
+POST /gallery
+PUT /gallery/:id
+DELETE /gallery/:id
+```
+
+---
+
+## Team Members
+
+```http
+GET /team-members
+POST /team-members
+PUT /team-members/:id
+DELETE /team-members/:id
+PATCH /team-members/:id/status
+```
+
+---
+
+## Testimonials
+
+```http
+GET /testimonials
+POST /testimonials
+PUT /testimonials/:id
+DELETE /testimonials/:id
+PATCH /testimonials/:id/status
+```
+
+---
+
+## FAQs
+
+```http
+GET /faqs
+POST /faqs
+PUT /faqs/:id
+DELETE /faqs/:id
+PATCH /faqs/:id/status
+```
+
+---
+
+## About Page
+
+```http
+GET /about-page
+PUT /about-page
+```
+
+---
+
+## Core Values
+
+```http
+GET /core-values
+POST /core-values
+PUT /core-values/:id
+DELETE /core-values/:id
+```
+
+---
+
+## Partners
+
+```http
+GET /partners
+POST /partners
+PUT /partners/:id
+DELETE /partners/:id
+PATCH /partners/:id/status
+```
+
+---
+
+## Contact Page
+
+```http
+GET /contact-page
+PUT /contact-page
+```
+
+---
+
+## Blog Categories
+
+```http
+GET /categories
+POST /categories
+PUT /categories/:id
+DELETE /categories/:id
+```
+
+---
+
+## Blog Posts
+
+```http
+GET /posts
+POST /posts
+PUT /posts/:id
+DELETE /posts/:id
+PATCH /posts/:id/publish
+PATCH /posts/:id/unpublish
+```
+
+---
+
+## Contact Messages
+
+```http
 GET /contact-messages
-
 GET /contact-messages/:id
-
 PATCH /contact-messages/:id/read
-
 DELETE /contact-messages/:id
+```
 
 ---
 
-# Site Settings
+## Media
 
+```http
+GET /media
+POST /media/upload
+DELETE /media/:id
+```
+
+---
+
+## Site Settings
+
+```http
 GET /settings
-
 PUT /settings
+```
 
 ---
 
-Settings Example
+# 13. File Upload Rules
 
-{
-"siteName":"Enderas Asset Management",
-"siteDescription":"Investment and Asset Management Firm",
-"phone":"+251...",
-"email":"[info@example.com](mailto:info@example.com)",
-"address":"Addis Ababa",
-"facebookUrl":"",
-"linkedinUrl":"",
-"footerText":"© Enderas Asset Management"
-}
+Allowed formats:
+
+* JPG
+* JPEG
+* PNG
+* WEBP
+
+Maximum file size:
+
+```env
+MAX_FILE_SIZE
+```
 
 ---
 
-# 12. Validation Rules
+# 14. Validation Requirements
 
 All requests must be validated.
 
-Examples:
+Includes:
 
-Email Validation
-
-Password Validation
-
-Slug Validation
-
-Image Validation
-
-Required Fields Validation
-
----
-
-# 13. Security Requirements
-
-Must Implement:
-
-JWT Authentication
-
-Password Hashing (bcrypt)
-
-Helmet
-
-Rate Limiting
-
-Input Validation
-
-SQL Injection Protection
-
-File Validation
-
-CORS
-
----
-
-# 14. Error Handling
-
-Centralized Error Middleware.
-
-No try/catch duplication across controllers.
-
-Controllers should forward errors to middleware.
+* Required Fields
+* Email Validation
+* Password Validation
+* Slug Validation
+* File Validation
+* File Size Validation
 
 ---
 
 # 15. Pagination
 
-Supported On:
+Supported on:
 
-Posts
-
-Gallery
-
-Media
-
-Contact Messages
+* Blog Posts
+* Gallery Items
+* Media
+* Contact Messages
 
 Format:
 
+```http
 ?page=1
-
-?limit=10
+&limit=10
+```
 
 Response:
 
+```json
 {
-"data": [],
-"meta": {
-"page":1,
-"limit":10,
-"total":50,
-"totalPages":5
+  "data": [],
+  "meta": {
+    "page": 1,
+    "limit": 10,
+    "total": 50,
+    "totalPages": 5
+  }
 }
-}
+```
 
 ---
 
-# 16. Deployment Requirements
+# 16. Security Requirements
 
-Application must support:
+Must implement:
 
-Development
-
-Staging
-
-Production
-
-using only environment variables.
-
-No hardcoded URLs.
-
-No hardcoded database names.
-
-No hardcoded credentials.
+* JWT Authentication
+* Role-Based Authorization
+* Password Hashing
+* Helmet
+* CORS
+* Rate Limiting
+* Input Validation
+* SQL Injection Protection
+* File Upload Validation
 
 ---
 
-# 17. Backend Completion Criteria
+# 17. Error Handling
 
-Backend is considered complete when:
+Use centralized error middleware.
 
-* Authentication works
-* Services CRUD works
-* Gallery CRUD works
-* Blog CRUD works
-* Contact Form works
-* Media Upload works
-* Site Settings work
-* Admin Authentication works
-* API Documentation is completed
-* Deployment is environment-based
+Requirements:
+
+* Consistent responses
+* Proper HTTP status codes
+* Error logging support
+
+Controllers should forward errors to middleware.
+
+---
+
+# 18. Audit Information
+
+The following fields should be stored where applicable:
+
+```plaintext
+created_by
+updated_by
+created_at
+updated_at
+```
+
+---
+
+# 19. Deployment Requirements
+
+The application must support:
+
+* Development
+* Staging
+* Production
+
+using environment variables only.
+
+No hardcoded:
+
+* URLs
+* Database Names
+* Credentials
+* File Paths
+
+---
+
+# 20. Backend Completion Criteria
+
+The backend is considered complete when:
+
+* Authentication functions correctly
+* User management functions correctly
+* Homepage content management functions correctly
+* Hero slider management functions correctly
+* Statistics management functions correctly
+* Services CRUD functions correctly
+* Gallery CRUD functions correctly
+* Team CRUD functions correctly
+* Testimonials CRUD functions correctly
+* FAQ CRUD functions correctly
+* Blog CRUD functions correctly
+* Contact form submissions function correctly
+* Contact message management functions correctly
+* Media uploads function correctly
+* About page management functions correctly
+* Partner management functions correctly
+* Site settings management functions correctly
+* SEO metadata management functions correctly
+* Role permissions are enforced
+* API documentation is completed
+* Production deployment is successful
+* All frontend content is delivered through API endpoints

@@ -1,6 +1,6 @@
 # ENDERAS ASSET MANAGEMENT WEBSITE
 
-## Frontend Technical Specification
+# Frontend Technical Specification
 
 **Project:** Enderas Asset Management Website
 **Frontend Version:** 1.0
@@ -10,13 +10,20 @@
 
 # 1. Project Overview
 
-The Enderas Asset Management Website is a modern corporate website designed to present company information, showcase services and managed projects, publish industry insights, and generate customer inquiries.
+The Enderas Asset Management Website is a modern corporate website designed to:
 
-The website will serve as the public-facing digital presence of Enderas Asset Management and must provide a professional, responsive, and easy-to-manage experience.
+* Present company information
+* Showcase services
+* Display managed projects and properties
+* Publish industry insights and blog content
+* Generate customer inquiries
+* Promote valuation and auction services
 
-All website content must be manageable through the administrative dashboard, allowing business users to update content without requiring developer assistance.
+The website serves as the public-facing digital platform for Enderas Asset Management.
 
-The frontend application will consume data exclusively through REST API endpoints provided by the backend system.
+All website content must originate from the backend CMS and be manageable through the Admin Dashboard.
+
+No business content should be hardcoded into the frontend.
 
 ---
 
@@ -24,92 +31,104 @@ The frontend application will consume data exclusively through REST API endpoint
 
 The website must:
 
-* Present Enderas as a professional asset management company.
-* Showcase all company services.
-* Display managed properties and projects.
-* Publish blog articles and industry insights.
-* Capture customer inquiries and leads.
-* Promote auction and valuation services.
-* Provide a modern and responsive user experience.
-* Maintain strong SEO foundations.
-* Be easy to maintain and extend in the future.
+* Present Enderas as a professional asset management company
+* Showcase company services
+* Display projects and gallery items
+* Publish blog content
+* Capture customer inquiries
+* Promote auction and valuation services
+* Maintain strong SEO foundations
+* Deliver a responsive user experience
+* Support future expansion without architectural changes
 
 ---
 
-# 3. Core Frontend Principles
+# 3. Frontend Principles
 
-## Modular Design
+## CMS-Driven Architecture
 
-The application must follow a modular component architecture.
-
-Every UI element should be reusable and independently maintainable.
-
-Examples include:
-
-* Buttons
-* Cards
-* Forms
-* Hero Sections
-* Galleries
-* Navigation Components
-* CTA Sections
-
-No page-specific component should contain hardcoded business content.
-
----
-
-## CMS-Driven Content
-
-All editable website content must originate from the backend API.
+All editable content must be delivered through API endpoints.
 
 This includes:
 
 * Homepage content
-* Hero sections
+* Hero slides
 * Statistics
-* Service information
-* About page content
-* Company values
+* Services
 * Gallery items
-* Blog posts
+* Team members
+* Testimonials
+* FAQs
+* About page content
+* Core values
+* Partners
 * Contact information
-* Social media links
 * SEO metadata
+* Social media links
 
-Business users should be able to modify content without requiring code changes.
+---
+
+## Fixed Layout Architecture
+
+Website structure is controlled by developers.
+
+Content is controlled by administrators.
+
+Administrators cannot:
+
+* Rearrange sections
+* Modify layouts
+* Change navigation structure
+
+The frontend must assume a fixed page structure.
+
+---
+
+## Component Reusability
+
+All UI elements should be reusable.
+
+Examples:
+
+* Buttons
+* Cards
+* Modals
+* Hero Components
+* CTA Components
+* Forms
+* Section Headers
+* Empty States
 
 ---
 
 ## Separation of Concerns
 
-The application must maintain clear separation between:
+Separate:
 
-* UI Components
-* Layouts
 * Pages
-* API Services
-* State Management
+* Components
+* Services
+* State
 * Utilities
 
-Components should never directly perform API requests.
-
-All API communication should be handled through dedicated service files.
+Components must never directly perform API requests.
 
 ---
 
 # 4. Technology Stack
 
-| Category         | Technology            |
-| ---------------- | --------------------- |
-| Framework        | React                 |
-| Build Tool       | Vite                  |
-| Styling          | Tailwind CSS v4       |
-| Routing          | React Router DOM      |
-| State Management | Zustand               |
-| API Client       | Axios                 |
-| Animation        | Framer Motion         |
-| SEO              | React Helmet Async    |
-| Form Validation  | React Hook Form + Zod |
+| Category         | Technology         |
+| ---------------- | ------------------ |
+| Framework        | React              |
+| Build Tool       | Vite               |
+| Styling          | Tailwind CSS v4    |
+| Routing          | React Router DOM   |
+| State Management | Zustand            |
+| API Client       | Axios              |
+| Forms            | React Hook Form    |
+| Validation       | Zod                |
+| SEO              | React Helmet Async |
+| Animation        | Framer Motion      |
 
 ---
 
@@ -117,32 +136,27 @@ All API communication should be handled through dedicated service files.
 
 ```plaintext
 frontend/
+
+src/
+
+├── assets/
+├── components/
+│   ├── atoms/
+│   ├── molecules/
+│   └── organisms/
 │
-├── public/
+├── layouts/
+├── pages/
+├── routes/
+├── services/
+├── hooks/
+├── store/
+├── utils/
+├── constants/
+├── styles/
 │
-├── src/
-│   ├── assets/
-│   ├── components/
-│   │   ├── atoms/
-│   │   ├── molecules/
-│   │   └── organisms/
-│   │
-│   ├── layouts/
-│   ├── pages/
-│   ├── routes/
-│   ├── services/
-│   ├── hooks/
-│   ├── store/
-│   ├── constants/
-│   ├── utils/
-│   ├── styles/
-│   │
-│   ├── App.jsx
-│   └── main.jsx
-│
-├── .env
-├── package.json
-└── vite.config.js
+├── App.jsx
+└── main.jsx
 ```
 
 ---
@@ -151,24 +165,23 @@ frontend/
 
 ## Public Routes
 
-| Route       | Purpose       |
-| ----------- | ------------- |
-| /           | Home          |
-| /about      | About         |
-| /services   | Services      |
-| /gallery    | Gallery       |
-| /blog       | Blog Listing  |
-| /blog/:slug | Blog Details  |
-| /contact    | Contact       |
-| *           | 404 Not Found |
+| Route           | Purpose        |
+| --------------- | -------------- |
+| /               | Home           |
+| /about          | About          |
+| /services       | Services       |
+| /services/:slug | Service Detail |
+| /gallery        | Gallery        |
+| /blog           | Blog Listing   |
+| /blog/:slug     | Blog Detail    |
+| /contact        | Contact        |
+| *               | 404 Page       |
 
 ---
 
 # 7. Layout Architecture
 
-## MainLayout
-
-Every public page must use a shared layout structure.
+## Main Layout
 
 ```jsx
 <TopNavigation />
@@ -180,356 +193,284 @@ Every public page must use a shared layout structure.
 <Footer />
 ```
 
-### Responsibilities
+Responsibilities:
 
-* Consistent navigation across the website.
-* Consistent footer content.
-* Global SEO support.
-* Global error handling.
-* Shared responsive behavior.
-
----
-
-# 8. Design System
-
-## Color System
-
-Colors must be managed through Tailwind configuration.
-
-Required categories:
-
-* Primary
-* Secondary
-* Accent
-* Neutral
-* Success
-* Warning
-* Error
-
-Arbitrary color usage should be avoided.
+* Navigation
+* Footer
+* SEO Wrapper
+* Global Error Handling
+* Responsive Layout
 
 ---
 
-## Typography
-
-Typography must be centrally managed.
-
-Requirements:
-
-* Heading Font
-* Body Font
-* Font Sizes
-* Font Weights
-* Line Heights
-
----
-
-## Spacing System
-
-Use Tailwind's spacing scale consistently.
-
-Avoid random spacing values throughout the application.
-
----
-
-# 9. Global Components
-
-## TopNavigation
-
-Features:
-
-* Company Logo
-* Dynamic Navigation Links
-* Active Route Indicator
-* Mobile Navigation
-* Responsive Drawer Menu
-
----
-
-## Footer
-
-Contains:
-
-* Company Information
-* Contact Information
-* Quick Links
-* Social Media Links
-* Copyright Information
-
----
-
-## HeroBanner
-
-Reusable component supporting:
-
-* Background Image
-* Overlay
-* Title
-* Subtitle
-* CTA Button
-
----
-
-## Loader
-
-Supports:
-
-* Full Page Loading
-* Section Loading
-* Skeleton Loading
-
----
-
-## Modal Component
-
-Reusable modal for:
-
-* Success Messages
-* Image Previews
-* Future Enhancements
-
----
-
-## Empty State Component
-
-Used whenever data is unavailable.
-
-Examples:
-
-* No Blog Posts
-* No Gallery Items
-* No Search Results
-
----
-
-# 10. Home Page
+# 8. Homepage
 
 ## Purpose
 
-Introduce Enderas Asset Management and direct visitors toward the company's services and contact channels.
+Introduce Enderas and direct visitors toward services and inquiries.
 
-## Sections
+---
+
+## Homepage Sections
 
 ### Hero Slider
 
-Dynamic CMS-managed slides featuring key company messaging.
+Source:
+
+```http
+GET /public/home
+```
+
+Displays active hero slides.
 
 ---
 
 ### Company Introduction
 
-Brief company overview with a call-to-action linking to the About page.
+Displays:
+
+* Title
+* Description
+* CTA
+
+Managed via CMS.
 
 ---
 
 ### Auction & Valuation Highlight
 
-A prominent promotional section positioned immediately after the Hero Slider.
+Displays:
 
-### Purpose
+* Title
+* Description
+* CTA
 
-* Showcase Enderas' Property Valuation Services.
-* Showcase Enderas' Asset Auction and Liquidation Services.
-* Increase awareness of specialized offerings.
-* Encourage visitors to request consultations and inquiries.
+Purpose:
 
-### Requirements
+Promote valuation and auction services.
 
-* Visually distinct design.
-* Strong call-to-action buttons.
-* Mobile-friendly layout.
-* CMS-managed content.
-
-### CTA Options
-
-Buttons may link to:
-
-* Contact Page
-* Services Page
-* Specific service sections
-
-### Scope Clarification
-
-This section is informational and promotional only.
-
-The frontend shall NOT include:
-
-* Auction listings
-* Asset marketplace functionality
-* Auction bidding functionality
-* Auction management systems
-* Valuation calculators
-* Additional auction-specific pages
+No auction platform functionality exists.
 
 ---
 
 ### Featured Services
 
-Display selected services using reusable Service Cards.
+Displays selected services.
+
+Source:
+
+```http
+GET /public/services
+```
 
 ---
 
-### Featured Projects
+### Featured Gallery Items
 
-Display selected properties and projects from the gallery.
+Displays selected gallery items.
+
+Source:
+
+```http
+GET /public/gallery
+```
 
 ---
 
-### Statistics Section
+### Statistics
+
+Displays CMS-managed statistics.
 
 Examples:
 
 * Years of Experience
-* Clients Served
 * Assets Managed
-* Valuations Completed
-
-All statistics must be CMS-managed.
+* Clients Served
 
 ---
 
-### Latest Blog Posts
+### Team Section
 
-Display recently published articles.
+Only rendered when:
+
+```javascript
+show_team === true
+```
+
+Displays active team members.
 
 ---
 
-### Inquiry CTA
+### Testimonials Section
 
-Lead generation section encouraging visitors to contact the company.
+Only rendered when:
+
+```javascript
+show_testimonials === true
+```
+
+Displays active testimonials.
 
 ---
 
-# 11. About Page
+### FAQ Section
+
+Only rendered when:
+
+```javascript
+show_faq === true
+```
+
+Displays active FAQs.
+
+---
+
+### Contact CTA
+
+Displays inquiry call-to-action content.
+
+---
+
+# 9. About Page
+
+Source:
+
+```http
+GET /public/about
+```
+
+---
 
 ## Sections
 
-### Hero Banner
-
-Company introduction banner.
-
 ### Company History
-
-Overview of the company's background and experience.
 
 ### Mission
 
-Company mission statement.
-
 ### Vision
 
-Company vision statement.
+### Core Values
 
-### Corporate Values
+### Partners
 
-Display values such as:
-
-* Competence
-* Integrity
-* Customer Satisfaction
-* Innovativeness
-* Global Partnership
-
-### Trusted Partners
-
-Partner and client logo showcase.
-
-All content must be managed through the CMS.
+Only active partners should be displayed.
 
 ---
 
-# 12. Services Page
+# 10. Services Page
 
-## Purpose
+Source:
 
-Provide detailed information about all company services.
+```http
+GET /public/services
+```
 
-## Services Offered
+---
 
-* Asset Management
-* Property Appraisal & Valuation
-* Property Liquidation & Auction Services
-* Investment Advisory
-* Business Consultancy
-* Building Construction Consulting
-
-## Service Information
-
-Each service should contain:
+## Service Card Fields
 
 * Title
 * Description
-* Icon
 * Image
-* CTA Button
-
-All service content must originate from the API.
+* CTA
 
 ---
 
-# 13. Gallery Page
+## Service Detail Page
 
-## Purpose
+Source:
 
-Showcase managed properties and projects.
+```http
+GET /public/services/:slug
+```
+
+Displays:
+
+* Full Description
+* Service Image
+* CTA Information
+* SEO Metadata
+
+---
+
+# 11. Gallery Page
+
+Source:
+
+```http
+GET /public/gallery
+```
+
+---
 
 ## Features
 
-* Responsive Masonry Grid
-* Lazy Loaded Images
-* Lightbox Support
-* Responsive Layout
-* Future Category Filtering Support
-
-All gallery content must be CMS-managed.
+* Responsive Grid
+* Lazy Loading
+* Category Filtering
+* Lightbox Preview
 
 ---
 
-# 14. Blog Listing Page
+# 12. Blog Listing Page
+
+Source:
+
+```http
+GET /public/posts
+```
+
+---
 
 ## Features
 
 * Search
-* Pagination
 * Category Filtering
-* Recent Posts
-* Popular Posts
-
-All content must originate from the CMS.
+* Pagination
+* Featured Images
 
 ---
 
-# 15. Blog Detail Page
+# 13. Blog Detail Page
+
+Source:
+
+```http
+GET /public/posts/:slug
+```
+
+---
 
 ## Features
 
-* Dynamic SEO Metadata
+* Rich Content Rendering
 * Featured Image
-* Rich Text Content
-* Author Information
 * Publication Date
+* SEO Metadata
 * Related Articles
-* Social Sharing Links
 
 ---
 
-# 16. Contact Page
+# 14. Contact Page
 
-## Features
+Source:
 
-### Contact Information
+```http
+GET /public/contact
+```
 
-Display:
+---
 
-* Phone Numbers
-* Email Address
-* Physical Address
+## Displays
 
-### Google Maps Embed
+* Address
+* Phone
+* Email
+* Google Map
 
-Display company location.
+---
 
-### Contact Form
+## Contact Form
 
 Fields:
 
@@ -539,85 +480,97 @@ Fields:
 * Subject
 * Message
 
-Requirements:
+Submission Endpoint:
 
-* Client-side Validation
-* Error Handling
-* Success State
-* API Integration
-
----
-
-# 17. State Management
-
-Use Zustand only when global state is required.
-
-Examples:
-
-* Mobile Navigation State
-* Site Settings
-* Theme Configuration
-* Global UI State
-
-Avoid storing page-specific API data globally.
+```http
+POST /contact
+```
 
 ---
 
-# 18. API Layer
+# 15. Navigation
 
-Every API domain must have a dedicated service file.
+Navigation structure is static.
+
+Links:
+
+* Home
+* About
+* Services
+* Gallery
+* Blog
+* Contact
+
+Navigation must not be CMS-managed.
+
+---
+
+# 16. Footer
+
+Source:
+
+```http
+GET /public/settings
+```
+
+Displays:
+
+* Company Information
+* Social Media Links
+* Footer Text
+* Copyright
+
+---
+
+# 17. API Layer
+
+Each API domain must have a dedicated service file.
 
 ```plaintext
 services/
-│
-├── api.js
-├── blogService.js
-├── galleryService.js
-├── serviceService.js
-├── settingsService.js
-└── contactService.js
-```
 
-Components must never call Axios directly.
+api.js
 
----
-
-# 19. Axios Standards
-
-A single shared Axios instance must be used.
-
-Responsibilities:
-
-* Base URL Configuration
-* Request Interceptors
-* Response Interceptors
-* Error Handling
-* Timeout Handling
-
-Environment Variables:
-
-```env
-VITE_API_BASE_URL=
-VITE_APP_NAME="Enderas Asset Management"
+homeService.js
+aboutService.js
+serviceService.js
+galleryService.js
+blogService.js
+contactService.js
+settingsService.js
 ```
 
 ---
 
-# 20. SEO Requirements
+# 18. State Management
+
+Use Zustand only for:
+
+* Mobile Navigation
+* Site Settings
+* Global UI State
+
+Avoid storing API page content globally.
+
+Use local page state whenever possible.
+
+---
+
+# 19. SEO Requirements
 
 Every page must support:
 
-* Dynamic Page Titles
-* Dynamic Meta Descriptions
-* Canonical URLs
-* Open Graph Tags
+* Dynamic Title
+* Meta Description
+* Canonical URL
+* Open Graph Metadata
 * Twitter Cards
 
-Blog pages must generate metadata dynamically.
+SEO content must originate from CMS-managed metadata.
 
 ---
 
-# 21. Performance Requirements
+# 20. Performance Requirements
 
 ## Code Splitting
 
@@ -628,7 +581,7 @@ React.lazy()
 <Suspense />
 ```
 
-for route-level code splitting.
+for page-level loading.
 
 ---
 
@@ -639,11 +592,10 @@ Requirements:
 * Lazy Loading
 * Responsive Images
 * WebP Support
-* Placeholder Images
 
 ---
 
-## Animation Optimization
+## Animation
 
 Only animate:
 
@@ -652,13 +604,9 @@ Only animate:
 
 Avoid expensive layout animations.
 
-Target:
-
-* Smooth 60 FPS performance.
-
 ---
 
-# 22. Accessibility Requirements
+# 21. Accessibility Requirements
 
 The website must support:
 
@@ -668,46 +616,44 @@ The website must support:
 * ARIA Labels
 * WCAG AA Compliance
 
-All forms and interactive components must be accessible.
+---
+
+# 22. Error Handling
+
+Every page must support:
+
+### Loading State
+
+Loaders or skeletons.
+
+### Error State
+
+User-friendly error messages.
+
+### Empty State
+
+Reusable empty-state components.
+
+### Retry State
+
+Retry actions where appropriate.
 
 ---
 
-# 23. Error Handling
-
-Every data-driven page must support:
-
-## Loading State
-
-Display loaders or skeletons.
-
-## Error State
-
-Display meaningful user-friendly messages.
-
-## Empty State
-
-Display reusable empty-state components.
-
-## Recovery
-
-Provide retry actions when appropriate.
-
----
-
-# 24. Security Considerations
+# 23. Security Requirements
 
 The frontend must:
 
-* Sanitize rendered HTML content.
-* Prevent unsafe script injection.
-* Never expose sensitive credentials.
-* Store only public configuration values in environment variables.
+* Sanitize rendered HTML
+* Prevent script injection
+* Never expose credentials
+* Store only public environment variables
 
 ---
 
-# 25. Browser Support
+# 24. Browser Support
 
-Minimum supported browsers:
+Supported Browsers:
 
 * Chrome (Latest 2 Versions)
 * Edge (Latest 2 Versions)
@@ -716,25 +662,30 @@ Minimum supported browsers:
 
 ---
 
-# 26. Acceptance Criteria
+# 25. Acceptance Criteria
 
 The frontend is considered complete when:
 
-* All public routes are implemented.
-* All content is API-driven.
-* All pages are fully responsive.
-* Navigation functions correctly.
-* Gallery functions correctly.
-* Blog functionality is complete.
-* Contact form submissions work successfully.
-* SEO metadata is fully implemented.
-* Accessibility requirements are met.
-* Error handling is implemented.
-* Performance requirements are satisfied.
-* Auction and Valuation services are prominently showcased on the Home and Services pages.
-* The Auction & Valuation Highlight section includes clear calls-to-action directing users to contact or service information.
-* No standalone auction platform functionality is implemented.
-* Customers can update website content through the admin dashboard without code changes.
-* Production builds pass testing and deployment validation.
+* All public routes are implemented
+* Homepage content is CMS-driven
+* Hero slider is CMS-driven
+* Services are CMS-driven
+* Gallery is CMS-driven
+* Team section supports enable/disable visibility
+* Testimonials section supports enable/disable visibility
+* FAQ section supports enable/disable visibility
+* About page content is CMS-driven
+* Partners are CMS-driven
+* Blog functionality is complete
+* Contact form functions correctly
+* SEO metadata is fully dynamic
+* Responsive design is complete
+* Accessibility requirements are met
+* Error handling is implemented
+* Performance requirements are met
+* No business content is hardcoded
+* All content is delivered through backend APIs
+* Production deployment passes validation
 
----
+```
+```

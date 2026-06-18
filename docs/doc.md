@@ -1,75 +1,167 @@
-# Enderas Asset Management Website Rebuild
+# ENDERAS ASSET MANAGEMENT WEBSITE
 
-## Project Overview & Architecture Document
+# Project Overview & System Architecture Document
 
-### Version 1.0
+## Version 1.0
+
+**Project Status:** Approved for Development
 
 ---
 
 # 1. Project Overview
 
-## Objective
+## Purpose
 
-Rebuild the existing Enderas Asset Management website using a modern technology stack while preserving its content structure and visual identity.
+The Enderas Asset Management Website is a complete digital platform consisting of:
 
-The new platform shall consist of:
-
-* Public Website
-* Admin Management Panel
+* Public Corporate Website
+* Admin Content Management System (CMS)
 * REST API Backend
 * MySQL Database
 
-All website content must be manageable through the Admin Panel without modifying source code.
+The platform is designed to present Enderas Asset Management's services, projects, expertise, and industry insights while allowing authorized staff to manage website content without requiring technical knowledge.
 
-The system must be scalable, maintainable, and deployment-friendly.
+All editable website content must be managed through the Admin CMS.
 
----
-
-# 2. Project Goals
-
-### Primary Goals
-
-* Rebuild existing website
-* Improve maintainability
-* Centralize content management
-* Eliminate hardcoded content
-* Modernize technology stack
-* Improve performance
-* Improve SEO structure
-* Enable future expansion
-
-### Secondary Goals
-
-* Better content editing workflow
-* Easier image management
-* Improved responsiveness
-* Simplified deployment
+The website structure, layout, and navigation remain controlled by developers to ensure consistency and prevent accidental misconfiguration.
 
 ---
 
-# 3. Technology Stack
+# 2. Project Objectives
+
+The system must:
+
+* Present Enderas as a professional asset management company
+* Showcase services and business offerings
+* Promote auction and valuation services
+* Display company projects and gallery content
+* Publish blog articles and industry insights
+* Generate customer inquiries through contact forms
+* Allow non-technical staff to manage content
+* Support search engine optimization (SEO)
+* Maintain a consistent website structure
+* Provide a scalable foundation for future growth
+
+---
+
+# 3. System Architecture
+
+The platform consists of four major components.
+
+## Public Website
+
+The public-facing website used by visitors.
+
+Functions include:
+
+* Viewing company information
+* Browsing services
+* Viewing gallery content
+* Reading blog articles
+* Viewing team members
+* Viewing testimonials
+* Viewing FAQs
+* Contacting the company
+
+---
+
+## Admin CMS
+
+A secure internal dashboard used by authorized staff.
+
+Functions include:
+
+* Homepage content management
+* Hero slider management
+* Blog management
+* Service management
+* Gallery management
+* Team management
+* Testimonial management
+* FAQ management
+* Partner management
+* Media management
+* SEO management
+* Contact message management
+* User management
+
+---
+
+## Backend API
+
+Central business logic layer.
+
+Functions include:
+
+* Authentication
+* Authorization
+* Content management
+* Media management
+* Contact management
+* SEO management
+* Data validation
+* File uploads
+
+---
+
+## Database
+
+Persistent storage layer.
+
+Stores:
+
+* Users
+* Services
+* Blog Posts
+* Categories
+* Gallery Items
+* Team Members
+* Testimonials
+* FAQ Items
+* Partners
+* Homepage Content
+* Site Settings
+* Contact Messages
+* Media Files
+* SEO Information
+
+---
+
+# 4. Technology Stack
 
 ## Backend
 
 * Node.js
 * Express.js
-* JavaScript (No TypeScript)
+* JavaScript (ES Modules)
 * Sequelize ORM
 * MySQL
 * JWT Authentication
 
-## Frontend Website
+---
+
+## Public Website
 
 * React
 * Vite
+* Tailwind CSS
 * Axios
-* React Router
+* React Router DOM
+* React Helmet Async
 
-## Admin Panel
+---
+
+## Admin CMS
 
 * React
 * Vite
+* Tailwind CSS
 * Axios
+* React Router DOM
+* React Hook Form
+* React Quill or Tiptap
+
+---
 
 ## Database
 
@@ -77,41 +169,98 @@ The system must be scalable, maintainable, and deployment-friendly.
 
 ---
 
-# 4. Website Structure
+# 5. Public Website Structure
 
-## Public Pages
-
-### Home
-
-Landing page containing:
-
-* Hero Section
-* Company Introduction
-* Services Overview
-* Featured Gallery Items
-* Latest Blog Posts
-* Call To Action
+The website contains six primary public pages.
 
 ---
 
-### Services
+## Home
+
+The homepage acts as the primary landing page.
+
+Sections include:
+
+### Hero Slider
+
+Dynamic slides managed through the CMS.
+
+### Company Introduction
+
+Company overview and call-to-action.
+
+### Auction & Valuation Highlight
+
+Promotional section for valuation and auction services.
+
+### Featured Services
+
+Selected company services.
+
+### Featured Gallery
+
+Selected projects and properties.
+
+### Statistics
+
+Business statistics and achievements.
+
+### Testimonials
+
+Customer testimonials.
+
+Visibility can be enabled or disabled from the CMS.
+
+### FAQ
+
+Frequently asked questions.
+
+Visibility can be enabled or disabled from the CMS.
+
+### Contact CTA
+
+Inquiry generation section.
+
+### Latest Blog Posts
+
+Recently published articles.
+
+---
+
+## About Page
+
+Contains:
+
+* Company History
+* Mission
+* Vision
+* Core Values
+* Partners
+* Team Members
+
+The Team section may be enabled or disabled from the CMS.
+
+---
+
+## Services Page
 
 Displays all company services.
 
 Each service contains:
 
 * Title
-* Description
+* Short Description
+* Full Description
 * Image
-* Display Order
+* Call-To-Action
 
 ---
 
-### Gallery
+## Gallery Page
 
-Displays company gallery.
+Displays project and property images.
 
-Gallery items contain:
+Each item contains:
 
 * Image
 * Title
@@ -120,99 +269,52 @@ Gallery items contain:
 
 ---
 
-### Blog
+## Blog Page
 
-Displays all published articles.
+Displays published articles.
 
 Features:
 
-* Pagination
 * Search
 * Categories
-* Featured Image
+* Pagination
 
 ---
 
-### Blog Details
-
-Single article page.
-
-Contains:
-
-* Article Content
-* Author
-* Publish Date
-* Related Posts
-
----
-
-### About
-
-Company information page.
-
-Contains:
-
-* Company Overview
-* Mission
-* Vision
-* Team Section
-
----
-
-### Contact
+## Contact Page
 
 Contains:
 
 * Contact Information
 * Contact Form
-* Location Information
+* Google Maps Location
 
 ---
 
-# 5. System Components
+# 6. Content Management Philosophy
 
-## Public Website
+The platform follows a CMS-driven architecture.
 
-Used by visitors.
+Administrators manage content only.
 
-Functions:
+Administrators cannot:
 
-* View website content
-* Browse gallery
-* Read blog posts
-* Contact company
+* Modify layouts
+* Rearrange page structure
+* Change navigation architecture
+* Create arbitrary pages
+* Modify frontend code
 
----
+This ensures:
 
-## Admin Panel
-
-Used by administrators.
-
-Functions:
-
-* Manage website content
-* Manage blog posts
-* Manage gallery
-* Manage services
-* Manage media
-* Manage settings
+* Consistent branding
+* Reduced operational errors
+* Easier training
+* Long-term maintainability
 
 ---
 
-## Backend API
-
-Central data layer.
-
-Functions:
-
-* Authentication
-* Content management
-* Data storage
-* Media management
-
----
-
-# 6. User Roles
+# 7. User Roles
 
 ## Super Admin
 
@@ -220,131 +322,322 @@ Full system access.
 
 Can:
 
-* Manage users
-* Manage settings
-* Manage content
-* Manage media
+* Manage Users
+* Manage Settings
+* Manage Content
+* Manage Media
+* Manage Permissions
 
 ---
 
 ## Editor
 
+Content management access.
+
 Can:
 
-* Manage blog posts
-* Manage gallery
-* Manage services
-* Manage pages
+* Manage Blog Posts
+* Manage Services
+* Manage Gallery
+* Manage Team Members
+* Manage Testimonials
+* Manage Partners
+* Manage FAQ Items
+* Manage Homepage Content
 
 Cannot:
 
-* Manage users
-* Manage system settings
+* Manage Users
+* Manage Site Settings
 
 ---
 
-# 7. Content Management Philosophy
+# 8. Content Modules
 
-No website content shall be hardcoded.
-
-All editable content must originate from database records.
-
-Examples:
-
-* Homepage hero content
-* Service descriptions
-* Gallery images
-* About page content
-* Contact information
-* Blog content
-* Footer content
+The following content modules are managed through the CMS.
 
 ---
 
-# 8. Media Management
+## Homepage Content
 
-All uploaded assets managed centrally.
+Editable Sections:
 
-Supported Types:
+* Company Introduction
+* Auction & Valuation Highlight
+* Statistics
+* Contact CTA
+
+---
+
+## Hero Slider
+
+Administrators can:
+
+* Create Slides
+* Edit Slides
+* Delete Slides
+* Activate/Deactivate Slides
+
+---
+
+## Blog
+
+Administrators can:
+
+* Create Posts
+* Edit Posts
+* Delete Posts
+* Publish Posts
+* Unpublish Posts
+
+---
+
+## Services
+
+Administrators can:
+
+* Create Services
+* Edit Services
+* Delete Services
+
+---
+
+## Gallery
+
+Administrators can:
+
+* Upload Images
+* Edit Gallery Items
+* Delete Gallery Items
+
+---
+
+## Team Members
+
+Administrators can:
+
+* Create Members
+* Edit Members
+* Delete Members
+* Enable/Disable Members
+
+---
+
+## Testimonials
+
+Administrators can:
+
+* Create Testimonials
+* Edit Testimonials
+* Delete Testimonials
+* Enable/Disable Testimonials
+
+---
+
+## FAQ
+
+Administrators can:
+
+* Create FAQ Items
+* Edit FAQ Items
+* Delete FAQ Items
+* Enable/Disable FAQ Items
+
+---
+
+## Partners
+
+Administrators can:
+
+* Create Partners
+* Edit Partners
+* Delete Partners
+* Enable/Disable Partners
+
+---
+
+# 9. Media Management
+
+A centralized media library must be available.
+
+Features:
+
+* Upload Images
+* Search Images
+* Preview Images
+* Delete Images
+* Reuse Images Across Modules
+
+Supported Formats:
 
 * JPG
 * JPEG
 * PNG
 * WEBP
 
-Media can be reused across:
+Media may be used by:
 
+* Hero Slides
 * Services
-* Gallery
-* Blog
-* About Page
+* Blog Posts
+* Gallery Items
+* Team Members
+* Testimonials
+* Partners
+* Site Settings
 
 ---
 
-# 9. SEO Requirements
+# 10. SEO Requirements
 
-Each page must support:
+The platform must support SEO management.
+
+Editable SEO Content:
+
+* Homepage
+* About Page
+* Services
+* Blog Posts
+
+Fields:
 
 * Meta Title
 * Meta Description
 
-Blog posts must support:
+The public website must generate:
 
-* Custom SEO Title
-* Custom SEO Description
-
----
-
-# 10. Deployment Requirements
-
-Environment Variables Required:
-
-PORT
-NODE_ENV
-
-DB_HOST
-DB_PORT
-DB_NAME
-DB_USER
-DB_PASSWORD
-
-JWT_SECRET
-JWT_EXPIRES_IN
-
-CLIENT_URL
-API_BASE_URL
-
-All deployments must be configurable using only .env values.
-
-No source code changes should be required when changing environments.
+* Page Titles
+* Meta Descriptions
+* Open Graph Tags
+* Canonical URLs
 
 ---
 
-# 11. Success Criteria
+# 11. Security Requirements
 
-The project will be considered complete when:
+The system must implement:
 
-* All 6 public pages are rebuilt
-* All content is manageable through Admin Panel
-* Blog functionality is fully operational
-* Gallery functionality is operational
-* Services management is operational
-* Authentication is secure
-* Website is responsive
-* Application is deployable through environment configuration
-* Codebase follows clean architecture principles
+* JWT Authentication
+* Password Hashing (bcrypt)
+* Role-Based Authorization
+* Protected API Routes
+* Input Validation
+* File Upload Validation
+* Session Expiration
+* Rate Limiting
+* Secure HTTP Headers
 
 ---
 
-# 12. Future Expansion Support
+# 12. Audit Requirements
 
-Architecture should allow future addition of:
+Major content records should store:
 
-* Testimonials
-* Team Management
-* Newsletter
-* Multi-language support
+* Created By
+* Updated By
+* Created Date
+* Updated Date
+
+This improves accountability and traceability.
+
+---
+
+# 13. Deployment Requirements
+
+The entire system must support:
+
+* Development Environment
+* Staging Environment
+* Production Environment
+
+Configuration must be handled through environment variables.
+
+No hardcoded:
+
+* URLs
+* Database Credentials
+* API Endpoints
+* Secrets
+
+---
+
+# 14. Future Expansion Support
+
+The architecture should support future modules without major restructuring.
+
+Potential future additions include:
+
+* Newsletter Management
+* Career Opportunities
+* Events Management
+* Downloadable Resources
+* Multi-Language Support
+* Activity Logs
 * Analytics Dashboard
-* Additional Pages
 
-without major restructuring.
+---
+
+# 15. Project Completion Criteria
+
+The project is considered complete when:
+
+✓ Public Website is fully functional
+
+✓ Admin CMS is fully functional
+
+✓ Backend API is fully functional
+
+✓ Authentication and authorization work correctly
+
+✓ Homepage content is manageable
+
+✓ Hero slider management works
+
+✓ Blog CRUD works
+
+✓ Service CRUD works
+
+✓ Gallery CRUD works
+
+✓ Team CRUD works
+
+✓ Testimonial CRUD works
+
+✓ FAQ CRUD works
+
+✓ Partner CRUD works
+
+✓ Media management works
+
+✓ Contact messages can be managed
+
+✓ SEO management works
+
+✓ Site settings work
+
+✓ User management works
+
+✓ Role permissions function correctly
+
+✓ Website is fully responsive
+
+✓ Content updates appear without code changes
+
+✓ Production deployment is successful
+
+---
+
+# 16. Final Deliverables
+
+The completed project shall include:
+
+* Public Website Application
+* Admin CMS Application
+* Backend API
+* MySQL Database Schema
+* Database Migrations
+* Seed Data
+* API Documentation
+* Environment Configuration Files
+* Deployment Documentation
+* Production Build

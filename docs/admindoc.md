@@ -1,240 +1,249 @@
-# Enderas Asset Management Website
+# ENDERAS ASSET MANAGEMENT WEBSITE
 
 # Admin CMS Technical Specification
 
 ## Version 1.0
 
+**Project:** Enderas Asset Management Website
+**Document Status:** Approved for Development
+
 ---
 
 # 1. Admin CMS Overview
 
-The Admin CMS is a secure internal application used to manage all website content.
+The Admin CMS is a secure internal web application used by Enderas staff to manage website content.
 
-The CMS eliminates the need to edit code when updating content.
+The CMS allows administrators to update website content without modifying code.
 
-All website content displayed on the public website must originate from the CMS.
+The website structure and layout remain fixed and controlled by developers.
 
----
-
-# 2. Technology Stack
-
-## Framework
-
-React
+Administrators manage content only.
 
 ---
 
-## Build Tool
+# 2. Objectives
 
-Vite
+The CMS must allow administrators to:
 
----
-
-## Routing
-
-React Router DOM
-
----
-
-## API Communication
-
-Axios
-
----
-
-## Styling
-
-Tailwind CSS
-
-Recommended for:
-
-* Faster development
-* Consistent UI
-* Responsive layouts
+* Manage homepage content
+* Manage hero slides
+* Manage services
+* Manage gallery items
+* Manage blog posts
+* Manage team members
+* Manage testimonials
+* Manage FAQs
+* Manage partners
+* Manage company information
+* Manage contact information
+* Manage SEO metadata
+* Manage uploaded media
 
 ---
 
-# 3. Admin Application Structure
+# 3. Technology Stack
 
+| Category         | Technology       |
+| ---------------- | ---------------- |
+| Framework        | React            |
+| Build Tool       | Vite             |
+| Routing          | React Router DOM |
+| API Client       | Axios            |
+| Styling          | Tailwind CSS     |
+| Forms            | React Hook Form  |
+| Validation       | Zod              |
+| State Management | Zustand          |
+| Notifications    | Sonner           |
+
+---
+
+# 4. Application Structure
+
+```plaintext
 admin/
 
 src/
 
-assets/
+├── assets/
+├── components/
+├── layouts/
+├── pages/
+├── routes/
+├── services/
+├── hooks/
+├── store/
+├── utils/
+├── constants/
 
-components/
-
-layouts/
-
-pages/
-
-routes/
-
-services/
-
-hooks/
-
-contexts/
-
-utils/
-
-constants/
-
-App.jsx
-
-main.jsx
+├── App.jsx
+└── main.jsx
+```
 
 ---
 
-# 4. Authentication
+# 5. Authentication
 
-## Login Page
+## Login Route
 
-Route:
-
+```plaintext
 /login
+```
 
 ---
 
-Features
+## Features
 
-Email
-
-Password
-
-Remember Me
-
-Login Button
+* Email
+* Password
+* Remember Me
+* Login Button
 
 ---
 
-API
+## API
 
+```http
 POST /auth/login
+```
 
 ---
 
-On Success
-
-Store JWT Token
-
-Redirect to Dashboard
-
----
-
-On Failure
-
-Display Error Message
-
----
-
-# 5. Protected Routes
-
-All admin routes require authentication.
-
-Flow:
+## Authentication Flow
 
 Login
 
 ↓
 
-JWT Token Stored
+JWT Token Returned
 
 ↓
 
-Protected Route Check
+Token Stored
 
 ↓
 
-Access Granted
+Protected Routes Enabled
 
 ---
 
-Unauthenticated Users
-
-↓
-
-Redirect to Login
+Unauthenticated users must always be redirected to Login.
 
 ---
 
-# 6. Admin Layout
+# 6. User Roles
 
-Structure
+## Super Admin
 
+Can:
+
+* Manage Users
+* Manage Website Content
+* Manage Settings
+* Manage Media
+* Manage Permissions
+
+---
+
+## Editor
+
+Can:
+
+* Manage Homepage Content
+* Manage Blog Posts
+* Manage Services
+* Manage Gallery
+* Manage Team Members
+* Manage Testimonials
+* Manage FAQs
+* Manage Partners
+* Manage Contact Messages
+
+Cannot:
+
+* Manage Users
+* Manage Site Settings
+
+---
+
+# 7. Admin Layout
+
+## Structure
+
+```plaintext
 Sidebar
-
-↓
 
 Header
 
-↓
-
 Content Area
+```
 
 ---
 
-Sidebar remains visible on desktop.
+## Requirements
 
-Collapsible on mobile.
+* Fixed desktop sidebar
+* Mobile collapsible sidebar
+* Responsive layout
+* Breadcrumb navigation
+* User menu
 
 ---
 
-# 7. Dashboard
+# 8. Dashboard
 
-Route
+## Route
 
+```plaintext
 /dashboard
+```
 
 ---
 
-Purpose
+## Statistics Cards
 
-Provide overview of website content.
+Display:
 
----
-
-Statistics Cards
-
-Total Blog Posts
-
-Total Gallery Items
-
-Total Services
-
-Unread Messages
+* Total Blog Posts
+* Total Services
+* Total Gallery Items
+* Total Team Members
+* Total Testimonials
+* Total Contact Messages
 
 ---
 
-Recent Activity
+## Recent Activity
 
-Recently Created Posts
+Display:
 
-Recently Added Images
-
-Recent Messages
-
----
-
-Quick Actions
-
-Create Post
-
-Upload Media
-
-Add Gallery Item
-
-Add Service
+* Recent Posts
+* Recent Gallery Uploads
+* Recent Contact Messages
 
 ---
 
-# 8. Sidebar Navigation
+## Quick Actions
+
+* Create Blog Post
+* Upload Media
+* Add Service
+* Add Gallery Item
+
+---
+
+# 9. Sidebar Navigation
+
+## Dashboard
 
 Dashboard
 
 ---
 
-Content
+## Website Content
+
+Homepage
+
+Hero Slides
 
 Services
 
@@ -242,29 +251,51 @@ Gallery
 
 Blog Posts
 
-Pages
+Blog Categories
+
+Team Members
+
+Testimonials
+
+FAQs
+
+Partners
+
+Core Values
 
 ---
 
-Media
-
-Media Library
-
----
-
-Communication
+## Communication
 
 Messages
 
 ---
 
-Settings
+## Media
+
+Media Library
+
+---
+
+## Settings
+
+Contact Information
+
+SEO Settings
 
 Site Settings
 
+---
+
+## Administration
+
 Users
 
+(Super Admin Only)
+
 ---
+
+## Account
 
 Profile
 
@@ -272,847 +303,684 @@ Logout
 
 ---
 
-# 9. Services Management
+# 10. Homepage Management
 
-Route
+## Route
 
+```plaintext
+/content/homepage
+```
+
+---
+
+## Editable Sections
+
+### Company Introduction
+
+Fields:
+
+* Title
+* Description
+* CTA Text
+* CTA Link
+
+---
+
+### Auction & Valuation Highlight
+
+Fields:
+
+* Title
+* Description
+* CTA Text
+* CTA Link
+
+---
+
+### Statistics
+
+Fields:
+
+* Label
+* Value
+* Icon
+
+Actions:
+
+* Create
+* Edit
+* Delete
+
+---
+
+### Contact CTA
+
+Fields:
+
+* Title
+* Description
+* Button Text
+* Button Link
+
+---
+
+## Visibility Controls
+
+Administrators may enable or disable:
+
+* Team Section
+* Testimonials Section
+* FAQ Section
+
+Administrators may NOT rearrange homepage sections.
+
+---
+
+# 11. Hero Slider Management
+
+## Route
+
+```plaintext
+/content/hero-slides
+```
+
+---
+
+## Features
+
+* Create Slide
+* Edit Slide
+* Delete Slide
+* Activate Slide
+* Deactivate Slide
+
+---
+
+## Fields
+
+* Title
+* Subtitle
+* Background Image
+* Button Text
+* Button Link
+
+---
+
+# 12. Services Management
+
+## Route
+
+```plaintext
 /services
+```
 
 ---
 
-Purpose
+## Features
 
-Manage company services.
-
----
-
-Table Columns
-
-Title
-
-Status
-
-Display Order
-
-Created Date
-
-Actions
+* Create Service
+* Edit Service
+* Delete Service
 
 ---
 
-Actions
+## Fields
 
-Create
-
-Edit
-
-Delete
-
----
-
-Create Service Form
-
-Title
-
-Short Description
-
-Description
-
-Image
-
-Display Order
-
-Active Status
+* Title
+* Short Description
+* Full Description
+* Service Image
+* CTA Text
+* CTA Link
+* SEO Title
+* SEO Description
 
 ---
 
-API
+# 13. Gallery Management
 
-GET /services
+## Route
 
-POST /services
-
-PUT /services/:id
-
-DELETE /services/:id
-
----
-
-# 10. Gallery Management
-
-Route
-
+```plaintext
 /gallery
+```
 
 ---
 
-Purpose
+## Features
 
-Manage gallery images.
-
----
-
-Table Columns
-
-Image
-
-Title
-
-Category
-
-Created Date
-
-Actions
+* Upload Image
+* Edit Image Information
+* Delete Image
 
 ---
 
-Actions
+## Fields
 
-Create
-
-Edit
-
-Delete
-
----
-
-Create Gallery Item Form
-
-Title
-
-Description
-
-Category
-
-Image
-
-Display Order
+* Title
+* Description
+* Image
+* Category
 
 ---
 
-API
+## Gallery Categories
 
-GET /gallery
+Actions:
 
-POST /gallery
-
-PUT /gallery/:id
-
-DELETE /gallery/:id
+* Create
+* Edit
+* Delete
 
 ---
 
-# 11. Blog Management
+# 14. Blog Management
 
-Route
+## Route
 
+```plaintext
 /posts
+```
 
 ---
 
-Purpose
+## Features
 
-Manage website articles.
-
----
-
-Blog Table
-
-Title
-
-Status
-
-Category
-
-Published Date
-
-Actions
+* Create Post
+* Edit Post
+* Delete Post
+* Publish Post
+* Unpublish Post
 
 ---
 
-Actions
+## Fields
 
-Create
-
-Edit
-
-Publish
-
-Unpublish
-
-Delete
-
----
-
-Create Post Form
-
-Title
-
-Slug
-
-Excerpt
-
-Content
-
-Featured Image
-
-Categories
-
-Meta Title
-
-Meta Description
-
-Status
+* Title
+* Slug
+* Excerpt
+* Content
+* Featured Image
+* Categories
+* SEO Title
+* SEO Description
+* Status
 
 ---
 
-Supported Status
+## Status Options
 
-Draft
-
-Published
-
----
-
-API
-
-GET /posts
-
-POST /posts
-
-PUT /posts/:id
-
-DELETE /posts/:id
-
-PATCH /posts/:id/publish
-
-PATCH /posts/:id/unpublish
+* Draft
+* Published
 
 ---
 
-# 12. Blog Editor
+# 15. Blog Categories
 
-Recommended Editor
+## Route
 
-React Quill
-
-or
-
-Tiptap
-
----
-
-Features
-
-Rich Text
-
-Headings
-
-Lists
-
-Links
-
-Images
-
-Quotes
-
-Tables
-
----
-
-Image uploads must use Media Library.
-
----
-
-# 13. Category Management
-
-Route
-
+```plaintext
 /posts/categories
+```
 
 ---
 
-Purpose
+## Features
 
-Manage blog categories.
-
----
-
-Fields
-
-Name
-
-Slug
+* Create Category
+* Edit Category
+* Delete Category
 
 ---
 
-Actions
+## Fields
 
-Create
-
-Edit
-
-Delete
+* Name
+* Slug
 
 ---
 
-API
+# 16. Team Management
 
-GET /categories
+## Route
 
-POST /categories
-
-PUT /categories/:id
-
-DELETE /categories/:id
+```plaintext
+/team
+```
 
 ---
 
-# 14. Pages Management
+## Features
 
-Route
-
-/pages
-
----
-
-Purpose
-
-Manage static pages.
+* Create Team Member
+* Edit Team Member
+* Delete Team Member
+* Enable Team Member
+* Disable Team Member
 
 ---
 
-Managed Pages
+## Fields
 
-About
-
-Contact
-
----
-
-Page Fields
-
-Title
-
-Content
-
-Meta Title
-
-Meta Description
+* Full Name
+* Email Address
+* Position
+* Biography
+* Profile Image
 
 ---
 
-API
+# 17. Testimonials Management
 
-GET /pages
+## Route
 
-PUT /pages/:id
-
----
-
-# 15. Homepage Management
-
-Route
-
-/pages/home
+```plaintext
+/Testimonials
+```
 
 ---
 
-Purpose
+## Features
 
-Manage homepage sections.
-
----
-
-Editable Sections
-
-Hero Section
-
-Company Introduction
-
-Homepage CTA
+* Create Testimonial
+* Edit Testimonial
+* Delete Testimonial
+* Enable Testimonial
+* Disable Testimonial
 
 ---
 
-Hero Fields
+## Fields
 
-Title
-
-Subtitle
-
-Button Text
-
-Button URL
-
-Background Image
+* Client Name
+* Company
+* Testimonial Content
+* Client Image
 
 ---
 
-Introduction Fields
+# 18. FAQ Management
 
-Title
+## Route
 
-Content
-
-Image
-
----
-
-CTA Fields
-
-Title
-
-Description
-
-Button Text
-
-Button URL
+```plaintext
+/faqs
+```
 
 ---
 
-# 16. Media Library
+## Features
 
-Route
-
-/media
-
----
-
-Purpose
-
-Centralized asset management.
+* Create FAQ
+* Edit FAQ
+* Delete FAQ
+* Enable FAQ
+* Disable FAQ
 
 ---
 
-Features
+## Fields
 
-Upload Images
-
-Browse Images
-
-Delete Images
-
-Search Images
-
-Copy Image URL
+* Question
+* Answer
 
 ---
 
-Supported Formats
+# 19. About Page Management
 
-JPG
+## Route
 
-JPEG
-
-PNG
-
-WEBP
+```plaintext
+/about-content
+```
 
 ---
 
-Table Columns
+## Editable Fields
 
-Preview
+### Company History
 
-File Name
+### Mission
 
-Size
-
-Upload Date
-
-Actions
+### Vision
 
 ---
 
-API
+# 20. Core Values Management
 
-GET /media
+## Route
 
-POST /media/upload
-
-DELETE /media/:id
+```plaintext
+/core-values
+```
 
 ---
 
-# 17. Contact Messages
+## Features
 
-Route
+* Create Value
+* Edit Value
+* Delete Value
 
+---
+
+## Fields
+
+* Title
+* Description
+
+---
+
+# 21. Partners Management
+
+## Route
+
+```plaintext
+/partners
+```
+
+---
+
+## Features
+
+* Create Partner
+* Edit Partner
+* Delete Partner
+* Enable Partner
+* Disable Partner
+
+---
+
+## Fields
+
+* Partner Name
+* Logo
+* Website URL
+
+---
+
+# 22. Contact Information Management
+
+## Route
+
+```plaintext
+/contact-information
+```
+
+---
+
+## Editable Fields
+
+* Address
+* Phone Number
+* Email Address
+* Google Maps Embed URL
+
+---
+
+# 23. Contact Messages
+
+## Route
+
+```plaintext
 /messages
+```
 
 ---
 
-Purpose
+## Features
 
-View contact form submissions.
-
----
-
-Table Columns
-
-Name
-
-Email
-
-Subject
-
-Date
-
-Status
-
-Actions
+* View Message
+* Mark Message as Read
+* Delete Message
 
 ---
 
-Status
+## Message Fields
 
-Unread
-
-Read
-
----
-
-Actions
-
-View
-
-Mark Read
-
-Delete
+* Name
+* Email
+* Phone
+* Subject
+* Message
+* Date Submitted
 
 ---
 
-API
+# 24. Media Library
 
-GET /contact-messages
+## Route
 
-GET /contact-messages/:id
-
-PATCH /contact-messages/:id/read
-
-DELETE /contact-messages/:id
+```plaintext
+/media
+```
 
 ---
 
-# 18. Site Settings
+## Features
 
-Route
+* Upload Images
+* Browse Images
+* Search Images
+* Delete Images
 
+---
+
+## Supported Formats
+
+* JPG
+* JPEG
+* PNG
+* WEBP
+
+---
+
+## Table Columns
+
+* Preview
+* File Name
+* File Size
+* Upload Date
+* Actions
+
+---
+
+# 25. Site Settings
+
+## Route
+
+```plaintext
 /settings
+```
 
 ---
 
-Purpose
+## General Settings
 
-Manage global website settings.
-
----
-
-Sections
-
-General
-
-Contact Information
-
-Social Media
-
-SEO
+* Company Name
+* Company Logo
+* Favicon
+* Footer Text
+* Copyright Text
 
 ---
 
-General Settings
+## Social Media Links
 
-Site Name
-
-Site Description
-
-Logo
-
-Footer Text
+* Facebook
+* LinkedIn
+* Instagram
+* Twitter/X
+* YouTube
 
 ---
 
-Contact Settings
+# 26. SEO Management
 
-Phone
+## Editable SEO Areas
 
-Email
-
-Address
-
----
-
-Social Media
-
-Facebook URL
-
-LinkedIn URL
-
-Twitter URL
+* Homepage
+* About Page
+* Services
+* Blog Posts
 
 ---
 
-SEO Defaults
+## SEO Fields
 
-Default Meta Title
-
-Default Meta Description
-
----
-
-API
-
-GET /settings
-
-PUT /settings
+* Meta Title
+* Meta Description
 
 ---
 
-# 19. User Management
+# 27. User Management
 
-Route
+## Route
 
+```plaintext
 /users
+```
 
 ---
 
-Visible Only To
+## Super Admin Only
 
-Super Admin
+Features:
 
----
-
-Purpose
-
-Manage admin accounts.
-
----
-
-Table Columns
-
-Name
-
-Email
-
-Role
-
-Status
-
-Actions
+* Create User
+* Edit User
+* Disable User
+* Delete User
 
 ---
 
-Actions
+## Fields
 
-Create
-
-Edit
-
-Disable
-
-Delete
+* Name
+* Email
+* Password
+* Role
+* Status
 
 ---
 
-Create User Form
+# 28. Profile Management
 
-Name
+## Route
 
-Email
-
-Password
-
-Role
-
-Status
-
----
-
-Roles
-
-Super Admin
-
-Editor
-
----
-
-API
-
-GET /users
-
-POST /users
-
-PUT /users/:id
-
-DELETE /users/:id
-
-PATCH /users/:id/status
-
----
-
-# 20. Profile Management
-
-Route
-
+```plaintext
 /profile
+```
 
 ---
 
-Purpose
+## Features
 
-Allow logged-in user to manage account.
-
----
-
-Fields
-
-Name
-
-Email
-
-Password
+* Update Profile
+* Change Password
 
 ---
 
-Actions
+# 29. Reusable Components
 
-Update Profile
-
-Change Password
-
----
-
-API
-
-GET /auth/me
-
-POST /auth/change-password
-
----
-
-# 21. Reusable Components
-
-AdminLayout
-
-Sidebar
-
-Header
-
-StatCard
-
-DataTable
-
-FormInput
-
-TextArea
-
-RichTextEditor
-
-ImageUploader
-
-Modal
-
-ConfirmationDialog
-
-Pagination
-
-SearchInput
-
-StatusBadge
+* AdminLayout
+* Sidebar
+* Header
+* StatCard
+* DataTable
+* FormInput
+* TextArea
+* RichTextEditor
+* ImageUploader
+* MediaPicker
+* Modal
+* ConfirmationDialog
+* Pagination
+* SearchInput
+* StatusBadge
 
 ---
 
-# 22. Form Validation
+# 30. Validation Requirements
 
-Required Fields
+All forms must support:
 
-Email Validation
+* Required Field Validation
+* Email Validation
+* URL Validation
+* Image Validation
+* Slug Validation
 
-Image Validation
-
-URL Validation
-
-Slug Validation
-
----
-
-All forms must validate before submission.
+Client-side and server-side validation are both required.
 
 ---
 
-# 23. Responsive Requirements
+# 31. Responsive Requirements
 
-Desktop
+The CMS must support:
 
-Tablet
+* Desktop
+* Tablet
+* Mobile
 
-Mobile
+Requirements:
 
----
-
-Requirements
-
-Responsive Sidebar
-
-Responsive Tables
-
-Responsive Forms
-
-Responsive Dashboard
+* Responsive Sidebar
+* Responsive Tables
+* Responsive Forms
+* Responsive Dashboard
 
 ---
 
-# 24. Error Handling
+# 32. Notifications
 
-Display API Errors
+Supported Notifications:
 
-Display Validation Errors
+* Success
+* Error
+* Warning
+* Information
 
-Display Success Messages
+Recommended Library:
 
-Graceful Empty States
-
----
-
-# 25. Notifications
-
-Success Notifications
-
-Error Notifications
-
-Warning Notifications
+* Sonner
 
 ---
 
-Recommended Library
+# 33. Error Handling
 
-React Hot Toast
+The CMS must display:
 
-or
-
-Sonner
-
----
-
-# 26. Environment Variables
-
-VITE_API_BASE_URL
-
-VITE_APP_NAME
+* API Errors
+* Validation Errors
+* Permission Errors
+* Empty States
+* Loading States
 
 ---
 
-No hardcoded URLs allowed.
+# 34. Environment Variables
+
+```env
+VITE_API_BASE_URL=
+VITE_APP_NAME="Enderas CMS"
+```
+
+No hardcoded URLs are permitted.
 
 ---
 
-# 27. Admin CMS Completion Criteria
+# 35. Completion Criteria
 
-The CMS is considered complete when:
+The Admin CMS is considered complete when:
 
 ✓ Authentication works
 
 ✓ Dashboard statistics display correctly
+
+✓ Homepage content management works
+
+✓ Hero Slider management works
 
 ✓ Services CRUD works
 
@@ -1120,98 +988,103 @@ The CMS is considered complete when:
 
 ✓ Blog CRUD works
 
-✓ Category CRUD works
+✓ Blog Category CRUD works
 
-✓ Homepage editing works
+✓ Team CRUD works
 
-✓ About page editing works
+✓ Testimonials CRUD works
 
-✓ Contact page editing works
+✓ FAQ CRUD works
+
+✓ Core Values CRUD works
+
+✓ Partner CRUD works
+
+✓ Contact information management works
+
+✓ Contact messages management works
 
 ✓ Media uploads work
 
-✓ Contact messages can be managed
+✓ SEO management works
 
-✓ Site settings can be updated
+✓ Site settings work
 
 ✓ User management works
+
+✓ Role permissions function correctly
 
 ✓ Responsive design is complete
 
 ✓ API integration is complete
 
-✓ Deployment is environment-based
+✓ Production deployment succeeds
 
 ---
 
-# 28. Development Priority Order
+# 36. Development Priority Order
 
-Phase 1
+## Phase 1
 
-Authentication
-
-Admin Layout
-
-Dashboard
+* Authentication
+* Admin Layout
+* Dashboard
 
 ---
 
-Phase 2
+## Phase 2
 
-Services Management
-
-Gallery Management
-
-Media Library
-
----
-
-Phase 3
-
-Blog Management
-
-Categories
-
-Rich Text Editor
+* Homepage Management
+* Hero Slides
+* Services
+* Gallery
+* Media Library
 
 ---
 
-Phase 4
+## Phase 3
 
-Pages Management
-
-Homepage Management
-
-Settings
+* Blog Posts
+* Blog Categories
+* Rich Text Editor
 
 ---
 
-Phase 5
+## Phase 4
 
-Contact Messages
-
-User Management
-
-Final Testing
+* Team
+* Testimonials
+* FAQs
+* Partners
+* Core Values
 
 ---
 
-# 29. Final Deliverables
+## Phase 5
 
-Backend API
+* Contact Information
+* Messages
+* Site Settings
+* User Management
 
-Public Website
+---
 
-Admin CMS
+## Phase 6
 
-Database Migrations
+* Testing
+* Optimization
+* Deployment
 
-Seeders
+---
 
-API Documentation
+# 37. Final Deliverables
 
-Environment Configuration
-
-Deployment Documentation
-
-Production Build
+* Public Website
+* Backend API
+* Admin CMS
+* Database Migrations
+* Database Seeders
+* API Documentation
+* Environment Configuration
+* Deployment Documentation
+* Production Build
