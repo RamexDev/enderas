@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Fixed top navigation with mobile drawer and theme toggle.
+ * Navigation links are static; site settings supply social links in the mobile drawer.
+ */
+
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -6,12 +11,15 @@ import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
 import Logo from '@/components/organisms/Logo'
 import { easeOut } from '@/components/motion/variants'
-import { useContentStore } from '@/store/useContentStore'
+import { PUBLIC_NAV } from '@/constants/navigation'
+import { useSiteStore } from '@/store/useSiteStore'
 import { useUiStore } from '@/store/useUiStore'
 
+/**
+ * Primary site header with responsive navigation and assets-for-sale CTA placeholder.
+ */
 export default function TopNavigation() {
-  const nav = useContentStore((s) => s.nav)
-  const social = useContentStore((s) => s.settings.social)
+  const social = useSiteStore((s) => s.settings?.social) || []
   const location = useLocation()
   const navigate = useNavigate()
   const { mobileNavOpen, setMobileNavOpen, theme, toggleTheme } = useUiStore()
@@ -19,8 +27,8 @@ export default function TopNavigation() {
   const isHome = path === '/'
   const scrolled = useScrollScrolled()
 
-  const regularNav = nav.filter((item) => !item.highlight)
-  const highlightNav = nav.find((item) => item.highlight)
+  const regularNav = PUBLIC_NAV.filter((item) => !item.highlight)
+  const highlightNav = PUBLIC_NAV.find((item) => item.highlight)
 
   useEffect(() => {
     document.body.style.overflow = mobileNavOpen ? 'hidden' : ''
@@ -33,8 +41,12 @@ export default function TopNavigation() {
     setMobileNavOpen(false)
   }, [location.pathname, setMobileNavOpen])
 
-  const isActive = (to) => path === to || (to !== '/' && path.startsWith(to))
+  /** Returns whether a nav item matches the current route. */
+  const isActive = (to) => to !== '#' && (path === to || (to !== '/' && path.startsWith(to)))
+
+  /** Navigates and closes the mobile drawer. */
   const go = (to) => {
+    if (to === '#') return
     setMobileNavOpen(false)
     navigate(to)
   }
@@ -194,11 +206,11 @@ export default function TopNavigation() {
                 )}
 
                 <nav className="flex flex-col gap-1" aria-label="Mobile">
-                  {nav.map((item) => (
+                  {PUBLIC_NAV.map((item) => (
                     <button
-                      key={item.to}
+                      key={item.to + item.label}
                       type="button"
-                      onClick={() => go(item.to)}
+                      onClick={() => (item.to === '#' ? setMobileNavOpen(false) : go(item.to))}
                       className={`rounded-lg px-4 py-3 text-left text-base font-medium transition-colors ${
                         isActive(item.to)
                           ? 'bg-gold-500/15 text-gold-700 dark:text-gold-300'
@@ -241,6 +253,7 @@ export default function TopNavigation() {
   )
 }
 
+/** Tracks whether the user has scrolled past the header threshold. */
 function useScrollScrolled() {
   const scrolled = useUiStore((s) => s.scrolled)
   useEffect(() => {

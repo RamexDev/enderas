@@ -1,10 +1,17 @@
+/**
+ * @fileoverview Reusable call-to-action section and inner-page hero block.
+ */
+
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import { MotionDiv, MotionSection } from '@/components/motion'
-import { useContentStore } from '@/store/useContentStore'
 
-export function CTASection() {
-  const cta = useContentStore((s) => s.cta)
+/**
+ * Bottom-of-page inquiry CTA driven by CMS contact CTA fields.
+ * @param {{ cta: object }} props
+ */
+export function CTASection({ cta }) {
+  if (!cta) return null
 
   return (
     <MotionSection className="relative overflow-hidden bg-primary-950 py-16 text-white sm:py-20 lg:py-28">
@@ -35,6 +42,10 @@ export function CTASection() {
   )
 }
 
+/**
+ * Standard inner-page hero with optional background image.
+ * @param {{ eyebrow?: string, title: string, intro?: string, image?: string }} props
+ */
 export function PageHero({ eyebrow, title, intro, image }) {
   return (
     <section className="relative overflow-hidden bg-primary-900 pb-12 pt-24 text-white sm:pb-14 sm:pt-28 lg:pb-20 lg:pt-36">

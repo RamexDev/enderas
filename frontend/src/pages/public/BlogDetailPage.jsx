@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Single blog article with related posts and structured data.
+ */
+
+import { useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import SeoHead from '@/components/organisms/SeoHead'
 import EmptyState from '@/components/organisms/EmptyState'
@@ -7,16 +12,33 @@ import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
 import Icon from '@/components/atoms/Icon'
-import { useContentStore } from '@/store/useContentStore'
+import { PageLoader } from '@/components/atoms/Loader'
+import { useAsyncData } from '@/hooks/useAsyncData'
+import { getBlogPostBySlug, getBlogPosts } from '@/services/blogService'
+import { useSiteStore } from '@/store/useSiteStore'
 import { formatDateLong } from '@/utils/formatDate'
+import { sanitizeHtml } from '@/utils/sanitizeHtml'
 
+/**
+ * Renders a single blog post fetched by URL slug.
+ */
 export default function BlogDetailPage() {
   const { slug } = useParams()
-  const blog = useContentStore((s) => s.blog)
-  const social = useContentStore((s) => s.settings.social)
-  const post = blog.find((p) => p.slug === slug && p.status !== 'draft')
+  const social = useSiteStore((s) => s.settings?.social) || []
 
-  if (!post) {
+  const fetchPost = useCallback(async () => {
+    const [post, allPosts] = await Promise.all([
+      getBlogPostBySlug(slug),
+      getBlogPosts({ limit: 20 }),
+    ])
+    return { post, allPosts: allPosts.data }
+  }, [slug])
+
+  const { data, loading, error } = useAsyncData(fetchPost, [slug])
+
+  if (loading) return <PageLoader />
+
+  if (error || !data?.post) {
     return (
       <>
         <SeoHead title="Article not found" noIndex />
@@ -38,10 +60,11 @@ export default function BlogDetailPage() {
     )
   }
 
-  const related = blog.filter((p) => p.id !== post.id && p.category === post.category && p.status !== 'draft').slice(0, 3)
-  const fallbackRelated = blog.filter((p) => p.id !== post.id && p.status !== 'draft').slice(0, 3)
+  const { post, allPosts } = data
+  const related = allPosts.filter((p) => p.id !== post.id && p.category === post.category).slice(0, 3)
+  const fallbackRelated = allPosts.filter((p) => p.id !== post.id).slice(0, 3)
   const finalRelated = related.length >= 3 ? related : fallbackRelated
-  const paragraphs = post.content.split('\n\n')
+  const isHtml = post.content?.includes('<')
 
   const articleJsonLd = {
     '@context': 'https://schema.org',
@@ -55,7 +78,13 @@ export default function BlogDetailPage() {
 
   return (
     <>
-      <SeoHead title={post.title} description={post.excerpt} image={post.image} type="article" jsonLd={articleJsonLd} />
+      <SeoHead
+        title={post.metaTitle || post.title}
+        description={post.metaDescription || post.excerpt}
+        image={post.image}
+        type="article"
+        jsonLd={articleJsonLd}
+      />
       <article>
         <header className="relative overflow-hidden bg-primary-950 pb-12 pt-28 text-white lg:pb-16 lg:pt-36">
           <img src={post.image} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
@@ -107,11 +136,18 @@ export default function BlogDetailPage() {
                 <p className="mb-8 text-xl font-medium leading-relaxed text-primary-800 dark:text-primary-100">
                   {post.excerpt}
                 </p>
-                {paragraphs.map((para, i) => (
-                  <p key={i} className="mb-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
-                    {para}
-                  </p>
-                ))}
+                {isHtml ? (
+                  <div
+                    className="prose prose-primary dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{ __html: sanitizeHtml(post.content) }}
+                  />
+                ) : (
+                  post.content.split('\n\n').map((para, i) => (
+                    <p key={i} className="mb-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
+                      {para}
+                    </p>
+                  ))
+                )}
               </div>
 
               <div className="mt-12 flex flex-wrap items-center justify-between gap-4 border-t border-primary-100 pt-8 dark:border-primary-800">
@@ -143,8 +179,7 @@ export default function BlogDetailPage() {
                   </p>
                   <h3 className="font-heading text-lg font-semibold text-primary-900 dark:text-white">{post.author}</h3>
                   <p className="mt-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
-                    Partner at Enderas Asset Management. Contributes to the firm&apos;s research desk on market
-                    structure, sector strategy and asset allocation.
+                    Contributor at Enderas Asset Management.
                   </p>
                 </div>
               </div>

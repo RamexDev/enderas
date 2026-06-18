@@ -1,25 +1,16 @@
-import { useContentStore } from '@/store/useContentStore'
+/**
+ * @fileoverview Gallery data access.
+ */
 
-const delay = (ms = 150) => new Promise((r) => setTimeout(r, ms))
+import { galleryApi } from './publicApi'
+import { mapGalleryItem } from '@/utils/mappers'
 
-export async function getGalleryItems() {
-  await delay()
-  return useContentStore.getState().gallery
-}
-
-export async function createGalleryItem(item) {
-  await delay()
-  useContentStore.getState().addGalleryItem(item)
-  return item
-}
-
-export async function updateGalleryItem(id, data) {
-  await delay()
-  useContentStore.getState().updateGalleryItem(id, data)
-  return useContentStore.getState().gallery.find((g) => g.id === id)
-}
-
-export async function deleteGalleryItem(id) {
-  await delay()
-  useContentStore.getState().deleteGalleryItem(id)
+/**
+ * Fetches gallery items with optional category filter and pagination.
+ * @param {object} [params] - Query params (`page`, `limit`, `category`)
+ * @returns {Promise<{ data: Array, meta: object }>}
+ */
+export async function getGalleryItems(params = {}) {
+  const result = await galleryApi.list(params)
+  return { data: result.data.map(mapGalleryItem), meta: result.meta }
 }

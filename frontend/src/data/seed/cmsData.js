@@ -38,7 +38,7 @@ const CMS_DATA = {
     { label: 'Services', to: '/services' },
     { label: 'Gallery', to: '/gallery' },
     { label: 'Insights', to: '/blog' },
-    { label: 'Assets for Sale', to: '/auctions', highlight: true },
+    { label: 'Assets for Sale', to: '#', highlight: true },
     { label: 'Contact', to: '/contact' },
   ],
   slides: [

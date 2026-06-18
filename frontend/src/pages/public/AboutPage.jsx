@@ -1,38 +1,61 @@
+/**
+ * @fileoverview About page — history, mission, vision, values, team, partners.
+ */
+
+import { useCallback } from 'react'
 import SeoHead from '@/components/organisms/SeoHead'
 import { PageHero, CTASection } from '@/components/organisms/CTASection'
 import SectionHeading from '@/components/molecules/SectionHeading'
 import { TeamCard } from '@/components/molecules/Cards'
 import Icon from '@/components/atoms/Icon'
 import Container from '@/components/atoms/Container'
+import Button from '@/components/atoms/Button'
+import { PageLoader } from '@/components/atoms/Loader'
+import EmptyState from '@/components/organisms/EmptyState'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
-import { useContentStore } from '@/store/useContentStore'
+import { useAsyncData } from '@/hooks/useAsyncData'
+import { getAboutPage } from '@/services/aboutService'
+import { getHomePage } from '@/services/homeService'
 
+/**
+ * Company overview with CMS-driven copy and optional team section from homepage API.
+ */
 export default function AboutPage() {
-  useScrollReveal()
-  const about = useContentStore((s) => s.about)
+  const fetchAbout = useCallback(async () => {
+    const [about, home] = await Promise.all([getAboutPage(), getHomePage()])
+    return {
+      ...about,
+      team: home.visibility.showTeam ? home.team : [],
+      cta: home.cta,
+    }
+  }, [])
+
+  const { data: about, loading, error, reload } = useAsyncData(fetchAbout)
+
+  useScrollReveal([about])
+
+  if (loading) return <PageLoader />
+  if (error || !about) {
+    return (
+      <Container className="section-padding">
+        <EmptyState icon="info" title="Unable to load about page" message={error} action={<Button onClick={reload}>Retry</Button>} />
+      </Container>
+    )
+  }
 
   return (
     <>
-      <SeoHead
-        title="About"
-        description="Founded in 1998, Enderas is a privately held asset management firm serving institutional and private capital across North America."
-        image={about.heroImage}
-      />
-      <PageHero
-        eyebrow={about.heroEyebrow}
-        title={about.heroTitle}
-        intro={about.heroIntro}
-        image={about.heroImage}
-      />
+      <SeoHead title={about.seo?.title || 'About'} description={about.seo?.description} image={about.heroImage} />
+      <PageHero eyebrow={about.heroEyebrow} title={about.heroTitle} intro={about.heroIntro} image={about.heroImage} />
 
       <section className="py-20 lg:py-28">
         <Container>
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="lg:col-span-7">
-              <SectionHeading eyebrow="History" title="Twenty-seven years of independent counsel." />
+              <SectionHeading eyebrow="History" title="Our story." />
               <div className="reveal reveal-delay-1 mt-6 space-y-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
                 <p>{about.history}</p>
-                <p>{about.historyExtended}</p>
+                {about.historyExtended && <p>{about.historyExtended}</p>}
               </div>
             </div>
             <div className="space-y-6 lg:col-span-5">
@@ -57,7 +80,7 @@ export default function AboutPage() {
 
       <section className="border-y border-primary-100/70 bg-white py-20 dark:border-primary-800/70 dark:bg-primary-900/40 lg:py-28">
         <Container>
-          <SectionHeading eyebrow="What we stand for" title="Four values that shape every engagement." align="center" />
+          <SectionHeading eyebrow="What we stand for" title="Core values that shape every engagement." align="center" />
           <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {about.values.map((v, i) => (
               <div
@@ -76,42 +99,46 @@ export default function AboutPage() {
         </Container>
       </section>
 
-      <section className="py-20 lg:py-28">
-        <Container>
-          <SectionHeading
-            eyebrow="Leadership"
-            title="The partners behind the practice."
-            intro="Our partners average more than two decades of institutional real-asset experience and have led Enderas through every cycle since founding."
-          />
-          <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {about.team.map((m, i) => (
-              <TeamCard key={m.id} member={m} index={i} />
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <section className="bg-primary-950 py-16 text-white lg:py-20">
-        <Container>
-          <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
-            Trusted by institutional capital
-          </p>
-          <div className="relative overflow-hidden">
-            <div className="flex w-max animate-marquee gap-12">
-              {[...about.partners, ...about.partners].map((p, i) => (
-                <span
-                  key={`${p}-${i}`}
-                  className="whitespace-nowrap font-heading text-2xl font-semibold text-primary-200/50 lg:text-3xl"
-                >
-                  {p}
-                </span>
+      {about.team.length > 0 && (
+        <section className="py-20 lg:py-28">
+          <Container>
+            <SectionHeading
+              eyebrow="Leadership"
+              title="The team behind the practice."
+              intro="Experienced professionals dedicated to delivering exceptional asset management and advisory services."
+            />
+            <div className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+              {about.team.map((m, i) => (
+                <TeamCard key={m.id} member={m} index={i} />
               ))}
             </div>
-          </div>
-        </Container>
-      </section>
+          </Container>
+        </section>
+      )}
 
-      <CTASection />
+      {about.partners.length > 0 && (
+        <section className="bg-primary-950 py-16 text-white lg:py-20">
+          <Container>
+            <p className="mb-8 text-center text-xs font-semibold uppercase tracking-[0.25em] text-gold-400">
+              Trusted partners
+            </p>
+            <div className="relative overflow-hidden">
+              <div className="flex w-max animate-marquee gap-12">
+                {[...about.partners, ...about.partners].map((p, i) => (
+                  <span
+                    key={`${p}-${i}`}
+                    className="whitespace-nowrap font-heading text-2xl font-semibold text-primary-200/50 lg:text-3xl"
+                  >
+                    {p}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      <CTASection cta={about.cta} />
     </>
   )
 }

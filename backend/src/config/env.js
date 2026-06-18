@@ -32,6 +32,36 @@ if (missing.length > 0) {
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
 
+/** Parse a comma-separated list of browser origins (trims whitespace, drops empties). */
+function parseOrigins(value, fallback = '') {
+  const raw = value || fallback;
+  if (!raw) return [];
+  return raw
+    .split(',')
+    .map((url) => url.trim())
+    .filter(Boolean);
+}
+
+const defaultAdminOrigins = 'http://localhost:5173,http://127.0.0.1:5173';
+const defaultFrontendOrigins = 'http://localhost:5174,http://127.0.0.1:5174';
+
+// Legacy CLIENT_URLS: first origin → admin, remaining → frontend
+const legacyClientUrls = parseOrigins(process.env.CLIENT_URLS);
+const legacyAdminFallback = legacyClientUrls[0] || process.env.CLIENT_URL;
+const legacyFrontendFallback = legacyClientUrls.length > 1
+  ? legacyClientUrls.slice(1).join(',')
+  : undefined;
+
+const adminUrls = parseOrigins(
+  process.env.ADMIN_URL,
+  legacyAdminFallback || defaultAdminOrigins,
+);
+const frontendUrls = parseOrigins(
+  process.env.FRONTEND_URL,
+  legacyFrontendFallback || defaultFrontendOrigins,
+);
+const mediaUrls = [...new Set([...adminUrls, ...frontendUrls])];
+
 // Production requires a strong super-admin password before the server accepts traffic
 if (isProd && !process.env.SUPER_ADMIN_PASSWORD) {
   console.error('SUPER_ADMIN_PASSWORD is required when NODE_ENV=production');
@@ -61,7 +91,16 @@ const env = {
     refreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || '7d',
   },
 
-  clientUrl: process.env.CLIENT_URL || 'http://localhost:5173',
+  /** Primary admin CMS origin (first entry when ADMIN_URL is comma-separated) */
+  adminUrl: adminUrls[0],
+  /** Allowed origins for admin/auth/management API routes */
+  adminUrls,
+  /** Primary public website origin (first entry when FRONTEND_URL is comma-separated) */
+  frontendUrl: frontendUrls[0],
+  /** Allowed origins for /api/v1/public routes */
+  frontendUrls,
+  /** Allowed origins for /uploads static media */
+  mediaUrls,
   apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:5000/api/v1',
 
   upload: {

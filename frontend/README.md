@@ -1,8 +1,8 @@
 # Enderas Asset Management — Frontend
 
-Production-ready React application for the Enderas Asset Management public website and embedded content admin (CMS). The UI is built from the design prototype in [`demo/enderas.html`](demo/enderas.html) and follows the specification in [`../docs/frontenddoc.md`](../docs/frontenddoc.md).
+Production-ready React application for the **Enderas Asset Management public website**. Content is loaded from the backend REST API (`/api/v1/public/*`) and managed through the separate **Admin CMS** app in [`../admin`](../admin).
 
-This phase runs **frontend-only**: content is seeded from demo data, persisted in the browser via `localStorage`, and exposed through a mock service layer that mirrors future REST API endpoints. When the backend is available, only the service files need to change — pages and components stay the same.
+The UI follows the specification in [`../docs/frontenddoc.md`](../docs/frontenddoc.md). Layout and navigation are developer-controlled; all business copy, media, and SEO metadata come from the CMS.
 
 ---
 
@@ -14,13 +14,15 @@ This phase runs **frontend-only**: content is seeded from demo data, persisted i
 - [Quick start](#quick-start)
 - [Environment variables](#environment-variables)
 - [Available scripts](#available-scripts)
+- [Testing](#testing)
 - [Project structure](#project-structure)
+- [Architecture](#architecture)
 - [Public routes](#public-routes)
-- [Admin CMS](#admin-cms)
-- [Data layer](#data-layer)
+- [API layer](#api-layer)
+- [State management](#state-management)
+- [Legacy embedded admin](#legacy-embedded-admin)
 - [Design system](#design-system)
 - [Accessibility and SEO](#accessibility-and-seo)
-- [Migrating to the backend API](#migrating-to-the-backend-api)
 - [Production deployment](#production-deployment)
 - [Browser support](#browser-support)
 - [Troubleshooting](#troubleshooting)
@@ -33,46 +35,38 @@ This phase runs **frontend-only**: content is seeded from demo data, persisted i
 ### Public website
 
 - Responsive corporate site with dark mode toggle
-- Home page with hero slider, company intro, auction & valuation highlight, featured services/projects, statistics, latest blog posts, and inquiry CTA
-- About, Services (with `#auctions` promo block), Gallery (masonry + lightbox), Blog (search/filter/pagination), Blog detail, Contact form, and 404 pages
-- Lazy-loaded routes and code splitting for performance
+- **CMS-driven** homepage: hero slider, company intro, auction & valuation banner, featured services/gallery, statistics, optional team / testimonials / FAQ sections, latest blog posts, contact CTA
+- About, Services (with `#auctions` valuation promo), Gallery (masonry + lightbox), Blog (search/filter/pagination), Blog detail, Contact form, and 404 pages
+- Lazy-loaded routes and code splitting
 - WCAG-oriented markup: skip link, semantic HTML, ARIA on interactive widgets, reduced-motion support
-- Per-page SEO via `react-helmet-async` (titles, descriptions, Open Graph, Twitter cards, JSON-LD on Home and blog posts)
+- Per-page SEO via `react-helmet-async` (titles, descriptions, Open Graph, Twitter cards, JSON-LD)
 
-### Admin CMS (embedded)
+### Auction / assets for sale
 
-- Protected admin area at `/admin/*` with mock password auth
-- Dashboard with content counts and quick actions
-- Editors for site settings, homepage, about page, services, gallery, blog posts, and contact messages
-- CRUD tables with validation (React Hook Form + Zod) and toast notifications (Sonner)
-- Changes sync instantly to the public site via shared Zustand store + `localStorage`
+Per project spec, there is **no standalone auction platform** yet. The **Assets for Sale** nav button and homepage CTAs point to `#` as a placeholder until that site is built. The `/auctions` route has been removed.
 
-### Intentionally excluded (per spec)
+### Intentionally excluded
 
-- `/assets-for-sale` auction listings page (informational auction promo only; no bidding/marketplace)
-- Real JWT authentication, media file uploads, and backend API calls (deferred)
+- Live auction listings, bidding, or marketplace functionality
+- Content editing in this app (use the [`admin`](../admin) CMS instead)
 
 ---
 
 ## Tech stack
-
-All dependencies are **actively maintained** packages with no npm `deprecated` flags and **zero known vulnerabilities** (`npm audit`).
 
 | Category | Package | Purpose |
 | -------- | ------- | ------- |
 | UI | [React 19](https://react.dev/) | Component framework |
 | Build | [Vite 8](https://vite.dev/) | Dev server and production bundler |
 | Styling | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first design system |
-| Routing | [React Router 7](https://reactrouter.com/) | Public + admin routes |
-| State | [Zustand 5](https://zustand.docs.pmnd.rs/) | CMS content, UI, auth |
-| HTTP (future) | [Axios 1.x](https://axios-http.com/) | Shared API client (stubbed) |
-| Forms | [React Hook Form 7](https://react-hook-form.com/) + [Zod 4](https://zod.dev/) | Validation |
-| SEO | [react-helmet-async 3](https://github.com/staylor/react-helmet-async) | Document head management (maintained fork of deprecated `react-helmet`) |
-| Sanitization | [DOMPurify 3](https://github.com/cure53/DOMPurify) | Safe HTML rendering |
-| Icons | [Lucide React](https://lucide.dev/) | Icon set |
-| Toasts | [Sonner](https://sonner.emilkowal.ski/) | Admin notifications |
-
-Animations use **CSS** (`@keyframes`, Intersection Observer scroll reveal) — no animation library dependency.
+| Routing | [React Router 7](https://reactrouter.com/) | Public routes (+ legacy `/admin`) |
+| State | [Zustand 5](https://zustand.docs.pmnd.rs/) | Site settings, UI preferences only |
+| HTTP | [Axios 1.x](https://axios-http.com/) | Centralized API client |
+| Forms | [React Hook Form 7](https://react-hook-form.com/) + [Zod 4](https://zod.dev/) | Contact form validation |
+| SEO | [react-helmet-async 3](https://github.com/staylor/react-helmet-async) | Document head management |
+| Sanitization | [DOMPurify 3](https://github.com/cure53/DOMPurify) | Safe HTML in blog posts |
+| Animation | [Framer Motion 12](https://www.framer.com/motion/) | Page transitions, hero carousel |
+| Testing | [Vitest 4](https://vitest.dev/) + Testing Library | Unit and integration tests |
 
 ---
 
@@ -80,8 +74,7 @@ Animations use **CSS** (`@keyframes`, Intersection Observer scroll reveal) — n
 
 - **Node.js** 20 LTS or newer
 - **npm** 10 or newer
-
-Verify:
+- **Backend API** running (see [`../backend/README.md`](../backend/README.md))
 
 ```bash
 node -v   # v20.x or v22.x recommended
@@ -92,26 +85,48 @@ npm -v    # 10.x or newer
 
 ## Quick start
 
+### 1. Start the backend
+
+From the repository root:
+
 ```bash
-# From the repository root
-cd frontend
-
-# Install dependencies
+cd backend
+cp .env.example .env   # configure MySQL + JWT secrets
 npm install
+npm run migrate
+npm run seed           # optional: loads CMS content from docs export
+npm run dev            # default: http://localhost:5000/api/v1
+```
 
-# Copy environment template
+### 2. Start the frontend
+
+```bash
+cd frontend
 cp .env.example .env
-
-# Start development server
+npm install
 npm run dev
 ```
 
+### 3. Start the admin CMS (optional, for content editing)
+
+```bash
+cd admin
+cp .env.example .env
+npm install
+npm run dev    # http://localhost:5173
+```
+
+### Local URLs
+
 | URL | Description |
 | --- | ----------- |
-| http://localhost:5173 | Public website |
-| http://localhost:5173/admin/login | Admin CMS login |
+| `http://localhost:5173` | Admin CMS (fixed port) |
+| `http://localhost:5173` or `http://localhost:5174` | Public website (5174 when admin already uses 5173) |
+| `http://localhost:5000/api/v1/health` | Backend health check |
 
-**Default admin password:** `enderas-admin` (override with `VITE_ADMIN_PASSWORD` in `.env`).
+Content is edited in the **Admin CMS** (`../admin`), not in this app.
+
+Ensure `FRONTEND_URL` in `backend/.env` includes whichever origin Vite prints in the terminal.
 
 ---
 
@@ -121,11 +136,18 @@ Create a `.env` file from [`.env.example`](.env.example). Only variables prefixe
 
 | Variable | Required | Default | Description |
 | -------- | -------- | ------- | ----------- |
-| `VITE_API_BASE_URL` | No | `http://localhost:3000/api` | Backend API base URL (used when services switch to HTTP) |
-| `VITE_APP_NAME` | No | `Enderas Asset Management` | Application display name |
-| `VITE_ADMIN_PASSWORD` | No | `enderas-admin` | Mock admin login password (frontend-only) |
+| `VITE_API_BASE_URL` | **Yes** (for live CMS) | `http://localhost:5000/api/v1` | Backend public API base URL |
+| `VITE_APP_NAME` | No | `Enderas Asset Management` | Fallback display name |
+| `VITE_ADMIN_PASSWORD` | No | `enderas-admin` | Legacy embedded admin only (`/admin/*`) |
 
-Never commit secrets or production passwords. Use your hosting provider's environment configuration in production.
+Example `.env`:
+
+```env
+VITE_API_BASE_URL=http://localhost:5000/api/v1
+VITE_APP_NAME=Enderas Asset Management
+```
+
+Never commit production secrets. Configure env vars on your hosting provider before building.
 
 ---
 
@@ -137,6 +159,55 @@ Never commit secrets or production passwords. Use your hosting provider's enviro
 | `npm run build` | Production build to `dist/` |
 | `npm run preview` | Serve the production build locally |
 | `npm run lint` | Run ESLint across the project |
+| `npm test` | Run all unit + integration tests (Vitest) |
+| `npm run test:watch` | Run tests in watch mode |
+| `npm run test:coverage` | Run tests with coverage report |
+| `npm run test:integration` | Run only `tests/integration/` (requires backend) |
+
+---
+
+## Testing
+
+The test suite uses **Vitest** with **jsdom** for hooks/components and live HTTP calls for API integration tests.
+
+### Test layout
+
+```plaintext
+tests/
+├── setup.js                    # @testing-library/jest-dom
+├── unit/
+│   ├── mappers.test.js         # API → UI shape transformations
+│   ├── navigation.test.js    # Static nav + auction placeholder (#)
+│   └── services.test.js        # Domain services (mocked publicApi)
+├── hooks/
+│   └── useAsyncData.test.jsx   # Page-level data fetching hook
+└── integration/
+    └── publicApi.test.js       # Live backend /public/* endpoints
+```
+
+### Running tests
+
+```bash
+# Unit tests only (no backend required)
+npx vitest run tests/unit tests/hooks
+
+# Full suite — backend must be running on VITE_API_BASE_URL
+npm test
+
+# With coverage
+npm run test:coverage
+```
+
+Integration tests call `GET/POST /api/v1/public/*` against the configured API. If the backend is unreachable, those cases are **skipped** automatically so CI without a database still passes unit tests.
+
+### Verified (latest run)
+
+| Check | Result |
+| ----- | ------ |
+| Unit tests (mappers, navigation, services, hooks) | 21 passed |
+| Integration tests (live API) | 9 passed |
+| ESLint | 0 errors |
+| Production build | Success |
 
 ---
 
@@ -144,103 +215,174 @@ Never commit secrets or production passwords. Use your hosting provider's enviro
 
 ```plaintext
 frontend/
-├── public/                 # Static assets (favicon, robots.txt)
-├── demo/
-│   └── enderas.html        # Original single-file design prototype
+├── public/                     # Static assets (favicon, robots.txt)
+├── tests/                      # Vitest unit + integration tests
 ├── src/
-│   ├── assets/             # Local images/fonts (if added)
 │   ├── components/
-│   │   ├── atoms/          # Button, Badge, Container, Icon, Loader
-│   │   ├── molecules/      # Cards, FormField, SectionHeading
-│   │   ├── organisms/      # TopNav, Footer, HeroSlider, SeoHead, etc.
-│   │   └── admin/          # Admin form/table primitives
-│   ├── constants/          # Routes, Zod schemas
-│   ├── data/seed/
-│   │   └── cmsData.js      # Default CMS seed data
-│   ├── hooks/              # useScrollReveal, useCountUp
+│   │   ├── atoms/              # Button, Badge, Container, Icon, Loader
+│   │   ├── molecules/          # Cards, FormField, SectionHeading
+│   │   ├── organisms/          # TopNav, Footer, HeroSlider, FaqSection, etc.
+│   │   └── admin/              # Legacy embedded admin primitives
+│   ├── constants/
+│   │   ├── navigation.js       # Static PUBLIC_NAV (Assets for Sale → #)
+│   │   ├── homeSections.js     # Fixed section headings (layout-controlled)
+│   │   └── validationSchemas.js
+│   ├── hooks/
+│   │   ├── useAsyncData.js     # Fetch-on-mount for pages
+│   │   ├── useScrollReveal.js
+│   │   └── useCountUp.js
 │   ├── layouts/
-│   │   ├── MainLayout.jsx  # Public shell
-│   │   └── AdminLayout.jsx # Admin shell
+│   │   ├── MainLayout.jsx      # Public shell; initializes site store
+│   │   └── AdminLayout.jsx     # Legacy embedded admin shell
 │   ├── pages/
-│   │   ├── public/         # Home, About, Services, Gallery, Blog, Contact, 404
-│   │   └── admin/          # Login, Dashboard, CRUD editors
-│   ├── routes/             # AppRouter, PublicRoutes, AdminRoutes
-│   ├── services/           # Mock API layer (swap for Axios later)
-│   ├── store/              # Zustand stores
-│   ├── styles/             # Global CSS utilities
-│   ├── utils/              # Storage, sanitization, formatting
+│   │   ├── public/             # Home, About, Services, Gallery, Blog, Contact, 404
+│   │   └── admin/              # Legacy mock CMS (prefer ../admin app)
+│   ├── routes/
+│   ├── services/
+│   │   ├── api.js              # Axios client + unwrap helpers
+│   │   ├── publicApi.js        # All /public/* endpoint definitions
+│   │   ├── homeService.js      # Domain services (one per page/module)
+│   │   ├── aboutService.js
+│   │   ├── serviceService.js
+│   │   ├── galleryService.js
+│   │   ├── blogService.js
+│   │   ├── contactService.js
+│   │   ├── settingsService.js
+│   │   └── index.js            # Barrel export
+│   ├── store/
+│   │   ├── useSiteStore.js     # Global settings + footer services
+│   │   ├── useUiStore.js       # Theme, mobile nav, scroll state
+│   │   └── useContentStore.js  # Legacy mock CMS (embedded admin only)
+│   ├── utils/
+│   │   ├── mappers.js          # Backend snake_case → UI shapes
+│   │   ├── sanitizeHtml.js
+│   │   └── formatDate.js
 │   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css           # Tailwind v4 theme tokens
+│   └── main.jsx
 ├── .env.example
-├── index.html
-├── jsconfig.json           # Path alias: @ → src/
-├── package.json
-└── vite.config.js
+├── vite.config.js
+└── package.json
 ```
 
-Path alias: import from `@/components/...` instead of relative paths.
+Path alias: `@/` → `src/` (configured in `vite.config.js` and `jsconfig.json`).
+
+---
+
+## Architecture
+
+```plaintext
+Backend API (/api/v1/public/*)
+        ↓
+publicApi.js          ← single source of endpoint paths
+        ↓
+Domain services       ← homeService, blogService, …
+        ↓
+mappers.js            ← normalize API payloads for components
+        ↓
+Pages (useAsyncData)  ← local page state
+        ↓
+Components            ← never call Axios directly
+```
+
+**Rules (from project spec):**
+
+1. Components and pages **never** import Axios directly.
+2. All HTTP traffic goes through `services/`.
+3. Page content lives in **local component state** (`useAsyncData`), not global Zustand.
+4. `useSiteStore` holds only **site settings** and footer service links for layout components.
+5. Navigation structure is **static** (`constants/navigation.js`), not CMS-managed.
 
 ---
 
 ## Public routes
 
-| Route | Page | Notes |
-| ----- | ---- | ----- |
-| `/` | Home | Hero slider, intro, auction banner, featured content |
-| `/about` | About | History, mission, vision, values, team, partners |
-| `/services` | Services | Service detail panel; `#auctions` valuation promo |
-| `/gallery` | Gallery | Category filters, masonry grid, lightbox |
-| `/blog` | Blog listing | Search, category filter, pagination |
-| `/blog/:slug` | Blog detail | Dynamic SEO, related articles |
-| `/contact` | Contact | Validated form, map embed |
-| `*` | 404 | Not found |
+| Route | Page | Data source |
+| ----- | ---- | ----------- |
+| `/` | Home | `GET /public/home` + `GET /public/posts?limit=3` |
+| `/about` | About | `GET /public/about` |
+| `/services` | Services | `GET /public/services` |
+| `/gallery` | Gallery | `GET /public/gallery` |
+| `/blog` | Blog listing | `GET /public/posts` |
+| `/blog/:slug` | Blog detail | `GET /public/posts/:slug` |
+| `/contact` | Contact | `GET /public/contact`, `POST /public/contact` |
+| `*` | 404 | — |
+
+There is **no** `/auctions` route. **Assets for Sale** in the header points to `#`.
+
+### Homepage optional sections
+
+Controlled by CMS flags on the `home_page` record (`show_team`, `show_testimonials`, `show_faq`):
+
+| Section | Flag | Shown when |
+| ------- | ---- | ---------- |
+| Team | `show_team` | `true` and team members exist |
+| Testimonials | `show_testimonials` | `true` and testimonials exist |
+| FAQ | `show_faq` | `true` and FAQ items exist |
+
+Toggle these in **Admin → Homepage → Section visibility**.
 
 ---
 
-## Admin CMS
+## API layer
 
-| Route | Purpose |
-| ----- | ------- |
-| `/admin/login` | Mock authentication |
-| `/admin/dashboard` | Overview stats and quick links |
-| `/admin/settings` | Site settings, SEO defaults, navigation JSON, reset-to-seed |
-| `/admin/homepage` | Hero slides, stats, intro, auction highlight, CTA |
-| `/admin/about` | About page content |
-| `/admin/services` | Create / edit / delete services |
-| `/admin/gallery` | Create / edit / delete gallery items |
-| `/admin/blog` | Create / edit / delete blog posts |
-| `/admin/messages` | View and delete contact form submissions |
+### What uses the API vs what is static
 
-### Authentication (temporary)
+| Content | Source |
+| ------- | ------ |
+| Homepage, About, Services, Gallery, Blog | CMS API (`/public/*`) |
+| Footer SEO, social links | `GET /public/settings` (merged with static defaults) |
+| Contact form submission | `POST /public/contact` only |
+| Navigation, section headings, contact info, map embed | Static in `constants/siteDefaults.js` |
+| Contact page hero copy | Static in `constants/siteDefaults.js` |
 
-Admin auth is a **development placeholder**:
+The contact page **does not** fetch `GET /public/contact` for display. Address, phone, email, hours, and the map are always available from static defaults (enriched by site settings when the API is up).
 
-- Password checked against `VITE_ADMIN_PASSWORD`
-- Session stored in `sessionStorage` (`enderas-admin-session`)
-- Replace with JWT flow when the backend `/auth/login` endpoint is ready (see [`../docs/admindoc.md`](../docs/admindoc.md))
+### Public endpoints consumed
 
-### Resetting content
+| Service | Endpoints |
+| ------- | --------- |
+| `homeService` | `GET /public/home` |
+| `aboutService` | `GET /public/about` |
+| `serviceService` | `GET /public/services`, `GET /public/services/:slug` |
+| `galleryService` | `GET /public/gallery` |
+| `blogService` | `GET /public/posts`, `GET /public/posts/:slug` |
+| `contactService` | `GET /public/contact`, `POST /public/contact` |
+| `settingsService` | `GET /public/settings` (+ contact page for address/phone) |
 
-In **Admin → Settings**, use **Reset to seed** to restore all CMS data from [`src/data/seed/cmsData.js`](src/data/seed/cmsData.js). This clears customized content in `localStorage`.
+Full backend reference: [`../backend/README.md`](../backend/README.md) and [`../docs/backenddoc.md`](../docs/backenddoc.md).
+
+### Adding a new endpoint
+
+1. Add the path to `src/services/publicApi.js`.
+2. Create or extend a domain service in `src/services/`.
+3. Add a mapper in `src/utils/mappers.js` if the UI shape differs from the API.
+4. Fetch from the page via `useAsyncData` — do not call the API from a component.
+5. Add unit tests under `tests/unit/` and integration coverage under `tests/integration/`.
 
 ---
 
-## Data layer
+## State management
 
-```plaintext
-Seed data (cmsData.js)
-        ↓
-Zustand store (useContentStore)  ←→  localStorage (enderas-cms-v1)
-        ↓
-Service modules (contentService, blogService, …)
-        ↓
-Pages & admin editors
+| Store | Purpose | Used by |
+| ----- | ------- | ------- |
+| `useSiteStore` | Settings, footer service links | `MainLayout`, `Footer`, `TopNavigation` |
+| `useUiStore` | Theme, mobile nav, scroll | `TopNavigation` |
+| `useContentStore` | **Legacy** mock CMS data | Embedded `/admin/*` only |
+
+---
+
+## Legacy embedded admin
+
+Routes under `/admin/*` still exist for local prototyping. They use `useContentStore` + `localStorage` and are **not** connected to the production backend.
+
+For real content management, use the standalone Admin app:
+
+```bash
+cd ../admin
+cp .env.example .env
+npm install
+npm run dev    # http://localhost:5173
 ```
-
-- **Components never call Axios directly.** They read from the store or call service functions.
-- **`services/api.js`** defines a shared Axios instance with interceptors for future JWT auth.
-- **Contact submissions** are stored in the same content store under `messages`.
 
 ---
 
@@ -253,11 +395,10 @@ Tokens are defined in [`src/index.css`](src/index.css):
 | `primary` (navy) | Headings, dark sections, footer |
 | `gold` (accent) | CTAs, highlights, badges |
 | `sand` | Page background |
-| `success` / `warning` / `error` | Semantic states |
 
-Typography: **Fraunces** (headings), **Inter** (body) — loaded in [`index.html`](index.html).
+Typography: **Fraunces** (headings), **Inter** (body).
 
-Utility classes: `.reveal` (scroll animation), `.masonry`, reduced-motion overrides in [`src/styles/globals.css`](src/styles/globals.css).
+Utility classes: `.reveal`, `.masonry`, `.section-padding`, reduced-motion overrides in [`src/styles/globals.css`](src/styles/globals.css).
 
 ---
 
@@ -266,67 +407,43 @@ Utility classes: `.reveal` (scroll animation), `.masonry`, reduced-motion overri
 ### Accessibility
 
 - Skip-to-content link on every public page
-- Keyboard navigation for mobile menu, hero slider, gallery lightbox, and modals
+- Keyboard navigation for mobile menu, hero slider, gallery lightbox, FAQ accordion
 - Focus-visible rings on interactive elements
-- Form errors linked with `aria-describedby` and `aria-invalid`
-- `prefers-reduced-motion`: disables auto-slide, count-up animation, and ken-burns effect
+- Form errors linked with `aria-describedby` / `aria-invalid`
+- `prefers-reduced-motion`: disables auto-slide, count-up, and ken-burns effect
 
 ### SEO
 
-- Unique `<title>` and meta description per page
+- Unique `<title>` and meta description per page (from CMS where available)
 - Canonical URLs, Open Graph, and Twitter Card tags
-- JSON-LD `Organization` schema on Home; `Article` schema on blog posts
+- JSON-LD `Organization` on Home; `Article` on blog posts
 - `robots.txt` disallows `/admin/` crawling
-
----
-
-## Migrating to the backend API
-
-When the backend is ready:
-
-1. Set `VITE_API_BASE_URL` to your API origin.
-2. Update each file in [`src/services/`](src/services/) to call `api.get/post/put/delete` instead of reading/writing the Zustand store.
-3. Replace mock admin auth in [`src/store/useAuthStore.js`](src/store/useAuthStore.js) with JWT from `POST /auth/login`.
-4. Keep component and page code unchanged — they already consume services only.
-
-Endpoint shapes are documented in [`../docs/admindoc.md`](../docs/admindoc.md) and [`../docs/backenddoc.md`](../docs/backenddoc.md).
-
-Example service change:
-
-```js
-// Before (mock)
-export async function getServices() {
-  return useContentStore.getState().services
-}
-
-// After (API)
-import api from './api'
-export async function getServices() {
-  const { data } = await api.get('/services')
-  return data
-}
-```
 
 ---
 
 ## Production deployment
 
 ```bash
+# Set env vars, then:
 npm run build
-npm run preview   # optional local smoke test
+npm run preview   # optional smoke test on :4173
 ```
 
-Output is written to `dist/`. Deploy `dist/` to any static host (Netlify, Vercel, S3 + CloudFront, Nginx, etc.).
+Output is written to `dist/`. Deploy to any static host (Netlify, Vercel, S3 + CloudFront, Nginx, etc.).
 
-Configure environment variables on your host before building. For SPA routing, ensure all non-file routes fall back to `index.html`.
+Configure `VITE_API_BASE_URL` to your production API **before** building. For SPA routing, ensure non-file routes fall back to `index.html`.
 
-Suggested checks before release:
+### Pre-release checklist
 
+- [ ] `npm test` — all tests pass (run backend for integration suite)
+- [ ] `npm run lint` — no errors
+- [ ] `npm run build` — succeeds
 - [ ] All public routes load without console errors
-- [ ] Contact form submits and appears in Admin → Messages
-- [ ] Admin CRUD changes reflect on the public site
-- [ ] Lighthouse accessibility score ≥ 90 on Home and Contact
-- [ ] `npm audit` reports 0 vulnerabilities
+- [ ] Contact form submits successfully (`POST /public/contact`)
+- [ ] CMS changes in Admin appear on the public site after refresh
+- [ ] Homepage FAQ / testimonials / team sections respect visibility flags
+- [ ] Assets for Sale button stays on `#` (no broken `/auctions` link)
+- [ ] Lighthouse accessibility ≥ 90 on Home and Contact
 
 ---
 
@@ -339,30 +456,37 @@ Suggested checks before release:
 | Firefox | Latest 2 versions |
 | Safari | Latest 2 versions |
 
-Requires ES2020+ and CSS Grid/Flexbox. Intersection Observer is used for scroll reveal (graceful fallback shows content immediately if unavailable).
+Requires ES2020+, CSS Grid/Flexbox, and `fetch`.
 
 ---
 
 ## Troubleshooting
 
-### Admin login fails
+### CORS errors in the browser console
 
-- Confirm `.env` exists and `VITE_ADMIN_PASSWORD` matches what you enter.
-- Restart the dev server after changing `.env` (Vite reads env at startup).
+- Confirm the backend is running: `curl http://localhost:5000/api/v1/health`
+- Check `VITE_API_BASE_URL` in `.env` matches the backend port (default **5000**, not 3000)
+- Restart Vite after changing `.env`
+- Add your frontend origin to `FRONTEND_URL` in `backend/.env`, e.g. `http://localhost:5174` when the public site runs on 5174
+- Restart the backend after changing `FRONTEND_URL` (env changes are not hot-reloaded)
 
-### Content changes not appearing
+### Pages show "Unable to load" / empty content
 
-- Hard refresh the public page. Both admin and public share the same Zustand store in one tab; open the site in the same browser session.
-- Check browser `localStorage` key `enderas-cms-v1` is not blocked (private mode restrictions).
+### Integration tests skipped or failing
 
-### Stale or corrupted CMS data
+- Start the backend: `cd ../backend && npm run dev`
+- Ensure database is migrated and seeded: `npm run migrate && npm run seed`
+- Run with explicit API URL: `VITE_API_BASE_URL=http://localhost:5000/api/v1 npm test`
 
-- Use **Admin → Settings → Reset to seed**, or delete `enderas-cms-v1` from Application → Local Storage in DevTools.
+### Contact form returns an error
 
-### Build errors after dependency updates
+- Backend rate-limits contact submissions (3 per hour per IP in development)
+- All fields (`name`, `email`, `phone`, `subject`, `message`) are required
+
+### Stale build after dependency changes
 
 ```bash
-rm -rf node_modules package-lock.json
+rm -rf node_modules package-lock.json dist
 npm install
 npm run build
 ```
@@ -373,10 +497,11 @@ npm run build
 
 | Document | Description |
 | -------- | ----------- |
-| [`../docs/frontenddoc.md`](../docs/frontenddoc.md) | Full frontend specification |
-| [`../docs/admindoc.md`](../docs/admindoc.md) | Admin CMS specification (backend phase) |
+| [`../docs/frontenddoc.md`](../docs/frontenddoc.md) | Frontend specification |
+| [`../docs/doc.md`](../docs/doc.md) | System architecture overview |
 | [`../docs/backenddoc.md`](../docs/backenddoc.md) | Backend API specification |
-| [`demo/enderas.html`](demo/enderas.html) | Original design prototype |
+| [`../admin/README.md`](../admin/README.md) | Production Admin CMS |
+| [`../backend/README.md`](../backend/README.md) | Backend setup and API reference |
 
 ---
 

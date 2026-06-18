@@ -1,37 +1,103 @@
-import { useMemo, useState } from 'react'
+/**
+ * @fileoverview Gallery page with category filtering and lightbox preview.
+ */
+
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import SeoHead from '@/components/organisms/SeoHead'
 import { PageHero, CTASection } from '@/components/organisms/CTASection'
 import Lightbox from '@/components/organisms/Lightbox'
 import EmptyState from '@/components/organisms/EmptyState'
 import Container from '@/components/atoms/Container'
+import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
 import Icon from '@/components/atoms/Icon'
+import { PageLoader } from '@/components/atoms/Loader'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
-import { useContentStore } from '@/store/useContentStore'
+import { useAsyncData } from '@/hooks/useAsyncData'
+import { getGalleryItems } from '@/services/galleryService'
+import { getHomePage } from '@/services/homeService'
 
+const ALL_FILTER = 'All'
+const ASPECT_CLASSES = ['aspect-[4/5]', 'aspect-[4/3]', 'aspect-square', 'aspect-[3/4]', 'aspect-[4/3]', 'aspect-[5/6]']
+
+/**
+ * @param {Array<{ category?: string }>} items
+ * @returns {string[]}
+ */
+function buildCategoryFilters(items) {
+  const unique = [...new Set(items.map((item) => item.category).filter(Boolean))]
+  unique.sort((a, b) => a.localeCompare(b))
+  return [ALL_FILTER, ...unique]
+}
+
+/**
+ * @param {Array} items
+ * @param {string} activeFilter
+ * @returns {Array}
+ */
+function filterGalleryItems(items, activeFilter) {
+  if (activeFilter === ALL_FILTER) return items
+  return items.filter((item) => item.category === activeFilter)
+}
+
+/**
+ * Masonry gallery grid with category filters and expandable lightbox.
+ */
 export default function GalleryPage() {
-  useScrollReveal()
-  const gallery = useContentStore((s) => s.gallery)
-  const [filter, setFilter] = useState('All')
+  const [activeFilter, setActiveFilter] = useState(ALL_FILTER)
   const [openIndex, setOpenIndex] = useState(null)
 
-  const categories = useMemo(() => ['All', ...Array.from(new Set(gallery.map((g) => g.category)))], [gallery])
-  const filtered = useMemo(
-    () => (filter === 'All' ? gallery : gallery.filter((g) => g.category === filter)),
-    [filter, gallery],
-  )
-  const openItem = openIndex !== null ? filtered[openIndex] : null
-  const aspectMap = ['aspect-[4/5]', 'aspect-[4/3]', 'aspect-square', 'aspect-[3/4]', 'aspect-[4/3]', 'aspect-[5/6]']
+  const fetchGallery = useCallback(async () => {
+    const [galleryResult, home] = await Promise.all([
+      getGalleryItems({ limit: 100 }),
+      getHomePage(),
+    ])
+    return { gallery: galleryResult.data, cta: home.cta }
+  }, [])
 
-  const next = () => setOpenIndex((i) => (i + 1) % filtered.length)
-  const prev = () => setOpenIndex((i) => (i - 1 + filtered.length) % filtered.length)
+  const { data, loading, error, reload } = useAsyncData(fetchGallery)
+
+  const galleryItems = data?.gallery ?? []
+  const categories = useMemo(() => buildCategoryFilters(galleryItems), [galleryItems])
+  const filteredItems = useMemo(
+    () => filterGalleryItems(galleryItems, activeFilter),
+    [activeFilter, galleryItems],
+  )
+
+  useEffect(() => {
+    if (activeFilter !== ALL_FILTER && !categories.includes(activeFilter)) {
+      setActiveFilter(ALL_FILTER)
+      setOpenIndex(null)
+    }
+  }, [activeFilter, categories])
+
+  useScrollReveal([data, activeFilter, filteredItems.length])
+
+  const openItem = openIndex !== null ? filteredItems[openIndex] : null
+
+  const selectFilter = (category) => {
+    setActiveFilter(category)
+    setOpenIndex(null)
+  }
+
+  const next = () => setOpenIndex((i) => (i + 1) % filteredItems.length)
+  const prev = () => setOpenIndex((i) => (i - 1 + filteredItems.length) % filteredItems.length)
+
+  if (loading) return <PageLoader />
+  if (error || !data) {
+    return (
+      <Container className="section-padding">
+        <EmptyState icon="info" title="Unable to load gallery" message={error} action={<Button onClick={reload}>Retry</Button>} />
+      </Container>
+    )
+  }
 
   return (
     <>
       <SeoHead
         title="Gallery"
-        description="A selection of commercial, residential, industrial, retail and hospitality assets valued, managed and brokered by Enderas across North America."
-        image={gallery[0]?.image}
+        description="A selection of commercial, residential, and institutional assets valued and managed by Enderas."
+        image={galleryItems[0]?.image}
       />
       <PageHero
         eyebrow="Selected engagements"
@@ -42,34 +108,31 @@ export default function GalleryPage() {
       <section className="py-16 lg:py-24">
         <Container>
           <div className="reveal mb-10 flex flex-wrap items-center gap-2" role="group" aria-label="Filter by category">
-            {categories.map((c) => (
+            {categories.map((category) => (
               <button
-                key={c}
+                key={category}
                 type="button"
-                onClick={() => {
-                  setFilter(c)
-                  setOpenIndex(null)
-                }}
-                aria-pressed={filter === c}
+                onClick={() => selectFilter(category)}
+                aria-pressed={activeFilter === category}
                 className={`rounded-full border px-4 py-2 text-sm font-medium transition-all ${
-                  filter === c
+                  activeFilter === category
                     ? 'border-primary-900 bg-primary-900 text-white dark:border-primary-700 dark:bg-primary-700'
                     : 'border-primary-200 bg-white text-primary-800 hover:border-gold-400 hover:text-gold-600 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-100 dark:hover:text-gold-400'
                 }`}
               >
-                {c}
+                {category}
               </button>
             ))}
           </div>
 
-          {filtered.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <EmptyState icon="search" title="No assets in this category" message="Try selecting a different category filter." />
           ) : (
-            <div className="masonry">
-              {filtered.map((item, i) => (
+            <div className="masonry" key={activeFilter}>
+              {filteredItems.map((item, i) => (
                 <article
                   key={item.id}
-                  className={`reveal group relative ${aspectMap[i % aspectMap.length]} cursor-pointer overflow-hidden rounded-xl bg-primary-900`}
+                  className={`reveal group relative ${ASPECT_CLASSES[i % ASPECT_CLASSES.length]} cursor-pointer overflow-hidden rounded-xl bg-primary-900`}
                   style={{ transitionDelay: `${(i % 6) * 50}ms` }}
                   onClick={() => setOpenIndex(i)}
                   onKeyDown={(e) => e.key === 'Enter' && setOpenIndex(i)}
@@ -89,12 +152,13 @@ export default function GalleryPage() {
                       <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
                         {item.category}
                       </Badge>
-                      {item.value && <span className="text-xs font-medium text-primary-100/70">{item.value}</span>}
                     </div>
                     <h3 className="font-heading text-lg font-semibold leading-tight">{item.title}</h3>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
-                      <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
-                    </p>
+                    {item.location && (
+                      <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
+                        <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
+                      </p>
+                    )}
                   </div>
                   <div className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-primary-900 opacity-0 transition-opacity group-hover:opacity-100">
                     <Icon name="eye" className="w-4 h-4" />
@@ -107,7 +171,7 @@ export default function GalleryPage() {
       </section>
 
       {openItem && <Lightbox item={openItem} onClose={() => setOpenIndex(null)} onPrev={prev} onNext={next} />}
-      <CTASection />
+      <CTASection cta={data.cta} />
     </>
   )
 }

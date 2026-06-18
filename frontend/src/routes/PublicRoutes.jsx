@@ -10,9 +10,12 @@ const GalleryPage = lazy(() => import('@/pages/public/GalleryPage'))
 const BlogPage = lazy(() => import('@/pages/public/BlogPage'))
 const BlogDetailPage = lazy(() => import('@/pages/public/BlogDetailPage'))
 const ContactPage = lazy(() => import('@/pages/public/ContactPage'))
-const AuctionsPage = lazy(() => import('@/pages/public/AuctionsPage'))
 const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage'))
 
+/**
+ * Public website route definitions with lazy-loaded pages.
+ * Assets-for-sale has no dedicated route — the nav CTA points to # until the auction site is ready.
+ */
 export default function PublicRoutes() {
   return (
     <Routes>
@@ -70,14 +73,6 @@ export default function PublicRoutes() {
           element={
             <Suspense fallback={<PageLoader />}>
               <ContactPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="auctions"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <AuctionsPage />
             </Suspense>
           }
         />

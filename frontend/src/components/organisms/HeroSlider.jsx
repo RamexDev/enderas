@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Full-viewport hero carousel with auto-rotation and CMS-driven slides.
+ */
+
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Container from '@/components/atoms/Container'
@@ -5,7 +9,6 @@ import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
 import Badge from '@/components/atoms/Badge'
 import { easeOut } from '@/components/motion/variants'
-import { useContentStore } from '@/store/useContentStore'
 
 const contentVariants = {
   enter: { opacity: 0, y: 32 },
@@ -13,11 +16,15 @@ const contentVariants = {
   exit: { opacity: 0, y: -16 },
 }
 
-export default function HeroSlider() {
-  const slides = useContentStore((s) => s.slides)
+/**
+ * Renders the homepage hero slider from CMS slide data passed by the parent page.
+ * @param {{ slides: Array }} props
+ * @param {Array} props.slides - Mapped hero slide objects
+ */
+export default function HeroSlider({ slides = [] }) {
   const [active, setActive] = useState(0)
   const count = slides.length
-  const slide = slides[active]
+  const slide = slides[active] || slides[0]
   const reducedMotion =
     typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
@@ -27,6 +34,9 @@ export default function HeroSlider() {
     return () => clearInterval(id)
   }, [count, reducedMotion])
 
+  if (!slide) return null
+
+  /** Wraps to a valid slide index. */
   const go = (i) => setActive((i + count) % count)
 
   return (

@@ -1,37 +1,26 @@
-import { useContentStore } from '@/store/useContentStore'
+/**
+ * @fileoverview Blog posts listing and detail data access.
+ */
 
-const delay = (ms = 150) => new Promise((r) => setTimeout(r, ms))
+import { blogApi } from './publicApi'
+import { mapBlogPost } from '@/utils/mappers'
 
-export async function getBlogPosts() {
-  await delay()
-  return useContentStore
-    .getState()
-    .blog.filter((p) => p.status !== 'draft')
+/**
+ * Fetches published blog posts with search, category, and pagination.
+ * @param {object} [params] - Query params (`page`, `limit`, `search`, `category`)
+ * @returns {Promise<{ data: Array, meta: object }>}
+ */
+export async function getBlogPosts(params = {}) {
+  const result = await blogApi.list(params)
+  return { data: result.data.map(mapBlogPost), meta: result.meta }
 }
 
-export async function getAllBlogPosts() {
-  await delay()
-  return useContentStore.getState().blog
-}
-
+/**
+ * Fetches a single published post by slug.
+ * @param {string} slug
+ * @returns {Promise<object>}
+ */
 export async function getBlogPostBySlug(slug) {
-  await delay()
-  return useContentStore.getState().blog.find((p) => p.slug === slug && p.status !== 'draft')
-}
-
-export async function createBlogPost(post) {
-  await delay()
-  useContentStore.getState().addBlogPost(post)
-  return post
-}
-
-export async function updateBlogPost(id, data) {
-  await delay()
-  useContentStore.getState().updateBlogPost(id, data)
-  return useContentStore.getState().blog.find((p) => p.id === id)
-}
-
-export async function deleteBlogPost(id) {
-  await delay()
-  useContentStore.getState().deleteBlogPost(id)
+  const post = await blogApi.getBySlug(slug)
+  return mapBlogPost(post)
 }

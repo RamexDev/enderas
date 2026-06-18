@@ -1,3 +1,7 @@
+/**
+ * @fileoverview Contact page — static info/map; only the inquiry form posts to the API.
+ */
+
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
@@ -9,15 +13,23 @@ import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
 import { contactSchema } from '@/constants/validationSchemas'
+import { CONTACT_PAGE_COPY, DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
 import { submitInquiry } from '@/services/contactService'
-import { useContentStore } from '@/store/useContentStore'
+import { useSiteStore } from '@/store/useSiteStore'
 
+/** Builds a tel: href from a display phone string. */
 function telHref(phone) {
   return `tel:${phone.replace(/\s/g, '')}`
 }
 
+/**
+ * Contact form and office information page.
+ * Address, phone, email, and map are static (layout-owned). Only form submission uses the API.
+ */
 export default function ContactPage() {
-  const settings = useContentStore((s) => s.settings)
+  const storeSettings = useSiteStore((s) => s.settings)
+  const settings = storeSettings || DEFAULT_SITE_SETTINGS
+
   const [submitted, setSubmitted] = useState(false)
   const [submittedName, setSubmittedName] = useState('')
   const [submitting, setSubmitting] = useState(false)
@@ -33,12 +45,13 @@ export default function ContactPage() {
     defaultValues: { name: '', email: '', phone: '', subject: '', message: '' },
   })
 
-  const onSubmit = async (data) => {
+  /** Submits the contact form to the backend API. */
+  const onSubmit = async (formData) => {
     setSubmitting(true)
     setSubmitError('')
     try {
-      await submitInquiry(data)
-      setSubmittedName(data.name.split(' ')[0])
+      await submitInquiry(formData)
+      setSubmittedName(formData.name.split(' ')[0])
       setSubmitted(true)
     } catch {
       setSubmitError('Unable to send your message. Please try again.')
@@ -78,9 +91,9 @@ export default function ContactPage() {
         jsonLd={contactJsonLd}
       />
       <PageHero
-        eyebrow="Get in touch"
-        title="Speak with an Enderas partner."
-        intro={`Our team is based in ${settings.city}, ${settings.country}. Whether you need asset management, a property valuation, or investment advisory, we would welcome a confidential conversation.`}
+        eyebrow={CONTACT_PAGE_COPY.eyebrow}
+        title={CONTACT_PAGE_COPY.title}
+        intro={CONTACT_PAGE_COPY.intro}
       />
 
       <section className="py-14 sm:py-16 lg:py-24">
@@ -257,9 +270,11 @@ export default function ContactPage() {
                   />
                 </div>
                 <div className="flex items-center justify-between gap-3 border-t border-primary-200/80 bg-white px-4 py-3 dark:border-primary-700 dark:bg-primary-900">
-                  <p className="text-xs text-primary-700 dark:text-primary-200">{settings.city}, {settings.country}</p>
+                  <p className="text-xs text-primary-700 dark:text-primary-200">
+                    {settings.city}, {settings.country}
+                  </p>
                   <a
-                    href={settings.mapDirectionsUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(settings.address)}`}
+                    href={settings.mapDirectionsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs font-medium text-gold-600 hover:text-gold-500 dark:text-gold-400"

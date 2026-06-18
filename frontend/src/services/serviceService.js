@@ -1,35 +1,26 @@
-import { useContentStore } from '@/store/useContentStore'
+/**
+ * @fileoverview Services listing and detail data access.
+ */
 
-const delay = (ms = 150) => new Promise((r) => setTimeout(r, ms))
+import { servicesApi } from './publicApi'
+import { mapService } from '@/utils/mappers'
 
-export async function getServices() {
-  await delay()
-  return useContentStore.getState().services.filter((s) => s.active !== false)
+/**
+ * Fetches active services with optional pagination.
+ * @param {object} [params] - Query params (`page`, `limit`)
+ * @returns {Promise<{ data: Array, meta: object }>}
+ */
+export async function getServices(params = {}) {
+  const result = await servicesApi.list(params)
+  return { data: result.data.map(mapService), meta: result.meta }
 }
 
-export async function getAllServices() {
-  await delay()
-  return useContentStore.getState().services
-}
-
-export async function getServiceById(id) {
-  await delay()
-  return useContentStore.getState().services.find((s) => s.id === id)
-}
-
-export async function createService(service) {
-  await delay()
-  useContentStore.getState().addService(service)
-  return service
-}
-
-export async function updateService(id, data) {
-  await delay()
-  useContentStore.getState().updateService(id, data)
-  return useContentStore.getState().services.find((s) => s.id === id)
-}
-
-export async function deleteService(id) {
-  await delay()
-  useContentStore.getState().deleteService(id)
+/**
+ * Fetches a single service by slug.
+ * @param {string} slug
+ * @returns {Promise<object>}
+ */
+export async function getServiceBySlug(slug) {
+  const service = await servicesApi.getBySlug(slug)
+  return mapService(service)
 }

@@ -1,14 +1,27 @@
+/**
+ * @fileoverview Auction and valuation promotional banner on the homepage.
+ * Assets-for-sale CTA points to # until the auction platform is built.
+ */
+
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
 import Badge from '@/components/atoms/Badge'
 import { MotionDiv, MotionSection } from '@/components/motion'
 import { useCountdown } from '@/hooks/useCountUp'
-import { useContentStore } from '@/store/useContentStore'
+import { AUCTION_LINK } from '@/constants/navigation'
 
-export default function AuctionBanner() {
-  const upcoming = useContentStore((s) => s.auctionHighlight)
-  const t = useCountdown(upcoming.closeDate)
+/**
+ * Promotes auction and valuation services with a featured opportunity card.
+ * @param {{ highlight: object }} props
+ * @param {object} props.highlight - Mapped auction highlight from CMS
+ */
+export default function AuctionBanner({ highlight }) {
+  const closeDate = highlight?.closeDate
+  const t = useCountdown(closeDate ?? new Date().toISOString())
+
+  if (!highlight) return null
+
   const cells = [
     { label: 'Days', value: t.days },
     { label: 'Hours', value: t.hours },
@@ -45,15 +58,12 @@ export default function AuctionBanner() {
                 id="auction-banner-title"
                 className="mt-5 font-heading text-[clamp(1.75rem,4vw,2.75rem)] font-semibold leading-[1.1]"
               >
-                The next Enderas auction closes in
+                {highlight.title}
               </h2>
             </MotionDiv>
             <MotionDiv className="mt-6 grid max-w-md grid-cols-2 gap-3 sm:mt-8 sm:grid-cols-4" delay={0.1} aria-live="polite">
               {cells.map((c) => (
-                <div
-                  key={c.label}
-                  className="glass-dark rounded-xl py-3 text-center sm:py-4"
-                >
+                <div key={c.label} className="glass-dark rounded-xl py-3 text-center sm:py-4">
                   <div className="font-heading text-2xl font-semibold tabular-nums text-gold-400 sm:text-3xl lg:text-4xl">
                     {String(c.value).padStart(2, '0')}
                   </div>
@@ -63,11 +73,11 @@ export default function AuctionBanner() {
             </MotionDiv>
             <MotionDiv delay={0.15}>
               <p className="mt-6 max-w-xl text-sm leading-relaxed text-primary-100/80 sm:mt-8 sm:text-base">
-                <span className="font-semibold text-white">{upcoming.title}</span> — {upcoming.blurb}
+                {highlight.blurb}
               </p>
             </MotionDiv>
             <MotionDiv className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center" delay={0.2}>
-              <Button to="/auctions" variant="primary" size="lg" icon="gavel" className="w-full sm:w-auto">
+              <Button to={AUCTION_LINK} variant="primary" size="lg" icon="gavel" className="w-full sm:w-auto">
                 View Assets for Sale
               </Button>
               <Button
@@ -83,23 +93,27 @@ export default function AuctionBanner() {
 
           <MotionDiv className="lg:col-span-5" delay={0.1}>
             <div className="relative aspect-[4/5] max-h-[520px] overflow-hidden rounded-2xl bg-primary-900 shadow-2xl sm:max-h-none">
-              <img src={upcoming.image} alt={upcoming.title} className="absolute inset-0 h-full w-full object-cover" />
+              <img src={highlight.image} alt={highlight.title} className="absolute inset-0 h-full w-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-t from-primary-950 via-primary-950/30 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
                 <Badge variant="gold" className="!mb-3 !bg-gold-500/20 !text-gold-200 !ring-gold-400/40">
-                  {upcoming.type}
+                  {highlight.type}
                 </Badge>
-                <h3 className="mb-1.5 font-heading text-xl font-semibold leading-tight sm:text-2xl">{upcoming.title}</h3>
-                <p className="flex items-center gap-1.5 text-sm text-primary-100/70">
-                  <Icon name="mapPin" className="h-3.5 w-3.5" /> {upcoming.location}
-                </p>
+                <h3 className="mb-1.5 font-heading text-xl font-semibold leading-tight sm:text-2xl">{highlight.title}</h3>
+                {highlight.location && (
+                  <p className="flex items-center gap-1.5 text-sm text-primary-100/70">
+                    <Icon name="mapPin" className="h-3.5 w-3.5" /> {highlight.location}
+                  </p>
+                )}
                 <div className="mt-4 flex items-center justify-between border-t border-white/10 pt-4">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-primary-200/60">Reserve</div>
-                    <div className="font-heading text-xl text-gold-300">{upcoming.reserve}</div>
-                  </div>
+                  {highlight.reserve && (
+                    <div>
+                      <div className="text-[10px] uppercase tracking-widest text-primary-200/60">Reserve</div>
+                      <div className="font-heading text-xl text-gold-300">{highlight.reserve}</div>
+                    </div>
+                  )}
                   <Button
-                    to="/auctions"
+                    to={AUCTION_LINK}
                     variant="ghost"
                     size="sm"
                     className="!text-white hover:!text-gold-300"

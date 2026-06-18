@@ -1,4 +1,8 @@
-import { useMemo, useState } from 'react'
+/**
+ * @fileoverview Blog listing with search, category filter, and pagination.
+ */
+
+import { useCallback, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import SeoHead from '@/components/organisms/SeoHead'
 import { PageHero } from '@/components/organisms/CTASection'
@@ -6,21 +10,30 @@ import EmptyState from '@/components/organisms/EmptyState'
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Icon from '@/components/atoms/Icon'
+import { PageLoader } from '@/components/atoms/Loader'
 import { BlogCard } from '@/components/molecules/Cards'
 import { useScrollReveal } from '@/hooks/useScrollReveal'
-import { useContentStore } from '@/store/useContentStore'
+import { useAsyncData } from '@/hooks/useAsyncData'
+import { getBlogPosts } from '@/services/blogService'
 import { formatDate } from '@/utils/formatDate'
 
 const POSTS_PER_PAGE = 4
 
+/**
+ * Insights/blog index with client-side filtering on fetched CMS posts.
+ */
 export default function BlogPage() {
-  useScrollReveal()
   const navigate = useNavigate()
-  const blog = useContentStore((s) => s.blog).filter((p) => p.status !== 'draft')
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState('All')
   const [page, setPage] = useState(1)
 
+  const fetchPosts = useCallback(() => getBlogPosts({ limit: 50 }), [])
+  const { data: result, loading, error, reload } = useAsyncData(fetchPosts)
+
+  useScrollReveal([result])
+
+  const blog = result?.data ?? []
   const categories = useMemo(() => ['All', ...Array.from(new Set(blog.map((p) => p.category)))], [blog])
 
   const filtered = useMemo(
@@ -44,6 +57,15 @@ export default function BlogPage() {
   const rest = paginated.slice(1)
   const popular = [...blog].sort((a, b) => b.readTime - a.readTime).slice(0, 4)
   const recent = blog.slice(0, 4)
+
+  if (loading) return <PageLoader />
+  if (error) {
+    return (
+      <Container className="section-padding">
+        <EmptyState icon="info" title="Unable to load articles" message={error} action={<Button onClick={reload}>Retry</Button>} />
+      </Container>
+    )
+  }
 
   return (
     <>

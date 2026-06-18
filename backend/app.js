@@ -5,13 +5,13 @@
 
 import express from 'express';
 import helmet from 'helmet';
-import cors from 'cors';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import env from './src/config/env.js';
 import routes from './src/routes/index.js';
+import { scopedCors } from './src/middleware/cors.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFound } from './src/middleware/notFound.js';
 
@@ -22,11 +22,8 @@ const app = express();
 // Security headers (XSS, clickjacking, etc.)
 app.use(helmet());
 
-// CORS — restrict to configured frontend origin
-app.use(cors({
-  origin: env.clientUrl,
-  credentials: true,
-}));
+// Path-scoped CORS — each client origin may only access its designated endpoints
+app.use(scopedCors);
 
 // Request logging in development only
 if (env.isDev) {

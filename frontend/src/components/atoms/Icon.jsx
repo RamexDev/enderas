@@ -7,6 +7,7 @@ import {
   Check,
   ChevronLeft,
   ChevronRight,
+  ChevronDown,
   Clock,
   Eye,
   Gavel,
@@ -18,6 +19,7 @@ import {
   Moon,
   Phone,
   Play,
+  Quote,
   Scale,
   Search,
   Share2,
@@ -46,6 +48,7 @@ const ICONS = {
   moon: Moon,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
+  chevronDown: ChevronDown,
   phone: Phone,
   mail: Mail,
   mapPin: MapPin,
@@ -59,6 +62,7 @@ const ICONS = {
   eye: Eye,
   info: Info,
   sparkles: Sparkles,
+  quote: Quote,
   users: Users,
 }
 

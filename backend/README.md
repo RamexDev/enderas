@@ -64,7 +64,8 @@ npm run dev
 | `JWT_REFRESH_SECRET`    | Refresh token secret           |                                |
 | `JWT_ACCESS_EXPIRES_IN` | Access token expiry            | `15m`                          |
 | `JWT_REFRESH_EXPIRES_IN`| Refresh token expiry           | `7d`                           |
-| `CLIENT_URL`            | Frontend URL (CORS)            | `http://localhost:5173`        |
+| `ADMIN_URL`             | Admin CMS browser origin(s)    | `http://localhost:5173`        |
+| `FRONTEND_URL`          | Public site browser origin(s)  | `http://localhost:5174`        |
 | `API_BASE_URL`          | Backend base URL               | `http://localhost:5000/api/v1` |
 | `UPLOAD_PATH`           | File upload directory          | `./src/uploads`                |
 | `MAX_FILE_SIZE`         | Max upload size (bytes)        | `5242880` (5MB)                |
@@ -72,6 +73,45 @@ npm run dev
 | `SUPER_ADMIN_PASSWORD`  | Initial super admin password   | (auto-generated in dev)        |
 
 > **Production:** `SUPER_ADMIN_PASSWORD` is required when `NODE_ENV=production`. The server will refuse to start without it.
+
+### CORS (`ADMIN_URL` / `FRONTEND_URL`)
+
+CORS is path-scoped: each browser origin may only call the API surface it is meant to use.
+
+| Origin env        | Allowed routes                                      |
+| ----------------- | --------------------------------------------------- |
+| `ADMIN_URL`       | `/api/v1/auth/*`, admin management routes, `/uploads` |
+| `FRONTEND_URL`    | `/api/v1/public/*`, `/uploads`                      |
+
+Use comma-separated values when you need both `localhost` and `127.0.0.1` in development.
+
+**Local development** (admin on 5173, public site on 5174 when both run):
+
+```env
+ADMIN_URL=http://localhost:5173,http://127.0.0.1:5173
+FRONTEND_URL=http://localhost:5174,http://127.0.0.1:5174
+```
+
+**Production** example:
+
+```env
+ADMIN_URL=https://admin.enderas.com
+FRONTEND_URL=https://enderas.com
+```
+
+`CLIENT_URLS` is still read as a fallback when `ADMIN_URL` / `FRONTEND_URL` are unset (first origin → admin, rest → frontend).
+
+> **Restart required:** Changing `.env` does not hot-reload. Restart `npm run dev` after updating CORS URLs.
+
+### Local dev URLs
+
+| App | Default URL | Notes |
+| --- | ----------- | ----- |
+| Backend API | `http://localhost:5000/api/v1` | Set `PORT` in `.env` |
+| Admin CMS | `http://localhost:5173` | Fixed in `admin/vite.config.js` |
+| Public frontend | `http://localhost:5173` or `5174` | Vite picks the next free port if 5173 is taken |
+
+Run all three together: backend → admin → frontend. Set `ADMIN_URL` and `FRONTEND_URL` to match each app's browser origin.
 
 ## Database Seeding
 
@@ -225,7 +265,7 @@ Refresh tokens are stored as SHA-256 hashes. DB expiry is synchronized with `JWT
 ## Security
 
 - **Helmet** — Secure HTTP headers
-- **CORS** — Restricted to `CLIENT_URL`
+- **CORS** — Path-scoped by `ADMIN_URL` and `FRONTEND_URL`
 - **Rate Limiting** — Login: 5/15 min. Contact: 3/hour
 - **Password Hashing** — bcrypt, 12 salt rounds
 - **JWT** — Access + refresh tokens with rotation
@@ -269,9 +309,10 @@ backend/
 
 1. Set `NODE_ENV=production` and configure all environment variables.
 2. Set a strong `SUPER_ADMIN_PASSWORD`.
-3. Run `npm run migrate` to apply schema.
-4. Run `npm run seed` to create admin and populate content.
-5. Start with `npm start` (runs migrations automatically).
+3. Set `ADMIN_URL` and `FRONTEND_URL` to the deployed admin and public site origins.
+4. Run `npm run migrate` to apply schema.
+5. Run `npm run seed` to create admin and populate content.
+6. Start with `npm start` (runs migrations automatically).
 
 ## Roadmap
 

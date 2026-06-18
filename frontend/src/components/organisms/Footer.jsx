@@ -1,13 +1,23 @@
+/**
+ * @fileoverview Site footer with navigation, services, and contact details.
+ * Reads global settings from the site store (loaded once in MainLayout).
+ */
+
 import { useNavigate } from 'react-router-dom'
 import Container from '@/components/atoms/Container'
 import Icon from '@/components/atoms/Icon'
 import Logo from '@/components/organisms/Logo'
-import { useContentStore } from '@/store/useContentStore'
+import { PUBLIC_NAV } from '@/constants/navigation'
+import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
+import { useSiteStore } from '@/store/useSiteStore'
 
+/**
+ * Renders the global footer with CMS-driven or default contact info and social links.
+ */
 export default function Footer() {
-  const settings = useContentStore((s) => s.settings)
-  const nav = useContentStore((s) => s.nav)
-  const services = useContentStore((s) => s.services)
+  const storeSettings = useSiteStore((s) => s.settings)
+  const services = useSiteStore((s) => s.services)
+  const settings = storeSettings || DEFAULT_SITE_SETTINGS
   const navigate = useNavigate()
 
   return (
@@ -36,15 +46,21 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">Navigate</h4>
             <ul className="space-y-2.5">
-              {nav.map((item) => (
-                <li key={item.to}>
-                  <button
-                    type="button"
-                    onClick={() => navigate(item.to)}
-                    className="text-sm text-primary-200/70 transition-colors hover:text-gold-300"
-                  >
-                    {item.label}
-                  </button>
+              {PUBLIC_NAV.map((item) => (
+                <li key={item.to + item.label}>
+                  {item.to === '#' ? (
+                    <a href="#" className="text-sm text-primary-200/70 transition-colors hover:text-gold-300">
+                      {item.label}
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => navigate(item.to)}
+                      className="text-sm text-primary-200/70 transition-colors hover:text-gold-300"
+                    >
+                      {item.label}
+                    </button>
+                  )}
                 </li>
               ))}
             </ul>
@@ -77,9 +93,11 @@ export default function Footer() {
               <li className="flex items-start gap-2.5">
                 <Icon name="phone" className="mt-0.5 w-4 h-4 shrink-0 text-gold-400" />
                 <div className="space-y-1">
-                  <a href={`tel:${settings.phone.replace(/\s/g, '')}`} className="block hover:text-gold-300">
-                    {settings.phone}
-                  </a>
+                  {settings.phone && (
+                    <a href={`tel:${settings.phone.replace(/\s/g, '')}`} className="block hover:text-gold-300">
+                      {settings.phone}
+                    </a>
+                  )}
                   {settings.phoneAlt && (
                     <a href={`tel:${settings.phoneAlt.replace(/\s/g, '')}`} className="block hover:text-gold-300">
                       {settings.phoneAlt}

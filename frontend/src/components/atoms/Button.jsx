@@ -47,6 +47,14 @@ export default function Button({
   )
 
   if (to) {
+    // Placeholder links (e.g. auction platform not yet built) use href instead of router navigation.
+    if (to === '#') {
+      return (
+        <a href="#" className={cls} onClick={onClick} {...rest}>
+          {content}
+        </a>
+      )
+    }
     return (
       <Link to={to} className={cls} onClick={onClick} {...rest}>
         {content}
