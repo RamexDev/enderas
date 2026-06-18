@@ -23,7 +23,7 @@ export default function NotFoundPage() {
             <h1 className="mb-4 font-heading text-2xl font-semibold text-primary-900 dark:text-white sm:text-3xl lg:text-4xl">
               This page has moved or never existed.
             </h1>
-            <p className="mb-8 text-base leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+            <p className="mb-8 text-base leading-relaxed text-primary-700/95 dark:text-primary-200/70">
               The link you followed may be broken, or the page may have been removed. Try one of the routes below.
             </p>
             <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:flex-wrap">

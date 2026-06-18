@@ -188,7 +188,7 @@ export default function GalleryPage() {
                         </div>
                         <h3 className="font-heading text-base font-semibold leading-tight sm:text-lg">{item.title}</h3>
                         {item.location && (
-                          <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/70">
+                          <p className="mt-1 flex items-center gap-1.5 text-xs text-primary-100/85">
                             <Icon name="mapPin" className="w-3.5 h-3.5" /> {item.location}
                           </p>
                         )}

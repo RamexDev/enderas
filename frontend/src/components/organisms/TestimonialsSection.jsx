@@ -30,7 +30,7 @@ export default function TestimonialsSection({ title, items = [] }) {
             <MotionItem key={item.id}>
               <blockquote className="flex h-full flex-col rounded-2xl border border-primary-100/80 bg-white p-6 shadow-sm dark:border-primary-800 dark:bg-primary-900 sm:p-7">
                 <Icon name="quote" className="mb-4 h-8 w-8 text-gold-500/40" />
-                <p className="flex-1 text-sm leading-relaxed text-primary-800/85 dark:text-primary-100/80">
+                <p className="flex-1 text-sm leading-relaxed text-primary-800/90 dark:text-primary-100/90">
                   &ldquo;{item.content}&rdquo;
                 </p>
                 <footer className="mt-6 flex items-center gap-3 border-t border-primary-100 pt-5 dark:border-primary-800">
@@ -45,7 +45,7 @@ export default function TestimonialsSection({ title, items = [] }) {
                   <div>
                     <cite className="not-italic font-semibold text-primary-900 dark:text-white">{item.name}</cite>
                     {item.company && (
-                      <p className="text-xs text-primary-600 dark:text-primary-300">{item.company}</p>
+                      <p className="text-xs text-primary-500 dark:text-primary-200">{item.company}</p>
                     )}
                   </div>
                 </footer>

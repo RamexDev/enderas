@@ -25,7 +25,7 @@ export default function ServiceDetailPanel({ service }) {
           <h2 className="font-heading text-xl font-semibold text-primary-900 sm:text-2xl dark:text-white lg:text-3xl">
             {service.title}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-primary-800/80 sm:mt-4 sm:text-base dark:text-primary-200/75">
+          <p className="mt-3 text-sm leading-relaxed text-primary-800/90 sm:mt-4 sm:text-base dark:text-primary-200/85">
             {service.description}
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap">

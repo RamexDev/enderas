@@ -19,7 +19,7 @@ export default function ContactMap({ settings }) {
             <h2 className="mt-2 font-heading text-2xl font-semibold text-primary-900 dark:text-white sm:text-3xl">
               Our Addis Ababa office
             </h2>
-            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
               Enderas is headquartered at NB Business Center in Addis Ababa, Ethiopia. Use the map below to plan your
               visit or open directions in your preferred maps app.
             </p>
@@ -49,12 +49,12 @@ export default function ContactMap({ settings }) {
               <div>
                 <div className="text-xs font-semibold uppercase tracking-wider text-gold-300">Enderas Asset Management</div>
                 <p className="mt-1 text-sm leading-relaxed text-primary-100/90">{settings.address}</p>
-                <p className="mt-1 text-xs text-primary-200/70">
+                <p className="mt-1 text-xs text-primary-200/85">
                   {settings.city}, {settings.country}
                   {settings.poBox ? ` · P.O. Box ${settings.poBox}` : ''}
                 </p>
                 {settings.mapCoordinates && (
-                  <p className="mt-2 font-mono text-[11px] text-primary-300/60">
+                  <p className="mt-2 font-mono text-[11px] text-primary-200/70">
                     {settings.mapCoordinates.lat.toFixed(4)}°N, {settings.mapCoordinates.lng.toFixed(4)}°E
                   </p>
                 )}
@@ -89,7 +89,7 @@ export default function ContactMap({ settings }) {
                 <Icon name={item.icon} className="h-4 w-4" />
               </div>
               <h3 className="text-sm font-semibold text-primary-900 dark:text-white">{item.title}</h3>
-              <p className="mt-1.5 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{item.body}</p>
+              <p className="mt-1.5 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">{item.body}</p>
             </div>
           ))}
         </div>

@@ -124,7 +124,7 @@ export default function BlogPage() {
                       setPage(1)
                     }}
                     placeholder="Search articles, authors…"
-                    className="w-full rounded-lg border border-primary-200 bg-white py-3 pl-10 pr-4 text-sm text-primary-900 placeholder-primary-400/60 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 dark:border-primary-700 dark:bg-primary-950 dark:text-white"
+                    className="w-full rounded-lg border border-primary-200 bg-white py-3 pl-10 pr-4 text-sm text-primary-900 placeholder-primary-400/80 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 dark:border-primary-700 dark:bg-primary-950 dark:text-white"
                     aria-label="Search articles"
                   />
                 </div>
@@ -179,7 +179,7 @@ export default function BlogPage() {
                       <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
                         Previous
                       </Button>
-                      <span className="text-sm text-primary-600 dark:text-primary-300">
+                      <span className="text-sm text-primary-500 dark:text-primary-200">
                         Page {page} of {totalPages}
                       </span>
                       <Button
@@ -217,7 +217,7 @@ export default function BlogPage() {
                             <h4 className="text-sm font-medium leading-snug text-primary-900 transition-colors group-hover:text-gold-600 dark:text-white dark:group-hover:text-gold-400">
                               {p.title}
                             </h4>
-                            <p className="mt-1 text-xs text-primary-600/70 dark:text-primary-300/60">
+                            <p className="mt-1 text-xs text-primary-500 dark:text-primary-300">
                               {formatDate(p.date)}
                             </p>
                           </div>
@@ -240,7 +240,7 @@ export default function BlogPage() {
                         <button
                           type="button"
                           onClick={() => navigate(`/blog/${p.slug}`)}
-                          className="text-left text-sm text-primary-100/80 transition-colors hover:text-gold-300"
+                          className="text-left text-sm text-primary-100/90 transition-colors hover:text-gold-300"
                         >
                           {p.title}
                         </button>
@@ -253,7 +253,7 @@ export default function BlogPage() {
                   <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">
                     Quarterly market briefing
                   </h3>
-                  <p className="mb-4 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+                  <p className="mb-4 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
                     Get our flagship research report delivered to your inbox each quarter.
                   </p>
                   <Button to="/contact" variant="primary" size="sm" iconRight="arrowRight">

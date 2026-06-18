@@ -19,7 +19,7 @@ const FormField = forwardRef(function FormField(
   const id = `field-${name}`
   const showError = touched && error
   const baseInput =
-    'w-full rounded-lg border bg-white px-4 py-3 text-sm text-primary-900 transition-colors placeholder-primary-400/60 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 dark:bg-primary-950 dark:text-white dark:placeholder-primary-500/50'
+    'w-full rounded-lg border bg-white px-4 py-3 text-sm text-primary-900 transition-colors placeholder-primary-400/80 focus:border-gold-500 focus:outline-none focus:ring-2 focus:ring-gold-500/40 dark:bg-primary-950 dark:text-white dark:placeholder-primary-400/60'
   const stateCls = showError
     ? 'border-error-500 dark:border-error-500'
     : 'border-primary-200 dark:border-primary-700'

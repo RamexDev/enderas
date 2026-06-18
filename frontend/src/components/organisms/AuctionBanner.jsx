@@ -51,7 +51,7 @@ export default function AuctionBanner({ highlight }) {
               <Badge variant="gold" className="!bg-gold-500/15 !text-gold-300 !ring-gold-400/30">
                 <Icon name="gavel" className="h-3 w-3" /> Auction & Valuation
               </Badge>
-              <span className="text-xs uppercase tracking-wider text-primary-200/60">Featured opportunity</span>
+              <span className="text-xs uppercase tracking-wider text-primary-200/85">Featured opportunity</span>
             </MotionDiv>
             <MotionDiv delay={0.05}>
               <h2
@@ -67,12 +67,12 @@ export default function AuctionBanner({ highlight }) {
                   <div className="font-heading text-2xl font-semibold tabular-nums text-gold-400 sm:text-3xl lg:text-4xl">
                     {String(c.value).padStart(2, '0')}
                   </div>
-                  <div className="mt-1 text-[10px] uppercase tracking-widest text-primary-200/60">{c.label}</div>
+                  <div className="mt-1 text-[10px] uppercase tracking-widest text-primary-200/85">{c.label}</div>
                 </div>
               ))}
             </MotionDiv>
             <MotionDiv delay={0.15}>
-              <p className="mt-6 max-w-xl text-sm leading-relaxed text-primary-100/80 sm:mt-8 sm:text-base">
+              <p className="mt-6 max-w-xl text-sm leading-relaxed text-primary-100/90 sm:mt-8 sm:text-base">
                 {highlight.blurb}
               </p>
             </MotionDiv>
@@ -101,14 +101,14 @@ export default function AuctionBanner({ highlight }) {
                 </Badge>
                 <h3 className="mb-1.5 font-heading text-xl font-semibold leading-tight sm:text-2xl">{highlight.title}</h3>
                 {highlight.location && (
-                  <p className="flex items-center gap-1.5 text-sm text-primary-100/70">
+                  <p className="flex items-center gap-1.5 text-sm text-primary-100/85">
                     <Icon name="mapPin" className="h-3.5 w-3.5" /> {highlight.location}
                   </p>
                 )}
                 <div className="mt-4 flex flex-col gap-2 border-t border-white/10 pt-4 sm:mt-4 sm:flex-row sm:items-center sm:justify-between">
                   {highlight.reserve && (
                     <div>
-                      <div className="text-[10px] uppercase tracking-widest text-primary-200/60">Reserve</div>
+                      <div className="text-[10px] uppercase tracking-widest text-primary-200/85">Reserve</div>
                       <div className="font-heading text-lg text-gold-300 sm:text-xl">{highlight.reserve}</div>
                     </div>
                   )}

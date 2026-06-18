@@ -180,7 +180,7 @@ export default function HomePage() {
                       </span>
                       <div>
                         <h3 className="text-sm font-semibold text-primary-900 dark:text-white">{f.title}</h3>
-                        <p className="mt-0.5 text-xs leading-relaxed text-primary-700/70 dark:text-primary-200/60">
+                        <p className="mt-0.5 text-xs leading-relaxed text-primary-700/90 dark:text-primary-200/60">
                           {f.body}
                         </p>
                       </div>

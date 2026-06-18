@@ -130,7 +130,7 @@ export default function BlogDetailPage() {
               <h1 className="font-heading text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-[1.1] tracking-tight">
                 {post.title}
               </h1>
-              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-primary-100/70">
+              <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-primary-100/85">
                 <span className="flex items-center gap-2">
                   <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-700 text-gold-300">
                     <Icon name="user" className="w-4 h-4" />
@@ -170,7 +170,7 @@ export default function BlogDetailPage() {
                   />
                 ) : (
                   post.content.split('\n\n').map((para, i) => (
-                    <p key={i} className="mb-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
+                    <p key={i} className="mb-5 text-base leading-relaxed text-primary-800/90 dark:text-primary-200/85">
                       {para}
                     </p>
                   ))
@@ -179,7 +179,7 @@ export default function BlogDetailPage() {
 
               <div className="mt-10 flex flex-col gap-4 border-t border-primary-100 pt-6 sm:mt-12 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:pt-8 dark:border-primary-800">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-primary-600 dark:text-primary-300">Share:</span>
+                  <span className="text-sm text-primary-500 dark:text-primary-200">Share:</span>
                   {social.map((s) => (
                     <a
                       key={s.name}
@@ -201,11 +201,11 @@ export default function BlogDetailPage() {
                   <Icon name="user" className="h-6 w-6 sm:h-7 sm:w-7" />
                 </span>
                 <div>
-                  <p className="mb-1 text-xs uppercase tracking-wider text-primary-600/70 dark:text-primary-300/60">
+                  <p className="mb-1 text-xs uppercase tracking-wider text-primary-500 dark:text-primary-300">
                     Written by
                   </p>
                   <h3 className="font-heading text-lg font-semibold text-primary-900 dark:text-white">{post.author}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+                  <p className="mt-1 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
                     Contributor at Enderas Asset Management.
                   </p>
                 </div>

@@ -18,7 +18,7 @@ export default function SectionHeading({ eyebrow, title, intro, align = 'left', 
       </h2>
       {intro && (
         <p
-          className={`mt-4 text-base leading-relaxed ${light ? 'text-primary-100/80' : 'text-primary-700/80 dark:text-primary-200/70'}`}
+          className={`mt-4 text-base leading-relaxed ${light ? 'text-primary-100/80' : 'text-primary-700/95 dark:text-primary-200/85'}`}
         >
           {intro}
         </p>

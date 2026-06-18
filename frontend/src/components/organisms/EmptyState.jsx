@@ -9,7 +9,7 @@ export default function EmptyState({ icon = 'search', title, message, action }) 
       </div>
       <h3 className="font-heading text-xl font-semibold text-primary-900 dark:text-white">{title}</h3>
       {message && (
-        <p className="mx-auto mt-2 max-w-md text-sm text-primary-700/80 dark:text-primary-200/70">{message}</p>
+        <p className="mx-auto mt-2 max-w-md text-sm text-primary-700/95 dark:text-primary-200/70">{message}</p>
       )}
       {action && <div className="mt-6">{action}</div>}
     </MotionDiv>

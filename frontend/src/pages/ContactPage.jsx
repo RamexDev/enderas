@@ -109,7 +109,7 @@ export default function ContactPage() {
                     <h2 className="font-heading text-2xl font-semibold text-primary-900 dark:text-white">
                       Thank you, {submittedName}.
                     </h2>
-                    <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+                    <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
                       Your inquiry has been received. An Enderas partner will reach out within one business day.
                     </p>
                     <div className="mt-8">
@@ -129,7 +129,7 @@ export default function ContactPage() {
                     <h2 className="mb-2 font-heading text-2xl font-semibold text-primary-900 dark:text-white">
                       Send us a message
                     </h2>
-                    <p className="mb-7 text-sm text-primary-700/70 dark:text-primary-200/60">
+                    <p className="mb-7 text-sm text-primary-700/90 dark:text-primary-200/80">
                       All fields marked with * are required.
                     </p>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
@@ -193,7 +193,7 @@ export default function ContactPage() {
                         <Button type="submit" variant="primary" size="lg" disabled={submitting} iconRight="arrowRight" className="w-full sm:w-auto">
                           {submitting ? 'Sending…' : 'Send message'}
                         </Button>
-                        <p className="text-center text-xs text-primary-600/70 sm:text-left dark:text-primary-300/60">
+                        <p className="text-center text-xs text-primary-500/80 sm:text-left dark:text-primary-300/60">
                           We typically respond within one business day.
                         </p>
                       </div>
@@ -212,9 +212,9 @@ export default function ContactPage() {
                       <Icon name="mapPin" className="h-4 w-4" />
                     </span>
                     <div>
-                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/60">Office</div>
+                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Office</div>
                       <div className="text-primary-100/90">{settings.address}</div>
-                      <div className="mt-1 text-xs text-primary-200/70">
+                      <div className="mt-1 text-xs text-primary-200/85">
                         {settings.city}, {settings.country}
                         {settings.poBox ? ` · P.O. Box ${settings.poBox}` : ''}
                       </div>
@@ -225,7 +225,7 @@ export default function ContactPage() {
                       <Icon name="phone" className="h-4 w-4" />
                     </span>
                     <div>
-                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/60">Phone</div>
+                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Phone</div>
                       <a href={telHref(settings.phone)} className="block text-primary-100/90 hover:text-gold-300">
                         {settings.phone}
                       </a>
@@ -241,7 +241,7 @@ export default function ContactPage() {
                       <Icon name="mail" className="h-4 w-4" />
                     </span>
                     <div>
-                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/60">Email</div>
+                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Email</div>
                       <a href={`mailto:${settings.email}`} className="text-primary-100/90 hover:text-gold-300">
                         {settings.email}
                       </a>
@@ -252,7 +252,7 @@ export default function ContactPage() {
                       <Icon name="clock" className="h-4 w-4" />
                     </span>
                     <div>
-                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/60">Hours</div>
+                      <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Hours</div>
                       <div className="text-primary-100/90">{settings.hours}</div>
                     </div>
                   </li>

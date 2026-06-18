@@ -7,7 +7,7 @@ import { HOME_SECTIONS, INTRO_IMAGES, INTRO_PILLARS } from '@/constants/homeSect
 import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
 
 const SERVICE_ICONS = {
-  'asset-management': 'building',
+  'asset-management': 'layers',
   'property-appraisal-and-liquidation': 'scale',
   'property-appraisal-valuation': 'scale',
   'investment-advisory': 'chart',
@@ -180,7 +180,7 @@ export function mapFaq(item) {
  */
 export function mapSettings(apiSettings = {}, contactPage = {}) {
   const social = [
-    apiSettings.facebook_url && { name: 'Facebook', href: apiSettings.facebook_url, icon: 'linkedin' },
+    apiSettings.facebook_url && { name: 'Facebook', href: apiSettings.facebook_url, icon: 'facebook' },
     apiSettings.linkedin_url && { name: 'LinkedIn', href: apiSettings.linkedin_url, icon: 'linkedin' },
     apiSettings.twitter_url && { name: 'Twitter', href: apiSettings.twitter_url, icon: 'twitter' },
     apiSettings.instagram_url && { name: 'Instagram', href: apiSettings.instagram_url, icon: 'instagram' },

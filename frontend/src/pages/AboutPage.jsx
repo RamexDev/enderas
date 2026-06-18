@@ -73,7 +73,7 @@ export default function AboutPage() {
           <div className="grid gap-10 sm:gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="min-w-0 lg:col-span-7">
               <SectionHeading eyebrow="History" title="Our story." />
-              <MotionDiv delay={0.05} className="mt-6 space-y-5 text-base leading-relaxed text-primary-800/80 dark:text-primary-200/75">
+              <MotionDiv delay={0.05} className="mt-6 space-y-5 text-base leading-relaxed text-primary-800/90 dark:text-primary-200/85">
                 <p>{about.history}</p>
                 {about.historyExtended && <p>{about.historyExtended}</p>}
               </MotionDiv>
@@ -84,14 +84,14 @@ export default function AboutPage() {
                   <Icon name="sparkles" className="w-5 h-5" />
                 </div>
                 <h3 className="mb-2 font-heading text-xl font-semibold text-primary-900 dark:text-white">Mission</h3>
-                <p className="text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{about.mission}</p>
+                <p className="text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">{about.mission}</p>
               </MotionDiv>
               <MotionDiv delay={0.1} className="rounded-2xl bg-primary-900 p-5 text-white dark:bg-primary-800 sm:p-7">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gold-500/20 text-gold-300">
                   <Icon name="eye" className="w-5 h-5" />
                 </div>
                 <h3 className="mb-2 font-heading text-xl font-semibold">Vision</h3>
-                <p className="text-sm leading-relaxed text-primary-100/80">{about.vision}</p>
+                <p className="text-sm leading-relaxed text-primary-100/90">{about.vision}</p>
               </MotionDiv>
             </div>
           </div>
@@ -111,7 +111,7 @@ export default function AboutPage() {
                   {String(i + 1).padStart(2, '0')}
                 </div>
                 <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">{v.title}</h3>
-                <p className="text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{v.body}</p>
+                <p className="text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">{v.body}</p>
               </MotionItem>
             ))}
           </MotionStagger>

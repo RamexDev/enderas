@@ -21,7 +21,7 @@ export function CTASection({ cta }) {
         <div className="mx-auto max-w-3xl text-center">
           <MotionDiv>
             <h2 className="font-heading text-[clamp(1.75rem,4vw,2.25rem)] font-semibold leading-tight">{cta.title}</h2>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/80 sm:text-base">{cta.body}</p>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/90 sm:text-base">{cta.body}</p>
           </MotionDiv>
           <MotionDiv className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center" delay={0.1}>
             <Button to={cta.primary.to} variant="primary" size="lg" iconRight="arrowRight" className="w-full sm:w-auto">
@@ -64,7 +64,7 @@ export function PageHero({ eyebrow, title, intro, image }) {
             {title}
           </h1>
           {intro && (
-            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/80 sm:mt-5 sm:text-base lg:text-lg">
+            <p className="mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/90 sm:mt-5 sm:text-base lg:text-lg">
               {intro}
             </p>
           )}

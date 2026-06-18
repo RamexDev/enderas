@@ -39,7 +39,7 @@ function FaqItem({ item, isOpen, onToggle }) {
         role="region"
         aria-labelledby={`faq-trigger-${item.id}`}
         hidden={!isOpen}
-        className="pb-5 text-sm leading-relaxed text-primary-700/85 dark:text-primary-200/75"
+        className="pb-5 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85"
       >
         {item.answer}
       </div>

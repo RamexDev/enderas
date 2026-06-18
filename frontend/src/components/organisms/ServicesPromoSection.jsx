@@ -22,7 +22,7 @@ export default function ServicesPromoSection({ promo }) {
               <Icon name="scale" className="h-3 w-3" /> {promo.eyebrow}
             </Badge>
             <h2 className="font-heading text-[clamp(1.5rem,4vw,2.25rem)] font-semibold leading-tight">{promo.title}</h2>
-            <p className="mt-4 text-sm leading-relaxed text-primary-100/80 sm:text-base">{promo.body}</p>
+            <p className="mt-4 text-sm leading-relaxed text-primary-100/90 sm:text-base">{promo.body}</p>
             <ul className="mb-8 mt-6 space-y-2.5">
               {promo.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-2.5 text-sm text-primary-100/90">

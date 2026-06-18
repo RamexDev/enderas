@@ -26,7 +26,7 @@ export default function Footer() {
         <div className="grid grid-cols-2 gap-8 sm:gap-10 lg:grid-cols-12 lg:gap-12">
           <div className="col-span-2 lg:col-span-4">
             <Logo light />
-            <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-200/70">{settings.footerDescription}</p>
+            <p className="mt-5 max-w-sm text-sm leading-relaxed text-primary-200/90">{settings.footerDescription}</p>
             <div className="mt-6 flex items-center gap-3">
               {settings.social.map((item) => (
                 <a
@@ -49,14 +49,14 @@ export default function Footer() {
               {PUBLIC_NAV.map((item) => (
                 <li key={item.to + item.label}>
                   {item.to === '#' ? (
-                    <a href="#" className="text-sm text-primary-200/70 transition-colors hover:text-gold-300">
+                    <a href="#" className="text-sm text-primary-200/90 transition-colors hover:text-gold-300">
                       {item.label}
                     </a>
                   ) : (
                     <button
                       type="button"
                       onClick={() => navigate(item.to)}
-                      className="text-sm text-primary-200/70 transition-colors hover:text-gold-300"
+                      className="text-sm text-primary-200/90 transition-colors hover:text-gold-300"
                     >
                       {item.label}
                     </button>
@@ -74,7 +74,7 @@ export default function Footer() {
                   <button
                     type="button"
                     onClick={() => navigate('/services')}
-                    className="text-sm text-primary-200/70 transition-colors hover:text-gold-300"
+                    className="text-sm text-primary-200/90 transition-colors hover:text-gold-300"
                   >
                     {svc.title}
                   </button>
@@ -85,7 +85,7 @@ export default function Footer() {
 
           <div className="lg:col-span-3">
             <h4 className="mb-4 text-xs font-semibold uppercase tracking-[0.2em] text-gold-400">Contact</h4>
-            <ul className="space-y-3 text-sm text-primary-200/70">
+            <ul className="space-y-3 text-sm text-primary-200/90">
               <li className="flex items-start gap-2.5">
                 <Icon name="mapPin" className="mt-0.5 w-4 h-4 shrink-0 text-gold-400" />
                 <span>{settings.address}</span>
@@ -120,10 +120,10 @@ export default function Footer() {
         </div>
 
         <div className="mt-14 flex flex-col items-center justify-between gap-4 border-t border-primary-800/60 pt-8 text-center sm:flex-row sm:text-left">
-          <p className="text-xs text-primary-300/60">
+          <p className="text-xs text-primary-200/80">
             © {new Date().getFullYear()} {settings.appName} Asset Management. All rights reserved.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-primary-300/60 sm:justify-end">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-primary-200/80 sm:justify-end">
             <a href="#" className="hover:text-gold-300">
               Privacy Policy
             </a>

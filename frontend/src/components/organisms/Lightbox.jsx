@@ -66,10 +66,10 @@ export default function Lightbox({ item, onClose, onPrev, onNext }) {
             <Badge variant="gold" className="!bg-gold-500/20 !text-gold-200 !ring-gold-400/30">
               {item.category}
             </Badge>
-            {item.value && <span className="text-sm text-primary-100/70">{item.value}</span>}
+            {item.value && <span className="text-sm text-primary-100/85">{item.value}</span>}
           </div>
           <h3 className="font-heading text-xl font-semibold sm:text-2xl">{item.title}</h3>
-          <p className="mt-1 flex items-center gap-1.5 text-sm text-primary-100/70">
+          <p className="mt-1 flex items-center gap-1.5 text-sm text-primary-100/85">
             <Icon name="mapPin" className="w-4 h-4" /> {item.location}
           </p>
         </div>

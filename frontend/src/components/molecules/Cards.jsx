@@ -25,7 +25,7 @@ export function ServiceCard({ service }) {
       </div>
       <div className="flex flex-1 flex-col p-5 sm:p-6">
         <h3 className="mb-2 font-heading text-lg font-semibold text-primary-900 sm:text-xl dark:text-white">{service.title}</h3>
-        <p className="mb-5 flex-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+        <p className="mb-5 flex-1 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
           {service.excerpt}
         </p>
         <Link
@@ -97,7 +97,7 @@ export function BlogCard({ post, featured = false }) {
         </div>
       </Link>
       <div className={`flex flex-col p-5 sm:p-6 ${featured ? 'lg:w-1/2 lg:justify-center' : ''}`}>
-        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-primary-600/70 dark:text-primary-300/60">
+        <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-primary-500 dark:text-primary-300">
           <span className="flex items-center gap-1">
             <Icon name="calendar" className="w-3.5 h-3.5" />
             {dateStr}
@@ -114,7 +114,7 @@ export function BlogCard({ post, featured = false }) {
             {post.title}
           </h3>
         </Link>
-        <p className="mb-4 flex-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">
+        <p className="mb-4 flex-1 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">
           {post.excerpt}
         </p>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -159,7 +159,7 @@ export function StatCard({ stat }) {
           {stat.suffix}
         </span>
       </div>
-      <div className="mt-2 text-sm uppercase tracking-wider text-primary-700/80 dark:text-primary-200/70">
+      <div className="mt-2 text-sm uppercase tracking-wider text-primary-700/95 dark:text-primary-200/85">
         {stat.label}
       </div>
     </div>
@@ -182,7 +182,7 @@ export function TeamCard({ member, index = 0 }) {
           <p className="text-sm text-gold-300">{member.role}</p>
         </div>
       </div>
-      <p className="text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{member.bio}</p>
+      <p className="text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">{member.bio}</p>
     </MotionDiv>
   )
 }
@@ -220,7 +220,7 @@ export function AuctionAssetCard({ asset }) {
         </div>
         {!isClosed && (
           <div className="absolute bottom-3 left-3 right-3 rounded-xl border border-white/15 bg-primary-950/75 p-3 backdrop-blur-md">
-            <div className="text-[10px] uppercase tracking-widest text-primary-200/70">Closes in</div>
+            <div className="text-[10px] uppercase tracking-widest text-primary-200/85">Closes in</div>
             <div className="mt-1 flex gap-2 text-white">
               {[
                 { label: 'D', value: countdown.days },
@@ -229,7 +229,7 @@ export function AuctionAssetCard({ asset }) {
               ].map((cell) => (
                 <span key={cell.label} className="font-heading text-lg tabular-nums">
                   {String(cell.value).padStart(2, '0')}
-                  <span className="ml-0.5 text-xs text-primary-200/60">{cell.label}</span>
+                  <span className="ml-0.5 text-xs text-primary-200/80">{cell.label}</span>
                 </span>
               ))}
             </div>
@@ -238,7 +238,7 @@ export function AuctionAssetCard({ asset }) {
       </div>
 
       <div className="flex flex-1 flex-col p-5 sm:p-6">
-        <div className="mb-2 flex items-center gap-2 text-xs text-primary-600 dark:text-primary-300">
+        <div className="mb-2 flex items-center gap-2 text-xs text-primary-500 dark:text-primary-200">
           <Badge variant="gold">{asset.type}</Badge>
           <span className="flex items-center gap-1">
             <Icon name="mapPin" className="h-3.5 w-3.5" />
@@ -246,7 +246,7 @@ export function AuctionAssetCard({ asset }) {
           </span>
         </div>
         <h3 className="font-heading text-xl font-semibold leading-tight text-primary-900 dark:text-white">{asset.title}</h3>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-primary-700/80 dark:text-primary-200/70">{asset.blurb}</p>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-primary-700/95 dark:text-primary-200/85">{asset.blurb}</p>
         <div className="mt-5 flex items-end justify-between gap-3 border-t border-primary-100 pt-4 dark:border-primary-800">
           <div>
             <div className="text-[10px] uppercase tracking-widest text-primary-500 dark:text-primary-400">

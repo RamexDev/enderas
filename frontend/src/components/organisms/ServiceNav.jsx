@@ -92,7 +92,7 @@ export default function ServiceNav({ services, activeId, onSelect }) {
                   <span className="block font-heading text-base font-semibold leading-snug">{service.title}</span>
                   <span
                     className={`mt-0.5 block text-xs leading-relaxed ${
-                      isActive ? 'text-primary-100/70' : 'text-primary-600/70 dark:text-primary-300/60'
+                      isActive ? 'text-primary-100/70' : 'text-primary-500 dark:text-primary-300'
                     }`}
                   >
                     {service.excerpt}

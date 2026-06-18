@@ -2,7 +2,7 @@ export default function Loader({ label = 'Loading…' }) {
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center gap-4" role="status" aria-live="polite">
       <div className="h-10 w-10 animate-spin rounded-full border-2 border-gold-500 border-t-transparent" />
-      <span className="text-sm text-primary-600 dark:text-primary-300">{label}</span>
+      <span className="text-sm text-primary-500 dark:text-primary-200">{label}</span>
     </div>
   )
 }

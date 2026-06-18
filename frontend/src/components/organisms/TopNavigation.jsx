@@ -79,7 +79,7 @@ export default function TopNavigation() {
                       ? 'text-gold-600 dark:text-gold-400'
                       : navTransparent
                         ? 'text-white/90 hover:text-gold-300'
-                        : 'text-primary-800 hover:text-gold-600 dark:text-primary-100 dark:hover:text-gold-400'
+                        : 'text-primary-500 hover:text-gold-600 dark:text-primary-100 dark:hover:text-gold-400'
                   }`}
                 >
                   {item.label}
@@ -112,34 +112,34 @@ export default function TopNavigation() {
               type="button"
               onClick={toggleTheme}
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors ${
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors bg-transparent ${
                 navTransparent
-                  ? 'text-white hover:bg-white/10'
-                  : 'text-primary-800 hover:bg-primary-100 dark:text-primary-100 dark:hover:bg-primary-800'
+                  ? 'text-white'
+                  : 'text-primary-500 dark:text-primary-100'
               }`}
             >
               <Icon name={theme === 'dark' ? 'sun' : 'moon'} className="h-5 w-5" />
             </button>
 
-            <Button
-              to="/contact"
-              size="sm"
-              variant={headerSolid ? 'secondary' : navTransparent ? 'white' : 'secondary'}
-              className="hidden lg:inline-flex"
-            >
-              <span className="hidden 2xl:inline">Request a Valuation</span>
-              <span className="2xl:hidden">Valuation</span>
-            </Button>
+            <span className="hidden lg:inline-flex">
+              <Button
+                to="/contact"
+                size="sm"
+                variant={headerSolid ? 'secondary' : navTransparent ? 'white' : 'secondary'}
+              >
+                Request Valuation
+              </Button>
+            </span>
 
             <button
               type="button"
               onClick={() => setMobileNavOpen(true)}
               aria-label="Open menu"
               aria-expanded={mobileNavOpen}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors lg:hidden ${
+              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors bg-transparent lg:hidden ${
                 navTransparent
-                  ? 'text-white hover:bg-white/10'
-                  : 'text-primary-900 hover:bg-primary-100 dark:text-white dark:hover:bg-primary-800'
+                  ? 'text-white'
+                  : 'text-primary-500 dark:text-primary-100'
               }`}
             >
               <Icon name="menu" className="h-6 w-6" />
@@ -150,7 +150,7 @@ export default function TopNavigation() {
 
       <div
         className={`fixed inset-0 z-[60] lg:hidden ${mobileNavOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
-        aria-hidden={!mobileNavOpen}
+        inert={!mobileNavOpen ? '' : undefined}
       >
         <button
           type="button"
@@ -165,7 +165,6 @@ export default function TopNavigation() {
           role="dialog"
           aria-modal="true"
           aria-label="Mobile navigation"
-          aria-hidden={!mobileNavOpen}
           className={`absolute bottom-0 right-0 top-0 flex w-[min(100%,22rem)] flex-col bg-sand-50 shadow-2xl transition-transform duration-200 ease-out dark:bg-primary-950 ${
             mobileNavOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
@@ -176,7 +175,7 @@ export default function TopNavigation() {
               type="button"
               onClick={() => setMobileNavOpen(false)}
               aria-label="Close menu"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary-900 hover:bg-primary-100 dark:text-white dark:hover:bg-primary-800"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary-500 bg-transparent dark:text-primary-100"
             >
               <Icon name="close" className="h-6 w-6" />
             </button>
@@ -215,9 +214,9 @@ export default function TopNavigation() {
 
           <div className="space-y-3 border-t border-primary-100 p-4 dark:border-primary-800 sm:p-5">
             <Button to="/contact" variant="secondary" className="w-full" onClick={() => setMobileNavOpen(false)}>
-              Request a Valuation
+              Request Valuation
             </Button>
-            <div className="flex items-center justify-center gap-4 text-primary-600 dark:text-primary-300">
+            <div className="flex items-center justify-center gap-4 text-primary-500 dark:text-primary-200">
               {social.map((s) => (
                 <a
                   key={s.name}

@@ -87,7 +87,7 @@ export default function HeroSlider({ slides = [] }) {
               <h1 className="mt-4 font-heading text-[clamp(1.875rem,5vw,3.75rem)] font-semibold leading-[1.05] tracking-tight sm:mt-5">
                 {s.title}
               </h1>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/85 sm:mt-6 sm:text-base lg:text-lg">
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-primary-100/90 sm:mt-6 sm:text-base lg:text-lg">
                 {s.subtitle}
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center">
@@ -126,7 +126,7 @@ export default function HeroSlider({ slides = [] }) {
           </button>
         </div>
 
-        <div className="absolute bottom-20 left-0 right-0 flex items-center justify-center gap-3 sm:bottom-8 sm:left-6 sm:right-auto sm:justify-start lg:left-8" role="tablist" aria-label="Slide indicators">
+        <div className="absolute bottom-10 left-0 right-0 flex items-center justify-center gap-3 sm:bottom-8 sm:left-6 sm:right-auto sm:justify-start lg:left-8" role="tablist" aria-label="Slide indicators">
           {slides.map((s, i) => (
             <button
               key={s.id}
