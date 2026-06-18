@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { useContentStore } from '@/store/useContentStore'
+import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
+import { useSiteStore } from '@/store/useSiteStore'
 
 export default function Logo({ onClick, light = false }) {
-  const settings = useContentStore((s) => s.settings)
+  const storeSettings = useSiteStore((s) => s.settings)
+  const settings = storeSettings || DEFAULT_SITE_SETTINGS
   const navigate = useNavigate()
 
   const handleClick = () => {

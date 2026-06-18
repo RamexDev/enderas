@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async'
-import { useContentStore } from '@/store/useContentStore'
+import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
+import { useSiteStore } from '@/store/useSiteStore'
 
 export default function SeoHead({
   title,
@@ -9,7 +10,8 @@ export default function SeoHead({
   jsonLd,
   noIndex = false,
 }) {
-  const settings = useContentStore((s) => s.settings)
+  const storeSettings = useSiteStore((s) => s.settings)
+  const settings = storeSettings || DEFAULT_SITE_SETTINGS
   const seo = settings.seo
   const pageTitle = title ? `${title} | ${settings.appName}` : seo.defaultTitle
   const pageDescription = description || seo.defaultDescription

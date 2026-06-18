@@ -24,7 +24,7 @@ import { getBlogPosts } from '@/services/blogService'
 import { useSiteStore } from '@/store/useSiteStore'
 
 /**
- * Landing page with CMS-driven sections. FAQ and testimonials render only when enabled in the admin CMS.
+ * Landing page with CMS-driven sections. FAQ and testimonials render only when enabled in the CMS.
  */
 export default function HomePage() {
   const settings = useSiteStore((s) => s.settings)

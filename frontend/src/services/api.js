@@ -12,13 +12,6 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
-/** Attaches admin token when present (legacy in-app admin only). */
-api.interceptors.request.use((config) => {
-  const token = sessionStorage.getItem('enderas-admin-token')
-  if (token) config.headers.Authorization = `Bearer ${token}`
-  return config
-})
-
 api.interceptors.response.use(
   (response) => response,
   (error) => {

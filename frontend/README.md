@@ -20,7 +20,6 @@ The UI follows the specification in [`../docs/frontenddoc.md`](../docs/frontendd
 - [Public routes](#public-routes)
 - [API layer](#api-layer)
 - [State management](#state-management)
-- [Legacy embedded admin](#legacy-embedded-admin)
 - [Design system](#design-system)
 - [Accessibility and SEO](#accessibility-and-seo)
 - [Production deployment](#production-deployment)
@@ -59,7 +58,7 @@ Per project spec, there is **no standalone auction platform** yet. The **Assets 
 | UI | [React 19](https://react.dev/) | Component framework |
 | Build | [Vite 8](https://vite.dev/) | Dev server and production bundler |
 | Styling | [Tailwind CSS v4](https://tailwindcss.com/) | Utility-first design system |
-| Routing | [React Router 7](https://reactrouter.com/) | Public routes (+ legacy `/admin`) |
+| Routing | [React Router 7](https://reactrouter.com/) | Public routes |
 | State | [Zustand 5](https://zustand.docs.pmnd.rs/) | Site settings, UI preferences only |
 | HTTP | [Axios 1.x](https://axios-http.com/) | Centralized API client |
 | Forms | [React Hook Form 7](https://react-hook-form.com/) + [Zod 4](https://zod.dev/) | Contact form validation |
@@ -121,7 +120,7 @@ npm run dev    # http://localhost:5173
 | URL | Description |
 | --- | ----------- |
 | `http://localhost:5173` | Admin CMS (fixed port) |
-| `http://localhost:5173` or `http://localhost:5174` | Public website (5174 when admin already uses 5173) |
+| `http://localhost:5173` or `http://localhost:5174` | Public website |
 | `http://localhost:5000/api/v1/health` | Backend health check |
 
 Content is edited in the **Admin CMS** (`../admin`), not in this app.
@@ -138,7 +137,6 @@ Create a `.env` file from [`.env.example`](.env.example). Only variables prefixe
 | -------- | -------- | ------- | ----------- |
 | `VITE_API_BASE_URL` | **Yes** (for live CMS) | `http://localhost:5000/api/v1` | Backend public API base URL |
 | `VITE_APP_NAME` | No | `Enderas Asset Management` | Fallback display name |
-| `VITE_ADMIN_PASSWORD` | No | `enderas-admin` | Legacy embedded admin only (`/admin/*`) |
 
 Example `.env`:
 
@@ -221,8 +219,7 @@ frontend/
 │   ├── components/
 │   │   ├── atoms/              # Button, Badge, Container, Icon, Loader
 │   │   ├── molecules/          # Cards, FormField, SectionHeading
-│   │   ├── organisms/          # TopNav, Footer, HeroSlider, FaqSection, etc.
-│   │   └── admin/              # Legacy embedded admin primitives
+│   │   └── organisms/          # TopNav, Footer, HeroSlider, FaqSection, etc.
 │   ├── constants/
 │   │   ├── navigation.js       # Static PUBLIC_NAV (Assets for Sale → #)
 │   │   ├── homeSections.js     # Fixed section headings (layout-controlled)
@@ -232,11 +229,9 @@ frontend/
 │   │   ├── useScrollReveal.js
 │   │   └── useCountUp.js
 │   ├── layouts/
-│   │   ├── MainLayout.jsx      # Public shell; initializes site store
-│   │   └── AdminLayout.jsx     # Legacy embedded admin shell
+│   │   └── MainLayout.jsx      # Public shell; initializes site store
 │   ├── pages/
-│   │   ├── public/             # Home, About, Services, Gallery, Blog, Contact, 404
-│   │   └── admin/              # Legacy mock CMS (prefer ../admin app)
+│   │   └── public/             # Home, About, Services, Gallery, Blog, Contact, 404
 │   ├── routes/
 │   ├── services/
 │   │   ├── api.js              # Axios client + unwrap helpers
@@ -251,8 +246,7 @@ frontend/
 │   │   └── index.js            # Barrel export
 │   ├── store/
 │   │   ├── useSiteStore.js     # Global settings + footer services
-│   │   ├── useUiStore.js       # Theme, mobile nav, scroll state
-│   │   └── useContentStore.js  # Legacy mock CMS (embedded admin only)
+│   │   └── useUiStore.js       # Theme, mobile nav, scroll state
 │   ├── utils/
 │   │   ├── mappers.js          # Backend snake_case → UI shapes
 │   │   ├── sanitizeHtml.js
@@ -365,24 +359,8 @@ Full backend reference: [`../backend/README.md`](../backend/README.md) and [`../
 
 | Store | Purpose | Used by |
 | ----- | ------- | ------- |
-| `useSiteStore` | Settings, footer service links | `MainLayout`, `Footer`, `TopNavigation` |
+| `useSiteStore` | Settings, footer service links | `MainLayout`, `Footer`, `TopNavigation`, `Logo`, `SeoHead` |
 | `useUiStore` | Theme, mobile nav, scroll | `TopNavigation` |
-| `useContentStore` | **Legacy** mock CMS data | Embedded `/admin/*` only |
-
----
-
-## Legacy embedded admin
-
-Routes under `/admin/*` still exist for local prototyping. They use `useContentStore` + `localStorage` and are **not** connected to the production backend.
-
-For real content management, use the standalone Admin app:
-
-```bash
-cd ../admin
-cp .env.example .env
-npm install
-npm run dev    # http://localhost:5173
-```
 
 ---
 
@@ -417,7 +395,6 @@ Utility classes: `.reveal`, `.masonry`, `.section-padding`, reduced-motion overr
 - Unique `<title>` and meta description per page (from CMS where available)
 - Canonical URLs, Open Graph, and Twitter Card tags
 - JSON-LD `Organization` on Home; `Article` on blog posts
-- `robots.txt` disallows `/admin/` crawling
 
 ---
 

@@ -3,10 +3,10 @@ import SeoHead from '@/components/organisms/SeoHead'
 import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
-import { useContentStore } from '@/store/useContentStore'
+import { PUBLIC_NAV } from '@/constants/navigation'
 
 export default function NotFoundPage() {
-  const nav = useContentStore((s) => s.nav)
+  const nav = PUBLIC_NAV.filter((item) => item.to !== '#')
 
   return (
     <>

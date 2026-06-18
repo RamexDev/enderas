@@ -2,7 +2,7 @@
   "name": "enderas-frontend",
   "private": true,
   "version": "1.0.0",
-  "description": "Enderas Asset Management public website and embedded admin CMS",
+  "description": "Enderas Asset Management public website",
   "type": "module",
   "engines": {
     "node": ">=20.0.0",

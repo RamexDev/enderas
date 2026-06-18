@@ -3,14 +3,14 @@ import { Routes, Route } from 'react-router-dom'
 import MainLayout from '@/layouts/MainLayout'
 import { PageLoader } from '@/components/atoms/Loader'
 
-const HomePage = lazy(() => import('@/pages/public/HomePage'))
-const AboutPage = lazy(() => import('@/pages/public/AboutPage'))
-const ServicesPage = lazy(() => import('@/pages/public/ServicesPage'))
-const GalleryPage = lazy(() => import('@/pages/public/GalleryPage'))
-const BlogPage = lazy(() => import('@/pages/public/BlogPage'))
-const BlogDetailPage = lazy(() => import('@/pages/public/BlogDetailPage'))
-const ContactPage = lazy(() => import('@/pages/public/ContactPage'))
-const NotFoundPage = lazy(() => import('@/pages/public/NotFoundPage'))
+const HomePage = lazy(() => import('@/pages/HomePage'))
+const AboutPage = lazy(() => import('@/pages/AboutPage'))
+const ServicesPage = lazy(() => import('@/pages/ServicesPage'))
+const GalleryPage = lazy(() => import('@/pages/GalleryPage'))
+const BlogPage = lazy(() => import('@/pages/BlogPage'))
+const BlogDetailPage = lazy(() => import('@/pages/BlogDetailPage'))
+const ContactPage = lazy(() => import('@/pages/ContactPage'))
+const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
 /**
  * Public website route definitions with lazy-loaded pages.
