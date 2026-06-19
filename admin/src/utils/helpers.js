@@ -12,6 +12,8 @@ const uploadBase = import.meta.env.VITE_UPLOAD_BASE_URL || ''
 export function normalizeMediaPath(path) {
   if (!path) return ''
   if (path.startsWith('http://') || path.startsWith('https://')) return path
+  const seedMatch = path.match(/seed-assets[/\\](.+)$/)
+  if (seedMatch) return `/seed-assets/${seedMatch[1].replace(/\\/g, '/')}`
   const match = path.match(/uploads[/\\](.+)$/)
   if (match) return `/uploads/${match[1].replace(/\\/g, '/')}`
   return path.startsWith('/') ? path : `/uploads/${path.replace(/^\//, '')}`
