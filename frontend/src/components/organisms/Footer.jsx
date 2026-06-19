@@ -74,7 +74,7 @@ export default function Footer() {
                   <button
                     type="button"
                     onClick={() => navigate('/services')}
-                    className="text-sm text-primary-200/90 transition-colors hover:text-gold-300"
+                    className="text-sm text-primary-200/90 transition-colors hover:text-gold-300 cursor-pointer"
                   >
                     {svc.title}
                   </button>
