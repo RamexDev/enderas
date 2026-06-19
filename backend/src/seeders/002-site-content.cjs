@@ -207,10 +207,26 @@ module.exports = {
       console.log(`Seeded ${content.partners.length} partners`);
     }
 
+    // Media library (seed asset files)
+    const mediaCount = await queryInterface.rawSelect('media', { where: {} }, ['id']);
+    if (!mediaCount && content.mediaFiles?.length) {
+      const adminId = await queryInterface.rawSelect('users', {
+        where: { role: 'super_admin' },
+      }, ['id']);
+
+      await queryInterface.bulkInsert('media', content.mediaFiles.map((m) => ({
+        ...m,
+        uploaded_by: adminId || null,
+        created_at: ts,
+      })));
+      console.log(`Seeded ${content.mediaFiles.length} media entries`);
+    }
+
     console.log('Site content seeding complete');
   },
 
   async down(queryInterface) {
+    await queryInterface.bulkDelete('media', null, {});
     await queryInterface.bulkDelete('post_categories', null, {});
     await queryInterface.bulkDelete('posts', null, {});
     await queryInterface.bulkDelete('categories', null, {});

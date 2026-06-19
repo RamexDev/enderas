@@ -5,6 +5,7 @@
 
 import { HOME_SECTIONS, INTRO_IMAGES, INTRO_PILLARS } from '@/constants/homeSections'
 import { DEFAULT_SITE_SETTINGS } from '@/constants/siteDefaults'
+import { imageUrl } from './imageUrl.js'
 
 const SERVICE_ICONS = {
   'asset-management': 'layers',
@@ -54,7 +55,7 @@ export function mapStatistic(stat) {
 export function mapHeroSlide(slide, index = 0) {
   return {
     id: slide.id,
-    image: slide.image,
+    image: imageUrl(slide.image),
     eyebrow: index === 0 ? 'Welcome' : 'Enderas',
     title: slide.title,
     subtitle: slide.subtitle,
@@ -75,7 +76,7 @@ export function mapService(service) {
     title: service.title,
     excerpt: service.short_description || service.description || '',
     description: service.description || service.short_description || '',
-    image: service.image,
+    image: imageUrl(service.image),
     icon: SERVICE_ICONS[service.slug] || 'briefcase',
     features: [],
     active: service.is_active !== false,
@@ -97,7 +98,7 @@ export function mapGalleryItem(item) {
   return {
     id: item.id,
     title: item.title,
-    image: item.image,
+    image: imageUrl(item.image),
     description: item.description,
     category: item.category?.name || 'Gallery',
     location: item.description ? item.description.replace(/<[^>]+>/g, '').split(/[.,\n]/)[0]?.trim() || '' : '',
@@ -117,7 +118,7 @@ export function mapBlogPost(post) {
     title: post.title,
     excerpt: post.excerpt || '',
     content: post.content || '',
-    image: post.featured_image,
+    image: imageUrl(post.featured_image),
     category: post.categories?.[0]?.name || 'Insights',
     author: post.author?.name || 'Enderas Research',
     date: post.published_at || post.created_at,
@@ -138,7 +139,7 @@ export function mapTeamMember(member) {
     id: member.id,
     name: member.full_name,
     role: member.position,
-    image: member.profile_image,
+    image: imageUrl(member.profile_image),
     bio: member.biography,
     email: member.email,
   }
@@ -155,7 +156,7 @@ export function mapTestimonial(item) {
     name: item.client_name,
     company: item.company,
     content: item.content,
-    image: item.client_image,
+    image: imageUrl(item.client_image),
   }
 }
 
@@ -215,11 +216,11 @@ export function mapSettings(apiSettings = {}, contactPage = {}) {
       defaultTitle: siteName,
       defaultDescription: apiSettings.site_description || DEFAULT_SITE_SETTINGS.seo.defaultDescription,
       siteUrl: DEFAULT_SITE_SETTINGS.seo.siteUrl,
-      ogImage: apiSettings.logo || DEFAULT_SITE_SETTINGS.seo.ogImage,
+      ogImage: imageUrl(apiSettings.logo) || DEFAULT_SITE_SETTINGS.seo.ogImage,
     },
     social: social.length ? social : DEFAULT_SITE_SETTINGS.social,
-    logo: apiSettings.logo,
-    favicon: apiSettings.favicon,
+    logo: imageUrl(apiSettings.logo),
+    favicon: imageUrl(apiSettings.favicon),
     copyright: apiSettings.copyright_text,
   }
 
@@ -272,7 +273,7 @@ export function mapHomePageData(payload) {
     auctionHighlight: {
       title: homePage?.auction_title || 'Featured opportunity',
       type: 'Valuation & Auction',
-      image: heroSlides?.[0]?.image || INTRO_IMAGES[0],
+      image: imageUrl(heroSlides?.[0]?.image) || INTRO_IMAGES[0],
       reserve: '',
       closeDate: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
       location: 'Addis Ababa, Ethiopia',
@@ -311,7 +312,7 @@ export function mapAboutPageData(payload) {
     heroIntro:
       about?.meta_description ||
       'Founded in 2007, Enderas delivers asset management, appraisal, investment advisory, and consultancy services across Ethiopia.',
-    heroImage: 'https://enderas.org/wp-content/uploads/2023/07/mission_img_10-1.jpg',
+    heroImage: imageUrl('/seed-assets/team/team-1.webp'),
     history: about?.history || '',
     historyExtended: '',
     mission: about?.mission || '',
@@ -323,7 +324,10 @@ export function mapAboutPageData(payload) {
       order: i,
     })),
     team: (teamMembers || []).map(mapTeamMember),
-    partners: (partners || []).map((p) => p.name),
+    partners: (partners || []).map((p) => ({
+      name: p.name,
+      logo: imageUrl(p.logo),
+    })),
     cta: cta ? {
       title: cta.title || 'Ready to talk to our team?',
       body: cta.body || '',

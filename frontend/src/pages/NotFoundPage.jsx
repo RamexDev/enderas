@@ -39,7 +39,7 @@ export default function NotFoundPage() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="text-primary-700 transition-colors hover:text-gold-600 dark:text-primary-200 dark:hover:text-gold-400"
+                  className="text-primary-700 transition-colors hover:text-gold-600 dark:text-primary-200 dark:hover:text-gold-400 cursor-pointer"
                 >
                   {item.label}
                 </Link>

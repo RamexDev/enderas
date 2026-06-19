@@ -226,11 +226,11 @@ export default function ContactPage() {
                     </span>
                     <div>
                       <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Phone</div>
-                      <a href={telHref(settings.phone)} className="block text-primary-100/90 hover:text-gold-300">
+                      <a href={telHref(settings.phone)} className="block text-primary-100/90 hover:text-gold-300 cursor-pointer">
                         {settings.phone}
                       </a>
                       {settings.phoneAlt && (
-                        <a href={telHref(settings.phoneAlt)} className="mt-1 block text-primary-100/90 hover:text-gold-300">
+                        <a href={telHref(settings.phoneAlt)} className="mt-1 block text-primary-100/90 hover:text-gold-300 cursor-pointer">
                           {settings.phoneAlt}
                         </a>
                       )}
@@ -242,7 +242,7 @@ export default function ContactPage() {
                     </span>
                     <div>
                       <div className="mb-0.5 text-xs uppercase tracking-wider text-primary-200/80">Email</div>
-                      <a href={`mailto:${settings.email}`} className="text-primary-100/90 hover:text-gold-300">
+                      <a href={`mailto:${settings.email}`} className="text-primary-100/90 hover:text-gold-300 cursor-pointer">
                         {settings.email}
                       </a>
                     </div>

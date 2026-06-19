@@ -120,11 +120,11 @@ export default function BlogDetailPage() {
             <div className="max-w-3xl">
               <Link
                 to="/blog"
-                className="mb-5 inline-flex items-center gap-1.5 text-sm text-gold-300 hover:text-gold-200"
+                className="mb-2 flex items-center gap-1.5 text-sm text-gold-300 hover:text-gold-200 cursor-pointer"
               >
                 <Icon name="chevronLeft" className="w-4 h-4" /> All insights
               </Link>
-              <Badge variant="gold" className="!mb-4 !bg-gold-500/15 !text-gold-300 !ring-gold-400/30">
+              <Badge variant="gold" className="mb-6 !bg-gold-500/15 !text-gold-300 !ring-gold-400/30">
                 {post.category}
               </Badge>
               <h1 className="font-heading text-[clamp(1.75rem,5vw,3rem)] font-semibold leading-[1.1] tracking-tight">
@@ -187,7 +187,7 @@ export default function BlogDetailPage() {
                       aria-label={`Share on ${s.name}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 transition-colors hover:bg-gold-500 hover:text-primary-950 dark:bg-primary-800"
+                      className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary-100 transition-colors hover:bg-gold-500 hover:text-primary-950 dark:bg-primary-800"
                     >
                       <Icon name={s.icon} className="w-4 h-4" />
                     </a>

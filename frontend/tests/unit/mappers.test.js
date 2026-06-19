@@ -56,7 +56,7 @@ describe('mapService', () => {
     expect(result).toMatchObject({
       title: 'Asset Management',
       excerpt: 'Short copy',
-      icon: 'building',
+      icon: 'layers',
       active: true,
     })
   })
@@ -201,7 +201,7 @@ describe('mapAboutPageData', () => {
         meta_description: 'About intro',
       },
       coreValues: [{ id: 'v1', title: 'Integrity', description: 'We act with integrity.' }],
-      partners: [{ name: 'Partner A' }, { name: 'Partner B' }],
+      partners: [{ name: 'Partner A', logo: 'https://example.com/a.png' }, { name: 'Partner B', logo: null }],
       teamMembers: [{ id: 'tm1', full_name: 'John Doe', position: 'CEO', profile_image: 'https://example.com/john.jpg', biography: 'Bio', email: 'john@enderas.org' }],
       show_team: true,
       cta: { title: 'Contact us today', body: 'Reach out now', primary_label: 'Contact', primary_link: '/contact' },
@@ -209,7 +209,7 @@ describe('mapAboutPageData', () => {
     expect(result.history).toBe('Founded in 2007')
     expect(result.heroTitle).toBe('Your partner in success.')
     expect(result.values[0].title).toBe('Integrity')
-    expect(result.partners).toEqual(['Partner A', 'Partner B'])
+    expect(result.partners).toEqual([{ name: 'Partner A', logo: 'https://example.com/a.png' }, { name: 'Partner B', logo: null }])
     expect(result.team).toHaveLength(1)
     expect(result.team[0].name).toBe('John Doe')
     expect(result.cta).not.toBeNull()

@@ -30,7 +30,7 @@ export function ServiceCard({ service }) {
         </p>
         <Link
           to="/services"
-          className="inline-flex items-center gap-1.5 text-sm font-medium text-gold-600 transition-all hover:gap-2.5 dark:text-gold-400"
+          className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gold-600 transition-all hover:gap-2.5 dark:text-gold-400"
         >
           Learn more <Icon name="arrowRight" className="w-4 h-4" />
         </Link>
@@ -84,7 +84,7 @@ export function BlogCard({ post, featured = false }) {
     >
       <Link
         to={`/blog/${post.slug}`}
-        className={`relative block overflow-hidden bg-primary-100 dark:bg-primary-800 ${featured ? 'aspect-[16/10] lg:aspect-auto lg:w-1/2' : 'aspect-[16/10] w-full'}`}
+        className={`relative block cursor-pointer overflow-hidden bg-primary-100 dark:bg-primary-800 ${featured ? 'aspect-[16/10] lg:aspect-auto lg:w-1/2' : 'aspect-[16/10] w-full'}`}
       >
         <img
           src={post.image}
@@ -107,7 +107,7 @@ export function BlogCard({ post, featured = false }) {
             {post.readTime} min read
           </span>
         </div>
-        <Link to={`/blog/${post.slug}`} className="text-left">
+        <Link to={`/blog/${post.slug}`} className="text-left cursor-pointer">
           <h3
             className={`mb-2 font-heading font-semibold leading-tight text-primary-900 transition-colors group-hover:text-gold-600 dark:text-white dark:group-hover:text-gold-400 ${featured ? 'text-xl sm:text-2xl lg:text-3xl' : 'text-lg'}`}
           >
@@ -126,7 +126,7 @@ export function BlogCard({ post, featured = false }) {
           </span>
           <Link
             to={`/blog/${post.slug}`}
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-gold-600 transition-all group-hover:gap-2.5 dark:text-gold-400"
+            className="inline-flex cursor-pointer items-center gap-1.5 text-sm font-medium text-gold-600 transition-all group-hover:gap-2.5 dark:text-gold-400"
           >
             Read <Icon name="arrowRight" className="w-4 h-4" />
           </Link>

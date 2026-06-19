@@ -26,8 +26,14 @@ export function mediaUrl(path) {
   if (!path) return ''
   if (path.startsWith('http://') || path.startsWith('https://')) return path
 
-  const normalized = normalizeMediaPath(path).replace(/^\/?uploads\//, '')
-  return `${uploadBase}/${normalized}`.replace(/([^:]\/)\/+/g, '$1')
+  const normalized = normalizeMediaPath(path)
+
+  if (normalized.startsWith('/seed-assets/')) {
+    const origin = uploadBase.replace(/\/uploads\/?$/, '')
+    return `${origin}${normalized}`
+  }
+
+  return `${uploadBase}/${normalized.replace(/^\/?uploads\//, '')}`.replace(/([^:]\/)\/+/g, '$1')
 }
 
 /**

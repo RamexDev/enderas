@@ -16,7 +16,7 @@ export default function Logo({ onClick, light = false }) {
     <button
       type="button"
       onClick={handleClick}
-      className="group flex min-w-0 max-w-full items-center gap-2 sm:gap-2.5"
+      className="group flex min-w-0 max-w-full cursor-pointer items-center gap-2 sm:gap-2.5"
       aria-label={`${settings.appName} home`}
     >
       {settings.logo ? (

@@ -28,7 +28,7 @@ function resolveCors(req) {
     return publicCors;
   }
 
-  if (path.startsWith('/uploads')) {
+  if (path.startsWith('/uploads') || path.startsWith('/seed-assets')) {
     return mediaCors;
   }
 

@@ -35,7 +35,7 @@ export default function Footer() {
                   aria-label={item.name}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-900 transition-colors hover:bg-gold-500 hover:text-primary-950"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-full bg-primary-900 transition-colors hover:bg-gold-500 hover:text-primary-950"
                 >
                   <Icon name={item.icon} className="w-4 h-4" />
                 </a>
@@ -49,14 +49,14 @@ export default function Footer() {
               {PUBLIC_NAV.map((item) => (
                 <li key={item.to + item.label}>
                   {item.to === '#' ? (
-                    <a href="#" className="text-sm text-primary-200/90 transition-colors hover:text-gold-300">
+                    <a href="#" className="text-sm text-primary-200/90 transition-colors hover:text-gold-300 cursor-pointer">
                       {item.label}
                     </a>
                   ) : (
                     <button
                       type="button"
                       onClick={() => navigate(item.to)}
-                      className="text-sm text-primary-200/90 transition-colors hover:text-gold-300"
+                      className="text-sm text-primary-200/90 transition-colors hover:text-gold-300 cursor-pointer"
                     >
                       {item.label}
                     </button>
@@ -94,12 +94,12 @@ export default function Footer() {
                 <Icon name="phone" className="mt-0.5 w-4 h-4 shrink-0 text-gold-400" />
                 <div className="space-y-1">
                   {settings.phone && (
-                    <a href={`tel:${settings.phone.replace(/\s/g, '')}`} className="block hover:text-gold-300">
+                    <a href={`tel:${settings.phone.replace(/\s/g, '')}`} className="block hover:text-gold-300 cursor-pointer">
                       {settings.phone}
                     </a>
                   )}
                   {settings.phoneAlt && (
-                    <a href={`tel:${settings.phoneAlt.replace(/\s/g, '')}`} className="block hover:text-gold-300">
+                    <a href={`tel:${settings.phoneAlt.replace(/\s/g, '')}`} className="block hover:text-gold-300 cursor-pointer">
                       {settings.phoneAlt}
                     </a>
                   )}
@@ -107,7 +107,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2.5">
                 <Icon name="mail" className="mt-0.5 w-4 h-4 shrink-0 text-gold-400" />
-                <a href={`mailto:${settings.email}`} className="hover:text-gold-300">
+                <a href={`mailto:${settings.email}`} className="hover:text-gold-300 cursor-pointer">
                   {settings.email}
                 </a>
               </li>
@@ -124,14 +124,8 @@ export default function Footer() {
             © {new Date().getFullYear()} {settings.appName} Asset Management. All rights reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-primary-200/80 sm:justify-end">
-            <a href="#" className="hover:text-gold-300">
-              Privacy Policy
-            </a>
-            <a href="#" className="hover:text-gold-300">
-              Terms of Service
-            </a>
-            <a href="#" className="hover:text-gold-300">
-              Disclosures
+            <a href="https://magersoftware.com/" target="_blank" rel="noopener noreferrer" className="hover:text-gold-300 cursor-pointer">
+              Mager Software PLC.
             </a>
           </div>
         </div>

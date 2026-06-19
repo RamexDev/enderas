@@ -74,7 +74,7 @@ export default function TopNavigation() {
                   key={item.to}
                   type="button"
                   onClick={() => go(item.to)}
-                  className={`relative shrink-0 rounded-md px-2 py-2 text-xs font-medium transition-colors xl:px-3 xl:text-sm ${
+                  className={`relative shrink-0 cursor-pointer rounded-md px-2 py-2 text-xs font-medium transition-colors xl:px-3 xl:text-sm ${
                     active
                       ? 'text-gold-600 dark:text-gold-400'
                       : navTransparent
@@ -112,7 +112,7 @@ export default function TopNavigation() {
               type="button"
               onClick={toggleTheme}
               aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors bg-transparent ${
+              className={`inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md transition-colors bg-transparent ${
                 navTransparent
                   ? 'text-white'
                   : 'text-primary-500 dark:text-primary-100'
@@ -136,7 +136,7 @@ export default function TopNavigation() {
               onClick={() => setMobileNavOpen(true)}
               aria-label="Open menu"
               aria-expanded={mobileNavOpen}
-              className={`inline-flex h-10 w-10 items-center justify-center rounded-md transition-colors bg-transparent lg:hidden ${
+              className={`inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md transition-colors bg-transparent lg:hidden ${
                 navTransparent
                   ? 'text-white'
                   : 'text-primary-500 dark:text-primary-100'
@@ -150,14 +150,14 @@ export default function TopNavigation() {
 
       <div
         className={`fixed inset-0 z-[60] lg:hidden ${mobileNavOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
-        inert={!mobileNavOpen ? '' : undefined}
+        inert={!mobileNavOpen ? true : undefined}
       >
         <button
           type="button"
           aria-label="Close menu"
           tabIndex={mobileNavOpen ? 0 : -1}
           onClick={() => setMobileNavOpen(false)}
-          className={`absolute inset-0 bg-primary-950/70 transition-opacity duration-200 ${
+          className={`absolute inset-0 cursor-pointer bg-primary-950/70 transition-opacity duration-200 ${
             mobileNavOpen ? 'opacity-100' : 'opacity-0'
           }`}
         />
@@ -175,7 +175,7 @@ export default function TopNavigation() {
               type="button"
               onClick={() => setMobileNavOpen(false)}
               aria-label="Close menu"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-md text-primary-500 bg-transparent dark:text-primary-100"
+              className="inline-flex h-10 w-10 cursor-pointer items-center justify-center rounded-md text-primary-500 bg-transparent dark:text-primary-100"
             >
               <Icon name="close" className="h-6 w-6" />
             </button>
@@ -200,7 +200,7 @@ export default function TopNavigation() {
                   key={item.to + item.label}
                   type="button"
                   onClick={() => (item.to === '#' ? setMobileNavOpen(false) : go(item.to))}
-                  className={`rounded-lg px-4 py-3 text-left text-base font-medium transition-colors ${
+                  className={`rounded-lg px-4 py-3 text-left text-base font-medium transition-colors cursor-pointer ${
                     isActive(item.to)
                       ? 'bg-gold-500/15 text-gold-700 dark:text-gold-300'
                       : 'text-primary-900 hover:bg-primary-100 dark:text-primary-100 dark:hover:bg-primary-900'
@@ -222,7 +222,7 @@ export default function TopNavigation() {
                   key={s.name}
                   href={s.href}
                   aria-label={s.name}
-                  className="hover:text-gold-600 dark:hover:text-gold-400"
+                  className="cursor-pointer hover:text-gold-600 dark:hover:text-gold-400"
                   target="_blank"
                   rel="noopener noreferrer"
                 >

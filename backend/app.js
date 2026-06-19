@@ -3,6 +3,8 @@
  * Configures security middleware, rate limiting, static uploads, health check, and API routes.
  */
 
+import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -15,6 +17,7 @@ import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFound } from './src/middleware/notFound.js';
 import logger from './src/utils/logger.js';
 
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
 if (!env.isTest) {
@@ -25,7 +28,7 @@ if (!env.isTest) {
 app.use(requestId);
 
 // Security headers (XSS, clickjacking, etc.)
-app.use(helmet());
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
 // Path-scoped CORS — each client origin may only access its designated endpoints
 app.use(scopedCors);
@@ -70,6 +73,9 @@ app.use('/api/v1/public/contact', contactLimiter);
 
 // Serve uploaded media files
 app.use('/uploads', express.static(env.upload.resolvedPath));
+
+// Serve seed asset images (downloaded from the legacy WordPress site)
+app.use('/seed-assets', express.static(path.join(__dirname, 'src/seed-assets')));
 
 /** Health check — returns 503 when database is unreachable */
 app.get('/api/v1/health', async (req, res) => {

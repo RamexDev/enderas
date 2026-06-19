@@ -144,14 +144,24 @@ export default function AboutPage() {
               Trusted partners
             </p>
             <div className="relative overflow-hidden">
-              <div className="flex w-max animate-marquee gap-12">
+              <div className="flex w-max animate-marquee gap-16">
                 {[...about.partners, ...about.partners].map((p, i) => (
-                  <span
-                    key={`${p}-${i}`}
-                    className="whitespace-nowrap font-heading text-2xl font-semibold text-primary-200/50 lg:text-3xl"
+                  <div
+                    key={`${p.name}-${i}`}
+                    className="flex h-16 w-40 shrink-0 items-center justify-center"
                   >
-                    {p}
-                  </span>
+                    {p.logo ? (
+                      <img
+                        src={p.logo}
+                        alt={p.name}
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    ) : (
+                      <span className="whitespace-nowrap font-heading text-2xl font-semibold text-primary-200/50">
+                        {p.name}
+                      </span>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

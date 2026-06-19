@@ -23,14 +23,14 @@ export default function Lightbox({ item, onClose, onPrev, onNext }) {
 
   return (
     <div
-      className="fixed inset-0 z-[70] flex items-end justify-center bg-primary-950/90 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-[70] flex items-end justify-center bg-primary-950/90 p-0 backdrop-blur-sm sm:items-center sm:p-4 cursor-pointer"
       role="dialog"
       aria-modal="true"
       aria-label={`Image preview: ${item.title}`}
       onClick={onClose}
     >
       <div
-        className="relative flex max-h-[100dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl bg-primary-900 shadow-2xl sm:max-h-[90vh] sm:rounded-2xl"
+        className="relative flex max-h-[100dvh] w-full max-w-4xl flex-col overflow-hidden rounded-t-2xl bg-primary-900 shadow-2xl sm:max-h-[90vh] sm:rounded-2xl cursor-pointer"
         onClick={(e) => e.stopPropagation()}
       >
         <button
@@ -97,14 +97,14 @@ export function Modal({ open, onClose, title, children }) {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex items-end justify-center bg-primary-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      className="fixed inset-0 z-[80] flex items-end justify-center bg-primary-950/60 p-0 backdrop-blur-sm sm:items-center sm:p-4 cursor-pointer"
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-title"
       onClick={onClose}
     >
       <div
-        className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-2xl dark:bg-primary-900 sm:max-h-none sm:max-w-lg sm:rounded-2xl sm:p-6"
+        className="max-h-[90dvh] w-full overflow-y-auto rounded-t-2xl bg-white p-5 shadow-2xl dark:bg-primary-900 sm:max-h-none sm:max-w-lg sm:rounded-2xl sm:p-6 cursor-pointer"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mb-4 flex items-center justify-between gap-3">

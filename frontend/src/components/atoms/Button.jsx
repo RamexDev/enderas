@@ -35,7 +35,7 @@ export default function Button({
   ...rest
 }) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-md font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-70'
+    'inline-flex cursor-pointer items-center justify-center gap-2 rounded-md font-medium transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 focus-visible:ring-offset-2 focus-visible:ring-offset-transparent disabled:cursor-not-allowed disabled:opacity-70'
   const cls = `${base} ${sizes[size]} ${variants[variant]} ${className}`
 
   const content = (

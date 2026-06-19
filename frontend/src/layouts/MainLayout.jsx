@@ -35,7 +35,7 @@ export default function MainLayout() {
           <link rel="icon" type="image/svg+xml" href={settings.favicon} />
         </Helmet>
       )}
-      <a href="#main-content" className="sr-only">
+      <a href="#main-content" className="sr-only cursor-pointer">
         Skip to content
       </a>
       <TopNavigation />
