@@ -9,6 +9,7 @@ import Icon from '@/components/atoms/Icon'
 import Badge from '@/components/atoms/Badge'
 import { MotionDiv, MotionSection } from '@/components/motion'
 import { useCountdown } from '@/hooks/useCountUp'
+import { useSiteStore } from '@/store/useSiteStore'
 import { AUCTION_LINK } from '@/constants/navigation'
 
 /**
@@ -17,6 +18,7 @@ import { AUCTION_LINK } from '@/constants/navigation'
  * @param {object} props.highlight - Mapped auction highlight from CMS
  */
 export default function AuctionBanner({ highlight }) {
+  const settings = useSiteStore((s) => s.settings) || {}
   const closeDate = highlight?.closeDate
   const t = useCountdown(closeDate ?? new Date().toISOString())
 
@@ -77,11 +79,11 @@ export default function AuctionBanner({ highlight }) {
               </p>
             </MotionDiv>
             <MotionDiv className="mt-6 flex flex-col gap-3 sm:mt-8 sm:flex-row sm:flex-wrap sm:items-center" delay={0.2}>
-              <Button to={AUCTION_LINK} variant="primary" size="lg" icon="gavel" className="w-full sm:w-auto">
+              <Button to={settings.sellLink || AUCTION_LINK} variant="primary" size="lg" icon="gavel" className="w-full sm:w-auto">
                 View Assets for Sale
               </Button>
               <Button
-                to="/contact"
+                to={settings.requestValuationLink || '/contact'}
                 variant="outline"
                 size="lg"
                 className="w-full !border-white/40 !text-white hover:!border-gold-400 hover:!text-gold-300 sm:w-auto"
@@ -113,7 +115,7 @@ export default function AuctionBanner({ highlight }) {
                     </div>
                   )}
                   <Button
-                    to={AUCTION_LINK}
+                    to={settings.sellLink || AUCTION_LINK}
                     variant="ghost"
                     size="sm"
                     className="!w-full !justify-center !text-white hover:!text-gold-300 sm:!w-auto sm:!justify-start"

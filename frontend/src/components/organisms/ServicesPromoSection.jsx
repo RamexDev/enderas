@@ -7,12 +7,14 @@ import Container from '@/components/atoms/Container'
 import Button from '@/components/atoms/Button'
 import Badge from '@/components/atoms/Badge'
 import Icon from '@/components/atoms/Icon'
+import { useSiteStore } from '@/store/useSiteStore'
 
 /**
  * @param {object} props
  * @param {object} props.promo
  */
 export default function ServicesPromoSection({ promo }) {
+  const settings = useSiteStore((s) => s.settings) || {}
   return (
     <section id="auctions" className="scroll-mt-28 bg-primary-950 py-16 text-white sm:py-20 lg:py-28">
       <Container>
@@ -33,7 +35,7 @@ export default function ServicesPromoSection({ promo }) {
                 </li>
               ))}
             </ul>
-            <Button to="/contact" variant="primary" size="lg" iconRight="arrowRight" className="w-full sm:w-auto">
+            <Button to={settings.requestValuationLink || '/contact'} variant="primary" size="lg" iconRight="arrowRight" className="w-full sm:w-auto">
               Request a valuation
             </Button>
           </div>

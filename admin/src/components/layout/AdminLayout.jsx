@@ -3,6 +3,8 @@ import { Outlet } from 'react-router-dom'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useSessionTimeout } from '@/hooks/useSessionTimeout'
+import { settingsApi } from '@/services/cmsApi'
+import { mediaUrl } from '@/utils/helpers'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
@@ -11,6 +13,23 @@ export default function AdminLayout() {
   const logout = useAuthStore((s) => s.logout)
 
   useSessionTimeout()
+
+  useEffect(() => {
+    settingsApi.get().then((settings) => {
+      if (settings?.favicon) {
+        const href = mediaUrl(settings.favicon)
+        let link = document.querySelector('link[rel="icon"]')
+        if (!link) {
+          link = document.createElement('link')
+          link.rel = 'icon'
+          document.head.appendChild(link)
+        }
+        link.href = href
+      }
+    }).catch(() => {
+      // Static favicon from index.html remains on failure
+    })
+  }, [])
 
   useEffect(() => {
     const handler = () => {

@@ -29,6 +29,7 @@ export const CONTACT_PAGE_FIELDS = [
 export const SITE_SETTING_FIELDS = [
   'site_name', 'site_description', 'logo', 'favicon', 'footer_text', 'copyright_text',
   'facebook_url', 'linkedin_url', 'instagram_url', 'twitter_url', 'youtube_url',
+  'sell_link', 'request_valuation_link',
 ];
 
 export const POST_FIELDS = [

@@ -32,6 +32,8 @@ export const DEFAULT_SITE_SETTINGS = {
     siteUrl: 'https://www.enderas.org',
     ogImage: 'https://enderas.org/wp-content/uploads/2023/07/Blue-600x.png',
   },
+  sellLink: '/contact',
+  requestValuationLink: '/contact',
   social: [
     { name: 'LinkedIn', href: 'https://linkedin.com/company/enderas', icon: 'linkedin' },
     { name: 'Twitter', href: 'https://twitter.com/enderas', icon: 'twitter' },

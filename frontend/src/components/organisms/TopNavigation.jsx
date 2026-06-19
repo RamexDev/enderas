@@ -17,7 +17,8 @@ import { useUiStore } from '@/store/useUiStore'
  * Primary site header with responsive navigation and assets-for-sale CTA placeholder.
  */
 export default function TopNavigation() {
-  const social = useSiteStore((s) => s.settings?.social) || []
+  const settings = useSiteStore((s) => s.settings) || {}
+  const social = settings.social || []
   const location = useLocation()
   const navigate = useNavigate()
   const { mobileNavOpen, setMobileNavOpen, theme, toggleTheme } = useUiStore()
@@ -94,7 +95,7 @@ export default function TopNavigation() {
             })}
             {highlightNav && (
               <Button
-                to={highlightNav.to}
+                to={settings.sellLink || highlightNav.to}
                 size="sm"
                 variant="primary"
                 icon="gavel"
@@ -123,7 +124,7 @@ export default function TopNavigation() {
 
             <span className="hidden lg:inline-flex">
               <Button
-                to="/contact"
+                to={settings.requestValuationLink || '/contact'}
                 size="sm"
                 variant={headerSolid ? 'secondary' : navTransparent ? 'white' : 'secondary'}
               >
@@ -184,7 +185,7 @@ export default function TopNavigation() {
           <div className="no-scrollbar flex-1 overflow-y-auto p-4 sm:p-5">
             {highlightNav && (
               <Button
-                to={highlightNav.to}
+                to={settings.sellLink || highlightNav.to}
                 variant="primary"
                 icon="gavel"
                 className="mb-4 w-full shadow-md shadow-gold-500/25"
@@ -213,7 +214,7 @@ export default function TopNavigation() {
           </div>
 
           <div className="space-y-3 border-t border-primary-100 p-4 dark:border-primary-800 sm:p-5">
-            <Button to="/contact" variant="secondary" className="w-full" onClick={() => setMobileNavOpen(false)}>
+            <Button to={settings.requestValuationLink || '/contact'} variant="secondary" className="w-full" onClick={() => setMobileNavOpen(false)}>
               Request Valuation
             </Button>
             <div className="flex items-center justify-center gap-4 text-primary-500 dark:text-primary-200">

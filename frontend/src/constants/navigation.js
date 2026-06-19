@@ -3,8 +3,8 @@
  * Navigation structure is developer-controlled per project specification — not CMS-managed.
  */
 
-/** Placeholder href for Assets for Sale until the auction platform is ready. */
-export const AUCTION_LINK = '#'
+/** Default href for Assets for Sale — overridable via site settings (sell_link). */
+export const AUCTION_LINK = '/contact'
 
 /** Primary navigation items rendered in the header and footer. */
 export const PUBLIC_NAV = [

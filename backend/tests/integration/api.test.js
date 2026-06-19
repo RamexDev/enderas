@@ -105,6 +105,7 @@ describe('Public Endpoints', () => {
     const res = await request(app).get('/api/v1/public/settings');
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
+    expect(res.body.data).toHaveProperty('id');
   });
 
   it('POST /api/v1/public/contact validates required fields', async () => {

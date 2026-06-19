@@ -18,6 +18,8 @@ const SiteSetting = sequelize.define('SiteSetting', {
   instagram_url: DataTypes.STRING(255),
   twitter_url: DataTypes.STRING(255),
   youtube_url: DataTypes.STRING(255),
+  sell_link: DataTypes.STRING(255),
+  request_valuation_link: DataTypes.STRING(255),
 }, {
   tableName: 'site_settings',
   underscored: true,

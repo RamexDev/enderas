@@ -16,10 +16,10 @@ describe('PUBLIC_NAV', () => {
     expect(PUBLIC_NAV.some((item) => item.to === '/auctions')).toBe(false)
   })
 
-  it('points Assets for Sale highlight to placeholder hash', () => {
+  it('points Assets for Sale highlight to default contact route', () => {
     const auctionItem = PUBLIC_NAV.find((item) => item.highlight)
     expect(auctionItem?.label).toBe('Assets for Sale')
-    expect(auctionItem?.to).toBe('#')
-    expect(AUCTION_LINK).toBe('#')
+    expect(auctionItem?.to).toBe('/contact')
+    expect(AUCTION_LINK).toBe('/contact')
   })
 })

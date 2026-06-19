@@ -152,6 +152,17 @@ describe('mapSettings', () => {
     const result = mapSettings({})
     expect(result.email).toBe('info@enderas.org')
     expect(result.mapEmbedUrl).toContain('maps')
+    expect(result.sellLink).toBe('/contact')
+    expect(result.requestValuationLink).toBe('/contact')
+  })
+
+  it('maps sell_link and request_valuation_link from API settings', () => {
+    const result = mapSettings({
+      sell_link: '/auctions',
+      request_valuation_link: '/get-in-touch',
+    })
+    expect(result.sellLink).toBe('/auctions')
+    expect(result.requestValuationLink).toBe('/get-in-touch')
   })
 })
 

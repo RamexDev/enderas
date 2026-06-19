@@ -98,9 +98,11 @@ describe('Admin CRUD — settings and homepage', () => {
     const res = await request(app)
       .put('/api/v1/settings')
       .set('Authorization', `Bearer ${accessToken}`)
-      .send({ site_name: 'Enderas CMS' });
+      .send({ site_name: 'Enderas CMS', sell_link: '/sell', request_valuation_link: '/valuation' });
     expect(res.status).toBe(200);
     expect(res.body.data.site_name).toBe('Enderas CMS');
+    expect(res.body.data.sell_link).toBe('/sell');
+    expect(res.body.data.request_valuation_link).toBe('/valuation');
   });
 
   it('PUT /api/v1/home-page updates homepage flags', async () => {

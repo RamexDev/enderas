@@ -195,6 +195,8 @@ export function mapSettings(apiSettings = {}, contactPage = {}) {
   const address = contactPage.address || DEFAULT_SITE_SETTINGS.address
 
   const mapped = {
+    sellLink: apiSettings.sell_link || '/contact',
+    requestValuationLink: apiSettings.request_valuation_link || '/contact',
     appName: siteName.replace(/\s+Asset Management$/i, '') || DEFAULT_SITE_SETTINGS.appName,
     tagline: DEFAULT_SITE_SETTINGS.tagline,
     phone: phoneRaw?.split(',')[0]?.trim() || DEFAULT_SITE_SETTINGS.phone,

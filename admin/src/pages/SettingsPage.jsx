@@ -67,6 +67,18 @@ export default function SettingsPage() {
           <FormField label="YouTube"><Input value={data.youtube_url || ''} onChange={(e) => updateField('youtube_url', e.target.value)} /></FormField>
         </CardBody>
       </Card>
+
+      <Card>
+        <CardHeader title="Navigation Links" />
+        <CardBody className="grid gap-4 sm:grid-cols-2">
+          <FormField label="Sell page link">
+            <Input value={data.sell_link || ''} onChange={(e) => updateField('sell_link', e.target.value)} placeholder="/contact" />
+          </FormField>
+          <FormField label="Request Valuation link">
+            <Input value={data.request_valuation_link || ''} onChange={(e) => updateField('request_valuation_link', e.target.value)} placeholder="/contact" />
+          </FormField>
+        </CardBody>
+      </Card>
     </div>
   )
 }

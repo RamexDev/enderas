@@ -19,6 +19,8 @@ module.exports = {
     linkedin_url: 'https://www.linkedin.com/in/enderasnational/',
     instagram_url: 'https://instagram.com/enderas',
     twitter_url: 'https://twitter.com/enderasnational?lang=en',
+    sell_link: '/contact',
+    request_valuation_link: '/contact',
   },
 
   homePage: {
