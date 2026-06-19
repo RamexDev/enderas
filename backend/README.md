@@ -15,6 +15,7 @@ RESTful backend for the Enderas Asset Management website and admin CMS. Built wi
 | Validation   | express-validator                 |
 | File Uploads | multer 2                          |
 | Security     | helmet, cors, express-rate-limit  |
+| Notifications| nodemailer (SMTP), webhook (fetch)|
 | Testing      | Vitest + Supertest + SQLite       |
 
 ## Prerequisites
@@ -71,8 +72,17 @@ npm run dev
 | `MAX_FILE_SIZE`         | Max upload size (bytes)        | `5242880` (5MB)                |
 | `SUPER_ADMIN_EMAIL`     | Initial super admin email      | `admin@enderas.com`            |
 | `SUPER_ADMIN_PASSWORD`  | Initial super admin password   | (auto-generated in dev)        |
+| `SMTP_HOST`             | SMTP server host               | (optional)                     |
+| `SMTP_PORT`             | SMTP server port               | `587`                          |
+| `SMTP_USER`             | SMTP username                  | (optional)                     |
+| `SMTP_PASS`             | SMTP password                  | (optional)                     |
+| `SMTP_FROM`             | Email from address             | (optional)                     |
+| `ADMIN_EMAIL`           | Admin notification recipient   | (optional)                     |
+| `NOTIFICATION_WEBHOOK_URL` | Webhook URL for new messages | (optional)                  |
 
 > **Production:** `SUPER_ADMIN_PASSWORD` is required when `NODE_ENV=production`. The server will refuse to start without it.
+
+> **Notifications:** SMTP and `NOTIFICATION_WEBHOOK_URL` are optional. When configured, new contact form submissions automatically trigger an email and/or webhook POST. Failures are logged but never block the API response.
 
 ### CORS (`ADMIN_URL` / `FRONTEND_URL`)
 
@@ -174,13 +184,13 @@ npm run db:reset   # migrate:fresh + seed
 npm test
 ```
 
-**115 tests** across three layers (see `tests/README.md`):
+**179 tests** across four layers (see `tests/README.md`):
 
 | Layer | Files | Coverage |
 | ----- | ----- | -------- |
-| Unit | `tests/unit/` | JWT sign/verify/expiry, token hashing, password edge cases, pickFields security, duration parsing, slugs |
+| Unit | `tests/unit/` | JWT, password, pickFields, slugs, duration, logger, tokenHash, requestId, contactService, notificationService |
 | Contract | `tests/contract/` | Service ↔ controller error mapping, validation middleware shape |
-| Integration | `tests/integration/` | Full HTTP flows, utilities inside auth/service/user creation |
+| Integration | `tests/integration/` | Full HTTP flows: auth, public endpoints, admin CRUD, contact messages, CORS, health |
 
 Tests use a shared in-memory SQLite database (no MySQL required). Environment is configured in `tests/setup.js`; the DB connection closes once via `tests/globalTeardown.js`.
 
@@ -219,14 +229,78 @@ GET    /api/v1/public/settings        # Site settings
 
 ### Admin Endpoints (JWT required)
 
-Includes CRUD for: users, homepage, statistics, hero slides, services, gallery, team, testimonials, FAQs, about, contact, blog, media, settings.
-
+#### Dashboard
 ```
 GET    /api/v1/dashboard              # Aggregate statistics
-PATCH  /api/v1/services/:id/status  # Toggle service active state
+```
+
+#### Users (super_admin only)
+```
+GET    /api/v1/users                  # List users (paginated)
+GET    /api/v1/users/:id              # Show user
+POST   /api/v1/users                  # Create user
+PUT    /api/v1/users/:id              # Update user
+PATCH  /api/v1/users/:id/status       # Toggle active status
+DELETE /api/v1/users/:id              # Delete user
+```
+
+#### Services
+```
+GET    /api/v1/services               # List services
+GET    /api/v1/services/:id           # Show service
+POST   /api/v1/services               # Create service
+PUT    /api/v1/services/:id           # Update service
+DELETE /api/v1/services/:id           # Delete service
+PATCH  /api/v1/services/:id/status    # Toggle active state
+```
+
+#### Contact Messages
+```
+GET    /api/v1/contact-messages                  # List (paginated, ?archived=true)
+GET    /api/v1/contact-messages/:id              # Show message
+PATCH  /api/v1/contact-messages/:id/read         # Mark as read
+PATCH  /api/v1/contact-messages/:id/unread       # Mark as unread
+PATCH  /api/v1/contact-messages/:id/archive      # Archive
+PATCH  /api/v1/contact-messages/:id/unarchive    # Unarchive
+DELETE /api/v1/contact-messages/:id              # Delete message
+```
+
+#### Blog (super_admin + editor)
+```
+GET    /api/v1/posts                 # List posts (paginated)
+GET    /api/v1/posts/:id             # Show post
+POST   /api/v1/posts                 # Create post
+PUT    /api/v1/posts/:id             # Update post
+DELETE /api/v1/posts/:id             # Delete post
+PATCH  /api/v1/posts/:id/publish     # Publish
+PATCH  /api/v1/posts/:id/unpublish   # Unpublish
+GET    /api/v1/categories            # List categories
+POST   /api/v1/categories            # Create category
+PUT    /api/v1/categories/:id        # Update category
+DELETE /api/v1/categories/:id        # Delete category
+```
+
+#### Other Resources (admin only)
+```
+GET/POST/PUT/DELETE  /api/v1/home-page, /api/v1/statistics, /api/v1/hero-slides
+GET/POST/PUT/DELETE  /api/v1/gallery, /api/v1/gallery-categories
+GET/POST/PUT/DELETE  /api/v1/team-members
+GET/POST/PUT/DELETE  /api/v1/testimonials
+GET/POST/PUT/DELETE  /api/v1/faqs
+GET/POST/PUT/DELETE  /api/v1/about-page, /api/v1/core-values, /api/v1/partners
+GET/PUT              /api/v1/contact-page
+GET/PUT              /api/v1/settings
 ```
 
 See `src/routes/admin.js` for the complete route list.
+
+### Media Uploads
+
+```
+GET    /api/v1/media                 # List uploaded files (paginated)
+POST   /api/v1/media/upload          # Upload file (multipart/form-data, field: "file")
+DELETE /api/v1/media/:id             # Delete file
+```
 
 ### Health Check
 
@@ -266,7 +340,8 @@ Refresh tokens are stored as SHA-256 hashes. DB expiry is synchronized with `JWT
 
 - **Helmet** — Secure HTTP headers
 - **CORS** — Path-scoped by `ADMIN_URL` and `FRONTEND_URL`
-- **Rate Limiting** — Login: 5/15 min. Contact: 3/hour
+- **Rate Limiting** — Login: 5/15 min. Contact: 5/15 min
+- **Input Sanitization** — HTML tags stripped from contact form name, subject, and message
 - **Password Hashing** — bcrypt, 12 salt rounds
 - **JWT** — Access + refresh tokens with rotation
 - **Input Validation** — express-validator on auth, users, contact, and admin content endpoints
@@ -287,6 +362,7 @@ backend/
 │   ├── setup.js              # Test env variables
 │   ├── helpers/db.js         # In-memory DB sync helper
 │   ├── unit/                 # Unit tests
+│   ├── contract/             # Contract tests
 │   └── integration/          # API integration tests
 │
 └── src/
@@ -295,10 +371,10 @@ backend/
     ├── models/               # 20 Sequelize models
     ├── middleware/           # auth, validation, upload, errors
     ├── validations/          # express-validator rules
-    ├── services/             # Business logic layer
+    ├── services/             # Business logic + notification service
     ├── controllers/          # Request handlers
     ├── routes/               # Route definitions
-    ├── utils/                # JWT, password, pagination, etc.
+    ├── utils/                # JWT, password, pagination, AppError, etc.
     ├── migrations/           # 21 database migrations
     ├── seeders/              # Super admin + site content seeders
     │   └── data/             # Content extracted from docs/existing
@@ -310,9 +386,10 @@ backend/
 1. Set `NODE_ENV=production` and configure all environment variables.
 2. Set a strong `SUPER_ADMIN_PASSWORD`.
 3. Set `ADMIN_URL` and `FRONTEND_URL` to the deployed admin and public site origins.
-4. Run `npm run migrate` to apply schema.
-5. Run `npm run seed` to create admin and populate content.
-6. Start with `npm start` (runs migrations automatically).
+4. Optionally configure `SMTP_*` and `NOTIFICATION_WEBHOOK_URL` for contact form notifications.
+5. Run `npm run migrate` to apply schema.
+6. Run `npm run seed` to create admin and populate content.
+7. Start with `npm start` (runs migrations automatically).
 
 ## Roadmap
 

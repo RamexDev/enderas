@@ -13,6 +13,7 @@ import * as contactController from '../controllers/public/contactController.js';
 import * as settingController from '../controllers/public/settingController.js';
 import * as ctaController from '../controllers/public/ctaController.js';
 import { contactFormValidation } from '../validations/contact.js';
+import { validate } from '../middleware/validate.js';
 
 const router = Router();
 
@@ -25,7 +26,7 @@ router.get('/gallery', galleryController.index);
 router.get('/posts', blogController.index);
 router.get('/posts/:slug', blogController.show);
 router.get('/contact', contactController.index);
-router.post('/contact', contactFormValidation, contactController.submit);
+router.post('/contact', contactFormValidation, validate, contactController.submit);
 router.get('/settings', settingController.index);
 
 export default router;

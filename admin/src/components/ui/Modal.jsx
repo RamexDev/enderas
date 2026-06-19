@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { X } from 'lucide-react'
+import { Loader2, X } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import Button from './Button'
 
@@ -56,7 +56,7 @@ export function ConfirmDialog({ open, onClose, onConfirm, title, message, confir
           Cancel
         </Button>
         <Button variant="danger" onClick={onConfirm} disabled={loading}>
-          {loading ? 'Processing…' : confirmLabel}
+          {loading ? <><Loader2 className="mr-1.5 inline h-4 w-4 animate-spin" /> Processing…</> : confirmLabel}
         </Button>
       </div>
     </Modal>

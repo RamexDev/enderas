@@ -1,4 +1,6 @@
 import { Faq } from '../models/index.js';
+import { pickFields } from '../utils/pickFields.js';
+import { FAQ_FIELDS } from '../constants/fieldAllowlists.js';
 
 export async function listFaqs(page = 1, limit = 10) {
   const offset = (page - 1) * limit;
@@ -11,13 +13,13 @@ export async function listFaqs(page = 1, limit = 10) {
 }
 
 export async function createFaq(data) {
-  return Faq.create(data);
+  return Faq.create(pickFields(data, FAQ_FIELDS));
 }
 
 export async function updateFaq(id, data) {
   const faq = await Faq.findByPk(id);
   if (!faq) throw Object.assign(new Error('FAQ not found'), { statusCode: 404 });
-  await faq.update(data);
+  await faq.update(pickFields(data, FAQ_FIELDS));
   return faq;
 }
 

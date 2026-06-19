@@ -3,6 +3,7 @@
  * Refresh tokens are stored as SHA-256 hashes; expiry follows JWT_REFRESH_EXPIRES_IN.
  */
 
+import { Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 import { User, RefreshToken } from '../models/index.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
@@ -10,6 +11,7 @@ import { hashRefreshToken } from '../utils/tokenHash.js';
 import { validatePasswordStrength } from '../utils/password.js';
 import { expiresAtFromDuration } from '../utils/duration.js';
 import env from '../config/env.js';
+import logger from '../utils/logger.js';
 
 const SALT_ROUNDS = 12;
 
@@ -64,7 +66,8 @@ export async function refreshAccessToken(refreshTokenStr) {
   let decoded;
   try {
     decoded = verifyRefreshToken(refreshTokenStr);
-  } catch {
+  } catch (error) {
+    logger.debug('Refresh token verification failed', { error: error.message });
     throw Object.assign(new Error('Invalid refresh token'), { statusCode: 401 });
   }
 
@@ -147,4 +150,15 @@ export async function changePassword(userId, oldPassword, newPassword) {
   await RefreshToken.destroy({ where: { user_id: userId } });
 
   return { message: 'Password changed successfully' };
+}
+
+/** Remove refresh tokens that have passed their expiration date */
+export async function cleanupExpiredTokens() {
+  const deleted = await RefreshToken.destroy({
+    where: { expires_at: { [Op.lt]: new Date() } },
+  });
+  if (deleted > 0) {
+    logger.debug(`Cleaned up ${deleted} expired refresh token(s)`);
+  }
+  return deleted;
 }

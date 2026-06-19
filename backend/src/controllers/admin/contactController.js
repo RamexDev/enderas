@@ -1,5 +1,5 @@
 import * as contactService from '../../services/contactService.js';
-import { successResponse, errorResponse, paginatedResponse } from '../../utils/response.js';
+import { successResponse, paginatedResponse } from '../../utils/response.js';
 import { getPagination, getPaginationMeta } from '../../utils/pagination.js';
 
 export async function getContactPage(req, res, next) {
@@ -29,28 +29,40 @@ export async function showMessage(req, res, next) {
   try {
     const msg = await contactService.getContactMessage(req.params.id);
     return successResponse(res, msg);
-  } catch (error) {
-    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 export async function markRead(req, res, next) {
   try {
     const msg = await contactService.markMessageRead(req.params.id);
     return successResponse(res, msg, 'Message marked as read');
-  } catch (error) {
-    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
-    next(error);
-  }
+  } catch (error) { next(error); }
 }
 
 export async function archive(req, res, next) {
   try {
     const msg = await contactService.archiveMessage(req.params.id);
     return successResponse(res, msg, 'Message archived');
-  } catch (error) {
-    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
-    next(error);
-  }
+  } catch (error) { next(error); }
+}
+
+export async function markUnread(req, res, next) {
+  try {
+    const msg = await contactService.markMessageUnread(req.params.id);
+    return successResponse(res, msg, 'Message marked as unread');
+  } catch (error) { next(error); }
+}
+
+export async function unarchive(req, res, next) {
+  try {
+    const msg = await contactService.unarchiveMessage(req.params.id);
+    return successResponse(res, msg, 'Message unarchived');
+  } catch (error) { next(error); }
+}
+
+export async function destroy(req, res, next) {
+  try {
+    const result = await contactService.deleteMessage(req.params.id);
+    return successResponse(res, result, 'Message deleted');
+  } catch (error) { next(error); }
 }

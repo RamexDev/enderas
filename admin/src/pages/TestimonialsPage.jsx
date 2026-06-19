@@ -1,32 +1,29 @@
-/**
- * @fileoverview Testimonials management page.
- */
-
+import { useCallback } from 'react'
 import { Plus } from 'lucide-react'
 import { testimonialsApi } from '@/services/cmsApi'
-import { useAsyncData, useCrudList, useFormState, recordToForm } from '@/hooks'
+import { usePaginatedList, useCrudList, useFormState, recordToForm } from '@/hooks'
 import CrudPageLayout from '@/components/common/CrudPageLayout'
 import TableActions from '@/components/common/TableActions'
 import FormModal from '@/components/common/FormModal'
 import { FormModalFooter } from '@/components/common/FormModalFooter'
 import Button from '@/components/ui/Button'
-import { DataTable } from '@/components/ui/DataTable'
+import Pagination, { DataTable } from '@/components/ui/DataTable'
 import { StatusBadge } from '@/components/ui/Badge'
 import { Input, Textarea, FormField } from '@/components/ui/Input'
 import ImageField from '@/components/ui/ImageField'
 
 const EMPTY_TESTIMONIAL = { client_name: '', company: '', content: '', client_image: '' }
 
-/** Customer testimonials CMS page. */
 export default function TestimonialsPage() {
-  const { data: items, loading, reload } = useAsyncData(testimonialsApi.list)
+  const listFn = useCallback((params) => testimonialsApi.list(params), [])
+  const { items, meta, loading, loadPage } = usePaginatedList(listFn, { limit: 10 })
 
   const crud = useCrudList({
     createFn: testimonialsApi.create,
     updateFn: testimonialsApi.update,
     deleteFn: testimonialsApi.delete,
     toggleFn: testimonialsApi.toggleStatus,
-    reload,
+    reload: () => loadPage(meta.page),
     emptyRecord: EMPTY_TESTIMONIAL,
     messages: { create: 'Testimonial created', update: 'Testimonial updated', delete: 'Testimonial deleted' },
   })
@@ -35,13 +32,13 @@ export default function TestimonialsPage() {
     <CrudPageLayout
       title="Testimonials"
       description="Manage customer testimonials."
-      loading={loading}
+      loading={loading && !items.length}
       action={<Button onClick={crud.openCreate}><Plus className="h-4 w-4" /> Add testimonial</Button>}
       deleteDialog={crud}
       deleteTitle="Delete testimonial"
     >
       <DataTable
-        data={items ?? []}
+        data={items}
         columns={[
           { key: 'client_name', label: 'Client' },
           { key: 'company', label: 'Company' },
@@ -61,15 +58,17 @@ export default function TestimonialsPage() {
         ]}
       />
 
+      <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={loadPage} />
+
       <TestimonialFormModal
         key={crud.editingRecord?.id ?? 'new'}
-        open={crud.isModalOpen} record={crud.editingRecord} onClose={crud.closeModal} onSave={crud.save} />
+        open={crud.isModalOpen} record={crud.editingRecord} onClose={crud.closeModal} onSave={crud.save} saving={crud.saving} />
     </CrudPageLayout>
   )
 }
 
 /** Modal form for a single testimonial. */
-function TestimonialFormModal({ open, record, onClose, onSave }) {
+function TestimonialFormModal({ open, record, onClose, onSave, saving }) {
   const { form, setField } = useFormState(recordToForm(record, EMPTY_TESTIMONIAL))
 
   return (
@@ -85,7 +84,7 @@ function TestimonialFormModal({ open, record, onClose, onSave }) {
           <Textarea value={form.content} onChange={(e) => setField('content', e.target.value)} rows={4} />
         </FormField>
         <ImageField label="Client image" value={form.client_image} onChange={(v) => setField('client_image', v)} />
-        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} />
+        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} saving={saving} />
       </div>
     </FormModal>
   )

@@ -1,18 +1,14 @@
-/**
- * @fileoverview Team members management page.
- * CRUD for team profiles with active/inactive toggle.
- */
-
+import { useCallback } from 'react'
 import { Plus } from 'lucide-react'
 import { teamApi } from '@/services/cmsApi'
 import { mediaUrl } from '@/utils/helpers'
-import { useAsyncData, useCrudList, useFormState, recordToForm } from '@/hooks'
+import { usePaginatedList, useCrudList, useFormState, recordToForm } from '@/hooks'
 import CrudPageLayout from '@/components/common/CrudPageLayout'
 import TableActions from '@/components/common/TableActions'
 import FormModal from '@/components/common/FormModal'
 import { FormModalFooter } from '@/components/common/FormModalFooter'
 import Button from '@/components/ui/Button'
-import { DataTable } from '@/components/ui/DataTable'
+import Pagination, { DataTable } from '@/components/ui/DataTable'
 import { StatusBadge } from '@/components/ui/Badge'
 import { Input, Textarea, FormField } from '@/components/ui/Input'
 import ImageField from '@/components/ui/ImageField'
@@ -25,18 +21,16 @@ const EMPTY_MEMBER = {
   profile_image: '',
 }
 
-/**
- * Team members CMS page — list, create, edit, toggle, and delete.
- */
 export default function TeamPage() {
-  const { data: items, loading, reload } = useAsyncData(teamApi.list)
+  const listFn = useCallback((params) => teamApi.list(params), [])
+  const { items, meta, loading, loadPage } = usePaginatedList(listFn, { limit: 10 })
 
   const crud = useCrudList({
     createFn: teamApi.create,
     updateFn: teamApi.update,
     deleteFn: teamApi.delete,
     toggleFn: teamApi.toggleStatus,
-    reload,
+    reload: () => loadPage(meta.page),
     emptyRecord: EMPTY_MEMBER,
     messages: {
       create: 'Member created',
@@ -49,7 +43,7 @@ export default function TeamPage() {
     <CrudPageLayout
       title="Team Members"
       description="Manage team members displayed on the website."
-      loading={loading}
+      loading={loading && !items.length}
       action={
         <Button onClick={crud.openCreate}>
           <Plus className="h-4 w-4" /> Add member
@@ -59,7 +53,7 @@ export default function TeamPage() {
       deleteTitle="Delete team member"
     >
       <DataTable
-        data={items ?? []}
+        data={items}
         columns={[
           {
             key: 'photo',
@@ -87,12 +81,15 @@ export default function TeamPage() {
         ]}
       />
 
+      <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={loadPage} />
+
       <MemberFormModal
         key={crud.editingRecord?.id ?? 'new'}
         open={crud.isModalOpen}
         record={crud.editingRecord}
         onClose={crud.closeModal}
         onSave={crud.save}
+        saving={crud.saving}
       />
     </CrudPageLayout>
   )
@@ -102,7 +99,7 @@ export default function TeamPage() {
  * Create/edit modal for a single team member.
  * @param {{ open: boolean, record: object|null, onClose: Function, onSave: Function }} props
  */
-function MemberFormModal({ open, record, onClose, onSave }) {
+function MemberFormModal({ open, record, onClose, onSave, saving }) {
   const { form, setField } = useFormState(recordToForm(record, EMPTY_MEMBER))
 
   return (
@@ -121,7 +118,7 @@ function MemberFormModal({ open, record, onClose, onSave }) {
           <Textarea value={form.biography} onChange={(e) => setField('biography', e.target.value)} rows={4} />
         </FormField>
         <ImageField label="Profile image" value={form.profile_image} onChange={(v) => setField('profile_image', v)} />
-        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} />
+        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} saving={saving} />
       </div>
     </FormModal>
   )

@@ -1,5 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 import { AboutPage, CoreValue, Partner, TeamMember, HomePage } from '../models/index.js';
+import { pickFields } from '../utils/pickFields.js';
+import {
+  ABOUT_PAGE_FIELDS,
+  CORE_VALUE_FIELDS,
+  PARTNER_FIELDS,
+} from '../constants/fieldAllowlists.js';
 
 export async function getAboutPage() {
   let about = await AboutPage.findOne();
@@ -10,7 +16,7 @@ export async function getAboutPage() {
 export async function updateAboutPage(data) {
   let about = await AboutPage.findOne();
   if (!about) about = await AboutPage.create({ id: uuidv4() });
-  await about.update(data);
+  await about.update(pickFields(data, ABOUT_PAGE_FIELDS));
   return about;
 }
 
@@ -19,13 +25,13 @@ export async function listCoreValues() {
 }
 
 export async function createCoreValue(data) {
-  return CoreValue.create(data);
+  return CoreValue.create(pickFields(data, CORE_VALUE_FIELDS));
 }
 
 export async function updateCoreValue(id, data) {
   const val = await CoreValue.findByPk(id);
   if (!val) throw Object.assign(new Error('Core value not found'), { statusCode: 404 });
-  await val.update(data);
+  await val.update(pickFields(data, CORE_VALUE_FIELDS));
   return val;
 }
 
@@ -40,13 +46,13 @@ export async function listPartners() {
 }
 
 export async function createPartner(data) {
-  return Partner.create(data);
+  return Partner.create(pickFields(data, PARTNER_FIELDS));
 }
 
 export async function updatePartner(id, data) {
   const partner = await Partner.findByPk(id);
   if (!partner) throw Object.assign(new Error('Partner not found'), { statusCode: 404 });
-  await partner.update(data);
+  await partner.update(pickFields(data, PARTNER_FIELDS));
   return partner;
 }
 

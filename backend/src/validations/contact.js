@@ -11,7 +11,9 @@ export const contactFormValidation = [
     .normalizeEmail(),
   body('phone')
     .optional({ values: 'falsy' })
-    .trim(),
+    .trim()
+    .matches(/^[+\d\s\-().]{7,20}$/)
+    .withMessage('Valid phone number is required'),
   body('subject')
     .trim()
     .notEmpty()

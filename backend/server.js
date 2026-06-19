@@ -7,35 +7,50 @@ import './src/config/env.js';
 import app from './app.js';
 import sequelize from './src/config/database.js';
 import env from './src/config/env.js';
+import logger from './src/utils/logger.js';
+import { cleanupExpiredTokens } from './src/services/authService.js';
 
 let server;
 
 async function start() {
   try {
+    const dbInfo = `${env.db.host}:${env.db.port}/${env.db.name}`;
     await sequelize.authenticate();
-    console.log(`Database connected: ${env.db.host}:${env.db.port}/${env.db.name}`);
+    logger.info(`Database connected: ${dbInfo}`);
+
+    await cleanupExpiredTokens();
+    setInterval(cleanupExpiredTokens, 60 * 60 * 1000);
+    logger.debug('Expired refresh token cleanup scheduled (every 60 min)');
 
     if (env.isDev) {
-      console.log('Development mode: run `npm run migrate` to apply pending migrations');
+      logger.info('Development mode detected. Run `npm run migrate` to apply pending migrations.', { db: dbInfo });
     }
 
     server = app.listen(env.port, () => {
-      console.log(`Server running on port ${env.port} [${env.nodeEnv}]`);
-      console.log(`API Base URL: ${env.apiBaseUrl}`);
+      logger.info(`Server started`, {
+        port: env.port,
+        env: env.nodeEnv,
+        apiBaseUrl: env.apiBaseUrl,
+      });
     });
   } catch (error) {
-    console.error('Failed to start server:', error.message);
+    logger.error('Failed to start server', {
+      error,
+      db: `${env.db.host}:${env.db.port}/${env.db.name}`,
+      dialect: 'mysql',
+      hint: 'Ensure MySQL is running and the database credentials in .env are correct. Try: sudo systemctl start mysql',
+    });
     process.exit(1);
   }
 }
 
 /** Graceful shutdown — close HTTP server and database pool on SIGTERM/SIGINT */
 async function shutdown(signal) {
-  console.log(`\n${signal} received. Shutting down gracefully...`);
+  logger.info(`${signal} received, shutting down gracefully`);
   if (server) {
     server.close(async () => {
       await sequelize.close();
-      console.log('Server closed');
+      logger.info('Server closed');
       process.exit(0);
     });
   } else {
@@ -46,5 +61,14 @@ async function shutdown(signal) {
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
 process.on('SIGINT', () => shutdown('SIGINT'));
+
+process.on('uncaughtException', (error) => {
+  logger.error('Uncaught exception — server will exit', { error });
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason) => {
+  logger.warn('Unhandled promise rejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });
+});
 
 start();

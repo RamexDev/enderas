@@ -4,7 +4,7 @@
  */
 
 import { Link, useLocation } from 'react-router-dom'
-import { ChevronLeft, X } from 'lucide-react'
+import { Menu, X } from 'lucide-react'
 import { cn } from '@/utils/cn'
 import { getVisibleNavGroups } from '@/constants/navigation'
 import { useAuthStore } from '@/store/useAuthStore'
@@ -21,10 +21,10 @@ function NavLink({ to, label, icon: Icon, onNavigate }) {
     <Link
       to={to}
       onClick={onNavigate}
-      className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+        className={cn(
+        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50',
         active
-          ? 'bg-gold-500/15 text-gold-700'
+          ? 'bg-gold-500/15 text-gold-400'
           : 'text-primary-300 hover:bg-primary-800 hover:text-white',
       )}
     >
@@ -63,9 +63,9 @@ export default function Sidebar({ open, onClose }) {
         <div className="flex h-16 items-center justify-between border-b border-primary-800 px-4">
           <div>
             <p className="text-sm font-semibold text-gold-400">{appName}</p>
-            <p className="text-xs text-primary-400">Content Management</p>
+            <p className="text-xs text-primary-300">Content Management</p>
           </div>
-          <button type="button" className="rounded-lg p-1 text-primary-400 hover:bg-primary-800 lg:hidden" onClick={onClose}>
+          <button type="button" className="rounded-lg p-1 text-primary-300 hover:bg-primary-800 lg:hidden" onClick={onClose}>
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -73,7 +73,7 @@ export default function Sidebar({ open, onClose }) {
         <nav className="flex-1 overflow-y-auto px-3 py-4">
           {navGroups.map((group) => (
             <div key={group.label} className="mb-5">
-              <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-primary-500">
+              <p className="mb-2 px-3 text-xs font-semibold uppercase tracking-wider text-primary-300">
                 {group.label}
               </p>
               <div className="space-y-0.5">
@@ -98,10 +98,10 @@ export function SidebarToggle({ onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="rounded-lg border border-primary-200 p-2 text-primary-700 hover:bg-primary-50 lg:hidden"
+      className="rounded-lg border border-primary-200 p-2 text-primary-700 hover:bg-primary-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/50 lg:hidden"
       aria-label="Toggle menu"
     >
-      <ChevronLeft className="h-5 w-5 rotate-180" />
+      <Menu className="h-5 w-5" />
     </button>
   )
 }

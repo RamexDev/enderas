@@ -1,35 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { toast } from 'sonner'
 import { Plus, Pencil, Trash2, Power } from 'lucide-react'
 import { usersApi } from '@/services/cmsApi'
 import { getErrorMessage } from '@/utils/errors'
 import { ROLES } from '@/constants/roles'
+import { usePaginatedList } from '@/hooks'
 import { PageHeader } from '@/components/layout/Header'
 import { PageLoader } from '@/components/ui/Loading'
 import Button from '@/components/ui/Button'
-import { DataTable } from '@/components/ui/DataTable'
+import Pagination, { DataTable } from '@/components/ui/DataTable'
 import Badge, { StatusBadge } from '@/components/ui/Badge'
 import Modal, { ConfirmDialog } from '@/components/ui/Modal'
 import { Input, FormField, Select } from '@/components/ui/Input'
 
 export default function UsersPage() {
-  const [items, setItems] = useState([])
-  const [loading, setLoading] = useState(true)
+  const { items, meta, loading, loadPage } = usePaginatedList(
+    (params) => usersApi.list(params),
+    { limit: 10 },
+  )
   const [modal, setModal] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
   const [deleting, setDeleting] = useState(false)
-
-  const load = async () => {
-    try {
-      setItems(await usersApi.list())
-    } catch (err) {
-      toast.error(getErrorMessage(err))
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => { load() }, [])
 
   const handleSave = async (form) => {
     try {
@@ -41,7 +32,7 @@ export default function UsersPage() {
         toast.success('User created')
       }
       setModal(null)
-      load()
+      loadPage(meta.page)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -51,7 +42,7 @@ export default function UsersPage() {
     try {
       await usersApi.toggleStatus(id)
       toast.success('User status updated')
-      load()
+      loadPage(meta.page)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -63,7 +54,7 @@ export default function UsersPage() {
       await usersApi.delete(deleteId)
       toast.success('User deleted')
       setDeleteId(null)
-      load()
+      loadPage(meta.page)
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {
@@ -71,7 +62,7 @@ export default function UsersPage() {
     }
   }
 
-  if (loading) return <PageLoader />
+  if (loading && !items.length) return <PageLoader />
 
   return (
     <div>
@@ -108,6 +99,7 @@ export default function UsersPage() {
           },
         ]}
       />
+      <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={loadPage} />
       <UserModal open={!!modal} data={modal} onClose={() => setModal(null)} onSave={handleSave} />
       <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={handleDelete} title="Delete user" message="This action cannot be undone." loading={deleting} />
     </div>

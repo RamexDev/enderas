@@ -31,6 +31,17 @@ if (missing.length > 0) {
 
 const nodeEnv = process.env.NODE_ENV || 'development';
 const isProd = nodeEnv === 'production';
+const isTest = nodeEnv === 'test';
+
+const WEAK_JWT_SECRETS = new Set([
+  'change-this-in-production',
+  'change-this-in-production-too',
+  'secret',
+  'jwt-secret',
+  'your-secret-key',
+]);
+
+const MIN_JWT_SECRET_LENGTH = 32;
 
 /** Parse a comma-separated list of browser origins (trims whitespace, drops empties). */
 function parseOrigins(value, fallback = '') {
@@ -62,10 +73,72 @@ const frontendUrls = parseOrigins(
 );
 const mediaUrls = [...new Set([...adminUrls, ...frontendUrls])];
 
-// Production requires a strong super-admin password before the server accepts traffic
-if (isProd && !process.env.SUPER_ADMIN_PASSWORD) {
-  console.error('SUPER_ADMIN_PASSWORD is required when NODE_ENV=production');
+const uploadPathRaw = process.env.UPLOAD_PATH || './src/uploads';
+const uploadResolvedPath = path.isAbsolute(uploadPathRaw)
+  ? uploadPathRaw
+  : path.resolve(__dirname, '../../', uploadPathRaw);
+
+function validateJwtSecret(name, value) {
+  if (!value || value.length < MIN_JWT_SECRET_LENGTH) {
+    return `${name} must be at least ${MIN_JWT_SECRET_LENGTH} characters`;
+  }
+  if (WEAK_JWT_SECRETS.has(value.toLowerCase())) {
+    return `${name} must not use a placeholder or weak default value`;
+  }
+  return null;
+}
+
+function hasLocalhostOrigin(urls) {
+  return urls.some((origin) => {
+    try {
+      const hostname = new URL(origin).hostname;
+      return hostname === 'localhost' || hostname === '127.0.0.1';
+    } catch {
+      return false;
+    }
+  });
+}
+
+function failValidation(message) {
+  console.error(message);
   process.exit(1);
+}
+
+if (!isTest) {
+  const jwtSecretError = validateJwtSecret('JWT_SECRET', process.env.JWT_SECRET);
+  if (jwtSecretError) failValidation(jwtSecretError);
+
+  const refreshSecretError = validateJwtSecret('JWT_REFRESH_SECRET', process.env.JWT_REFRESH_SECRET);
+  if (refreshSecretError) failValidation(refreshSecretError);
+
+  if (process.env.JWT_SECRET === process.env.JWT_REFRESH_SECRET) {
+    failValidation('JWT_SECRET and JWT_REFRESH_SECRET must be different');
+  }
+}
+
+if (isProd) {
+  if (!process.env.SUPER_ADMIN_PASSWORD) {
+    failValidation('SUPER_ADMIN_PASSWORD is required when NODE_ENV=production');
+  }
+
+  if (!process.env.DB_PASSWORD) {
+    failValidation('DB_PASSWORD is required when NODE_ENV=production');
+  }
+
+  const hasExplicitAdminOrigins = Boolean(process.env.ADMIN_URL || legacyAdminFallback);
+  const hasExplicitFrontendOrigins = Boolean(process.env.FRONTEND_URL || legacyFrontendFallback);
+
+  if (!hasExplicitAdminOrigins) {
+    failValidation('ADMIN_URL (or CLIENT_URLS) is required when NODE_ENV=production');
+  }
+
+  if (!hasExplicitFrontendOrigins) {
+    failValidation('FRONTEND_URL (or CLIENT_URLS) is required when NODE_ENV=production');
+  }
+
+  if (hasLocalhostOrigin(adminUrls) || hasLocalhostOrigin(frontendUrls)) {
+    failValidation('Production CORS origins must not include localhost or 127.0.0.1');
+  }
 }
 
 const env = {
@@ -75,6 +148,22 @@ const env = {
   isTest: nodeEnv === 'test',
   isStaging: nodeEnv === 'staging',
   isProd,
+  logLevel: process.env.LOG_LEVEL || (nodeEnv === 'production' ? 'info' : 'debug'),
+
+  /** Masked representation of sensitive config for startup logging */
+  get mask() {
+    return {
+      port: this.port,
+      nodeEnv: this.nodeEnv,
+      logLevel: this.logLevel,
+      db: { host: this.db.host, port: this.db.port, name: this.db.name, user: this.db.user },
+      jwt: { accessExpiresIn: this.jwt.accessExpiresIn, refreshExpiresIn: this.jwt.refreshExpiresIn },
+      adminUrl: this.adminUrl,
+      frontendUrl: this.frontendUrl,
+      apiBaseUrl: this.apiBaseUrl,
+      upload: { path: this.upload.path, maxFileSize: this.upload.maxFileSize },
+    };
+  },
 
   db: {
     host: process.env.DB_HOST,
@@ -104,13 +193,27 @@ const env = {
   apiBaseUrl: process.env.API_BASE_URL || 'http://localhost:5000/api/v1',
 
   upload: {
-    path: process.env.UPLOAD_PATH || './src/uploads',
+    path: uploadPathRaw,
+    resolvedPath: uploadResolvedPath,
     maxFileSize: parseInt(process.env.MAX_FILE_SIZE, 10) || 5 * 1024 * 1024,
   },
 
   superAdmin: {
     email: process.env.SUPER_ADMIN_EMAIL || 'admin@enderas.com',
     password: process.env.SUPER_ADMIN_PASSWORD || '',
+  },
+
+  smtp: {
+    host: process.env.SMTP_HOST || '',
+    port: parseInt(process.env.SMTP_PORT, 10) || 587,
+    user: process.env.SMTP_USER || '',
+    pass: process.env.SMTP_PASS || '',
+    from: process.env.SMTP_FROM || '',
+    adminEmail: process.env.ADMIN_EMAIL || '',
+  },
+
+  webhook: {
+    url: process.env.NOTIFICATION_WEBHOOK_URL || '',
   },
 };
 

@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import sequelize from '../config/database.js';
 import { Media } from '../models/index.js';
+import logger from '../utils/logger.js';
 
 export async function listMedia(page = 1, limit = 10) {
   const offset = (page - 1) * limit;
@@ -22,7 +23,9 @@ export async function deleteMedia(id) {
 
   try {
     await record.destroy({ transaction: t });
-    await fs.unlink(record.path).catch(() => {});
+    await fs.unlink(record.path).catch((fileErr) => {
+      logger.warn('Failed to delete media file from disk', { path: record.path, error: fileErr.message });
+    });
     await t.commit();
     return { message: 'Media deleted' };
   } catch (error) {

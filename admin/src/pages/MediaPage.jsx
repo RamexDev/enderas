@@ -110,7 +110,7 @@ export default function MediaPage() {
               },
               { key: 'original_name', label: 'File name', render: (r) => r.original_name || r.filename },
               { key: 'file_size', label: 'Size', render: (r) => formatFileSize(r.file_size) },
-              { key: 'created_at', label: 'Uploaded', render: (r) => formatDate(r.created_at) },
+              { key: 'createdAt', label: 'Uploaded', render: (r) => formatDate(r.createdAt) },
               {
                 key: 'actions',
                 label: 'Actions',

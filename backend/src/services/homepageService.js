@@ -4,7 +4,12 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { HomePage, Statistic, HeroSlide, Service, GalleryItem, TeamMember, Testimonial, Faq } from '../models/index.js';
-import { generateSlug } from '../utils/slug.js';
+import { pickFields } from '../utils/pickFields.js';
+import {
+  HOME_PAGE_FIELDS,
+  STATISTIC_FIELDS,
+  HERO_SLIDE_FIELDS,
+} from '../constants/fieldAllowlists.js';
 
 /** Get or create the single home_page row */
 export async function getHomePage() {
@@ -20,7 +25,7 @@ export async function updateHomePage(data) {
   if (!homePage) {
     homePage = await HomePage.create({ id: uuidv4() });
   }
-  await homePage.update(data);
+  await homePage.update(pickFields(data, HOME_PAGE_FIELDS));
   return homePage;
 }
 
@@ -29,13 +34,13 @@ export async function listStatistics() {
 }
 
 export async function createStatistic(data) {
-  return Statistic.create(data);
+  return Statistic.create(pickFields(data, STATISTIC_FIELDS));
 }
 
 export async function updateStatistic(id, data) {
   const stat = await Statistic.findByPk(id);
   if (!stat) throw Object.assign(new Error('Statistic not found'), { statusCode: 404 });
-  await stat.update(data);
+  await stat.update(pickFields(data, STATISTIC_FIELDS));
   return stat;
 }
 
@@ -50,13 +55,13 @@ export async function listHeroSlides() {
 }
 
 export async function createHeroSlide(data) {
-  return HeroSlide.create(data);
+  return HeroSlide.create(pickFields(data, HERO_SLIDE_FIELDS));
 }
 
 export async function updateHeroSlide(id, data) {
   const slide = await HeroSlide.findByPk(id);
   if (!slide) throw Object.assign(new Error('Hero slide not found'), { statusCode: 404 });
-  await slide.update(data);
+  await slide.update(pickFields(data, HERO_SLIDE_FIELDS));
   return slide;
 }
 

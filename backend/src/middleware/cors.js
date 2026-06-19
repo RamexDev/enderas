@@ -13,6 +13,7 @@ function createCors(origins) {
   return cors({
     origin: origins,
     credentials: true,
+    exposedHeaders: ['X-Request-Id'],
   });
 }
 

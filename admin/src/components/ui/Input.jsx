@@ -38,7 +38,7 @@ export function Label({ className, children, ...props }) {
   )
 }
 
-export function FormField({ label, error, children, required, id }) {
+export function FormField({ label, error, children, required, id, errorClassName, labelClassName }) {
   const generatedId = useId()
   const fieldId = id || generatedId
   const control = children && typeof children === 'object'
@@ -48,13 +48,13 @@ export function FormField({ label, error, children, required, id }) {
   return (
     <div className="space-y-1">
       {label && (
-        <Label htmlFor={fieldId}>
+        <Label htmlFor={fieldId} className={labelClassName}>
           {label}
           {required && <span className="ml-0.5 text-red-500">*</span>}
         </Label>
       )}
       {control}
-      {error && <p className="text-xs text-red-600">{error}</p>}
+      {error && <p className={errorClassName || 'text-xs text-red-600'}>{error}</p>}
     </div>
   )
 }

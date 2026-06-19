@@ -1,4 +1,6 @@
 import { Testimonial } from '../models/index.js';
+import { pickFields } from '../utils/pickFields.js';
+import { TESTIMONIAL_FIELDS } from '../constants/fieldAllowlists.js';
 
 export async function listTestimonials(page = 1, limit = 10) {
   const offset = (page - 1) * limit;
@@ -11,13 +13,13 @@ export async function listTestimonials(page = 1, limit = 10) {
 }
 
 export async function createTestimonial(data) {
-  return Testimonial.create(data);
+  return Testimonial.create(pickFields(data, TESTIMONIAL_FIELDS));
 }
 
 export async function updateTestimonial(id, data) {
   const testimonial = await Testimonial.findByPk(id);
   if (!testimonial) throw Object.assign(new Error('Testimonial not found'), { statusCode: 404 });
-  await testimonial.update(data);
+  await testimonial.update(pickFields(data, TESTIMONIAL_FIELDS));
   return testimonial;
 }
 

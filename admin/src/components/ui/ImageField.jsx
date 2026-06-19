@@ -39,6 +39,7 @@ export default function ImageField({ label, value, onChange, required }) {
             <button
               type="button"
               onClick={() => onChange('')}
+              aria-label="Remove image"
               className="absolute -right-2 -top-2 rounded-full bg-red-500 p-1 text-white shadow"
             >
               <X className="h-3 w-3" />

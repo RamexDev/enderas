@@ -53,25 +53,27 @@ export default function LoginPage() {
         <p className="mt-2 text-sm text-primary-300">Sign in to manage website content.</p>
 
         <form noValidate onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-5">
-          <FormField label="Email" error={errors.email?.message} required>
+          <FormField label="Email" error={errors.email?.message} required errorClassName="text-xs text-red-400" labelClassName="text-primary-300">
             <Input
               type="email"
               autoComplete="email"
-              className="border-primary-700 bg-primary-800 text-white placeholder:text-primary-500"
+              placeholder="you@example.com"
+              className="border-primary-700 bg-primary-800 text-white placeholder:text-primary-300"
               {...register('email')}
             />
           </FormField>
 
-          <FormField label="Password" error={errors.password?.message} required>
+          <FormField label="Password" error={errors.password?.message} required errorClassName="text-xs text-red-400" labelClassName="text-primary-300">
             <Input
               type="password"
               autoComplete="current-password"
-              className="border-primary-700 bg-primary-800 text-white placeholder:text-primary-500"
+              placeholder="Enter your password"
+              className="border-primary-700 bg-primary-800 text-white placeholder:text-primary-300"
               {...register('password')}
             />
           </FormField>
 
-          <Checkbox label="Remember me" {...register('remember')} />
+          <Checkbox label="Remember me" className="text-primary-300" {...register('remember')} />
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign in'}

@@ -35,6 +35,7 @@ export function useCrudList({
   const [editingRecord, setEditingRecord] = useState(null)
   const [deleteId, setDeleteId] = useState(null)
   const [deleting, setDeleting] = useState(false)
+  const [saving, setSaving] = useState(false)
 
   const isModalOpen = editingRecord !== null
 
@@ -58,6 +59,7 @@ export function useCrudList({
    * @param {object} formData - Validated form payload from the modal.
    */
   const save = useCallback(async (formData) => {
+    setSaving(true)
     try {
       if (editingRecord?.id) {
         await updateFn(editingRecord.id, formData)
@@ -70,6 +72,8 @@ export function useCrudList({
       await reload()
     } catch (error) {
       toast.error(getErrorMessage(error))
+    } finally {
+      setSaving(false)
     }
   }, [editingRecord, createFn, updateFn, closeModal, reload, createMsg, updateMsg])
 
@@ -112,6 +116,7 @@ export function useCrudList({
     deleteId,
     setDeleteId,
     deleting,
+    saving,
     confirmDelete,
     isEditing: Boolean(editingRecord?.id),
   }

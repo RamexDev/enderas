@@ -1,6 +1,8 @@
 import { Op } from 'sequelize';
-import { Post, Category, User } from '../models/index.js';
+import { Post, Category, PostCategory } from '../models/index.js';
 import { generateSlug } from '../utils/slug.js';
+import { pickFields } from '../utils/pickFields.js';
+import { POST_FIELDS, BLOG_CATEGORY_FIELDS } from '../constants/fieldAllowlists.js';
 
 const postIncludes = [
   { association: 'author', attributes: ['id', 'name'] },
@@ -21,7 +23,6 @@ export async function listPosts(page = 1, limit = 10, filters = {}) {
   if (filters.category) {
     const cat = await Category.findOne({ where: { slug: filters.category } });
     if (cat) {
-      const { PostCategory } = await import('../models/index.js');
       const postIds = await PostCategory.findAll({ where: { category_id: cat.id }, attributes: ['post_id'] });
       where.id = { [Op.in]: postIds.map((p) => p.post_id) };
     }
@@ -51,18 +52,14 @@ export async function getPostById(id) {
 }
 
 export async function createPost(data, authorId) {
-  const slug = data.slug || generateSlug(data.title);
+  const safe = pickFields(data, POST_FIELDS);
+  const slug = safe.slug || generateSlug(safe.title);
   const postData = {
-    title: data.title,
+    ...safe,
     slug,
-    excerpt: data.excerpt,
-    content: data.content,
-    featured_image: data.featured_image,
-    status: data.status || 'draft',
-    meta_title: data.meta_title,
-    meta_description: data.meta_description,
     author_id: authorId,
-    published_at: data.status === 'published' ? new Date() : null,
+    status: safe.status || 'draft',
+    published_at: safe.status === 'published' ? new Date() : null,
   };
 
   const post = await Post.create(postData);
@@ -79,11 +76,16 @@ export async function updatePost(id, data) {
   const post = await Post.findByPk(id);
   if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
 
-  const slug = data.slug || (data.title ? generateSlug(data.title) : undefined);
-  const updateData = { ...data };
-  if (slug) updateData.slug = slug;
+  const safe = pickFields(data, POST_FIELDS);
+  const slug = safe.slug || (safe.title ? generateSlug(safe.title) : undefined);
 
-  await post.update(updateData);
+  if (safe.status === 'published' && post.status !== 'published') {
+    safe.published_at = new Date();
+  } else if (safe.status === 'draft' && post.status === 'published') {
+    safe.published_at = null;
+  }
+
+  await post.update({ ...safe, ...(slug ? { slug } : {}) });
 
   if (data.categories) {
     const categories = await Category.findAll({ where: { id: data.categories } });
@@ -118,15 +120,17 @@ export async function listCategories() {
 }
 
 export async function createCategory(data) {
-  const slug = data.slug || generateSlug(data.name);
-  return Category.create({ ...data, slug });
+  const safe = pickFields(data, BLOG_CATEGORY_FIELDS);
+  const slug = safe.slug || generateSlug(safe.name);
+  return Category.create({ ...safe, slug });
 }
 
 export async function updateCategory(id, data) {
   const cat = await Category.findByPk(id);
   if (!cat) throw Object.assign(new Error('Category not found'), { statusCode: 404 });
-  const slug = data.slug || (data.name ? generateSlug(data.name) : undefined);
-  await cat.update({ ...data, ...(slug ? { slug } : {}) });
+  const safe = pickFields(data, BLOG_CATEGORY_FIELDS);
+  const slug = safe.slug || (safe.name ? generateSlug(safe.name) : undefined);
+  await cat.update({ ...safe, ...(slug ? { slug } : {}) });
   return cat;
 }
 

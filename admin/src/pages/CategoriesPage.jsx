@@ -58,13 +58,13 @@ export default function CategoriesPage() {
 
       <CategoryFormModal
         key={crud.editingRecord?.id ?? 'new'}
-        open={crud.isModalOpen} record={crud.editingRecord} onClose={crud.closeModal} onSave={crud.save} />
+        open={crud.isModalOpen} record={crud.editingRecord} onClose={crud.closeModal} onSave={crud.save} saving={crud.saving} />
     </CrudPageLayout>
   )
 }
 
 /** Modal form for a blog category. */
-function CategoryFormModal({ open, record, onClose, onSave }) {
+function CategoryFormModal({ open, record, onClose, onSave, saving }) {
   const { form, setField } = useFormState(recordToForm(record, EMPTY_CATEGORY))
 
   return (
@@ -76,7 +76,7 @@ function CategoryFormModal({ open, record, onClose, onSave }) {
         <FormField label="Slug">
           <Input value={form.slug} onChange={(e) => setField('slug', e.target.value)} />
         </FormField>
-        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} />
+        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} saving={saving} />
       </div>
     </FormModal>
   )

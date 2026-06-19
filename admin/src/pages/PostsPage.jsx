@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Plus, Pencil, Trash2, Eye, EyeOff } from 'lucide-react'
@@ -13,19 +13,23 @@ import Pagination, { DataTable } from '@/components/ui/DataTable'
 import { PublishBadge } from '@/components/ui/Badge'
 import { ConfirmDialog } from '@/components/ui/Modal'
 import SearchInput from '@/components/ui/SearchInput'
+import { FormField, Select } from '@/components/ui/Input'
 
 export default function PostsPage() {
   const [items, setItems] = useState([])
   const [meta, setMeta] = useState({ page: 1, totalPages: 1 })
   const [search, setSearch] = useState('')
+  const [categoryId, setCategoryId] = useState('')
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [deleteId, setDeleteId] = useState(null)
   const [deleting, setDeleting] = useState(false)
+  const debounceRef = useRef(null)
 
-  const load = async (page = 1, q = search) => {
+  const load = useCallback(async (page = 1, q = '', catId = '') => {
     setLoading(true)
     try {
-      const result = await blogApi.list({ page, limit: 10, search: q || undefined })
+      const result = await blogApi.list({ page, limit: 10, search: q || undefined, category: catId || undefined })
       setItems(result.data)
       setMeta(result.meta)
     } catch (err) {
@@ -33,9 +37,26 @@ export default function PostsPage() {
     } finally {
       setLoading(false)
     }
+  }, [])
+
+  useEffect(() => { load(1, search, categoryId) }, [load, search, categoryId])
+
+  useEffect(() => {
+    blogApi.listCategories().then(setCategories).catch(() => {})
+  }, [])
+
+  const handleSearchChange = (e) => {
+    const value = e.target.value
+    setSearch(value)
+    clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      load(1, value, categoryId)
+    }, 300)
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => {
+    return () => clearTimeout(debounceRef.current)
+  }, [])
 
   const handlePublishToggle = async (row) => {
     try {
@@ -46,7 +67,7 @@ export default function PostsPage() {
         await blogApi.publish(row.id)
         toast.success('Post published')
       }
-      load(meta.page)
+      load(meta.page, search, categoryId)
     } catch (err) {
       toast.error(getErrorMessage(err))
     }
@@ -58,7 +79,7 @@ export default function PostsPage() {
       await blogApi.delete(deleteId)
       toast.success('Post deleted')
       setDeleteId(null)
-      load(meta.page)
+      load(meta.page, search, categoryId)
     } catch (err) {
       toast.error(getErrorMessage(err))
     } finally {
@@ -80,13 +101,22 @@ export default function PostsPage() {
         }
       />
 
-      <div className="mb-4 max-w-sm">
-        <SearchInput
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search posts…"
-        />
-        <Button size="sm" variant="secondary" className="mt-2" onClick={() => load(1, search)}>Search</Button>
+      <div className="mb-4 flex flex-wrap items-end gap-4">
+        <div className="max-w-sm flex-1">
+          <SearchInput
+            value={search}
+            onChange={handleSearchChange}
+            placeholder="Search posts…"
+          />
+        </div>
+        <div className="w-48">
+          <FormField label="Category">
+            <Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
+              <option value="">All categories</option>
+              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+            </Select>
+          </FormField>
+        </div>
       </div>
 
       <DataTable
@@ -94,7 +124,7 @@ export default function PostsPage() {
         columns={[
           { key: 'title', label: 'Title' },
           { key: 'status', label: 'Status', render: (r) => <PublishBadge status={r.status} /> },
-          { key: 'created_at', label: 'Created', render: (r) => formatDate(r.created_at) },
+          { key: 'createdAt', label: 'Created', render: (r) => formatDate(r.createdAt) },
           {
             key: 'actions',
             label: 'Actions',
@@ -112,7 +142,7 @@ export default function PostsPage() {
           },
         ]}
       />
-      <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={(p) => load(p)} />
+      <Pagination page={meta.page} totalPages={meta.totalPages} onPageChange={(p) => load(p, search, categoryId)} />
 
       <ConfirmDialog open={!!deleteId} onClose={() => setDeleteId(null)} onConfirm={handleDelete} title="Delete post" message="This action cannot be undone." loading={deleting} />
     </div>

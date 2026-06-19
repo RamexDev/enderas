@@ -1,5 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import { ContactPage, ContactMessage } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
+import logger from '../utils/logger.js';
+import { notifyNewMessage } from './notificationService.js';
+import { pickFields } from '../utils/pickFields.js';
+import { CONTACT_PAGE_FIELDS } from '../constants/fieldAllowlists.js';
+
+function stripHtml(value) {
+  return value.replace(/<[^>]*>/g, '').trim();
+}
 
 export async function getContactPage() {
   let contact = await ContactPage.findOne();
@@ -10,18 +19,28 @@ export async function getContactPage() {
 export async function updateContactPage(data) {
   let contact = await ContactPage.findOne();
   if (!contact) contact = await ContactPage.create({ id: uuidv4() });
-  await contact.update(data);
+  await contact.update(pickFields(data, CONTACT_PAGE_FIELDS));
   return contact;
 }
 
 export async function submitContactMessage(data) {
-  return ContactMessage.create({
-    name: data.name,
+  const message = await ContactMessage.create({
+    name: stripHtml(data.name),
     email: data.email,
     phone: data.phone || null,
-    subject: data.subject,
-    message: data.message,
+    subject: stripHtml(data.subject),
+    message: stripHtml(data.message),
   });
+
+  logger.info('Contact message submitted', {
+    messageId: message.id,
+    name: message.name,
+    email: message.email,
+  });
+
+  notifyNewMessage(message);
+
+  return message;
 }
 
 export async function listContactMessages(page = 1, limit = 10, archived = false) {
@@ -37,20 +56,41 @@ export async function listContactMessages(page = 1, limit = 10, archived = false
 
 export async function getContactMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw Object.assign(new Error('Message not found'), { statusCode: 404 });
+  if (!msg) throw new AppError('Message not found', 404);
   return msg;
 }
 
 export async function markMessageRead(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw Object.assign(new Error('Message not found'), { statusCode: 404 });
+  if (!msg) throw new AppError('Message not found', 404);
   await msg.update({ is_read: true });
   return msg;
 }
 
 export async function archiveMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw Object.assign(new Error('Message not found'), { statusCode: 404 });
+  if (!msg) throw new AppError('Message not found', 404);
   await msg.update({ is_archived: true });
   return msg;
+}
+
+export async function markMessageUnread(id) {
+  const msg = await ContactMessage.findByPk(id);
+  if (!msg) throw new AppError('Message not found', 404);
+  await msg.update({ is_read: false });
+  return msg;
+}
+
+export async function unarchiveMessage(id) {
+  const msg = await ContactMessage.findByPk(id);
+  if (!msg) throw new AppError('Message not found', 404);
+  await msg.update({ is_archived: false });
+  return msg;
+}
+
+export async function deleteMessage(id) {
+  const msg = await ContactMessage.findByPk(id);
+  if (!msg) throw new AppError('Message not found', 404);
+  await msg.destroy();
+  return { id };
 }

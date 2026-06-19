@@ -69,7 +69,7 @@ export default function DashboardPage() {
             <div className="mb-4 flex items-center justify-between">
               <h3 className="font-semibold text-primary-900">Recent messages</h3>
               {stats.unreadMessages > 0 && (
-                <span className="text-sm text-amber-600">{stats.unreadMessages} unread</span>
+                <span className="text-sm text-amber-700">{stats.unreadMessages} unread</span>
               )}
             </div>
             <ul className="divide-y divide-primary-100">
@@ -79,11 +79,11 @@ export default function DashboardPage() {
                     <p className="font-medium text-primary-900">{message.subject}</p>
                     <p className="text-primary-500">{message.name} · {message.email}</p>
                   </div>
-                  <span className="text-primary-400">{formatDate(message.created_at)}</span>
+                  <span className="text-primary-400">{formatDate(message.createdAt)}</span>
                 </li>
               ))}
             </ul>
-            <Link to={ROUTES.MESSAGES} className="mt-4 inline-block text-sm text-gold-600 hover:underline">
+            <Link to={ROUTES.MESSAGES} className="mt-4 inline-block text-sm text-gold-700 hover:underline">
               View all messages →
             </Link>
           </CardBody>

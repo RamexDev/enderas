@@ -14,9 +14,10 @@ import {
   Settings,
   UserCog,
   User,
-  Sparkles,
+  PanelTop,
   Contact,
-  Award,
+  Tags,
+  Info,
 } from 'lucide-react'
 import { ROUTES } from '@/constants/routes'
 import { isSuperAdmin } from '@/constants/roles'
@@ -36,17 +37,17 @@ export const NAV_GROUPS = [
     label: 'Website Content',
     items: [
       { to: ROUTES.HOMEPAGE, label: 'Homepage', icon: Home },
-      { to: ROUTES.HERO_SLIDES, label: 'Hero Slides', icon: Sparkles },
+      { to: ROUTES.HERO_SLIDES, label: 'Hero Slides', icon: PanelTop },
       { to: ROUTES.SERVICES, label: 'Services', icon: Briefcase },
       { to: ROUTES.GALLERY, label: 'Gallery', icon: Images },
       { to: ROUTES.POSTS, label: 'Blog Posts', icon: FileText },
-      { to: ROUTES.POST_CATEGORIES, label: 'Blog Categories', icon: FileText },
+      { to: ROUTES.POST_CATEGORIES, label: 'Blog Categories', icon: Tags },
       { to: ROUTES.TEAM, label: 'Team Members', icon: Users },
       { to: ROUTES.TESTIMONIALS, label: 'Testimonials', icon: MessageSquare },
       { to: ROUTES.FAQS, label: 'FAQs', icon: HelpCircle },
       { to: ROUTES.PARTNERS, label: 'Partners', icon: Handshake },
       { to: ROUTES.CORE_VALUES, label: 'Core Values', icon: Star },
-      { to: ROUTES.ABOUT, label: 'About Page', icon: Award },
+      { to: ROUTES.ABOUT, label: 'About Page', icon: Info },
     ],
   },
   {

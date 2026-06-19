@@ -6,7 +6,7 @@ import { describe, it, expect, beforeAll } from 'vitest';
 import bcrypt from 'bcrypt';
 import * as authService from '../../src/services/authService.js';
 import * as authController from '../../src/controllers/auth/authController.js';
-import { User } from '../../src/models/index.js';
+import { User, RefreshToken } from '../../src/models/index.js';
 import { setupTestDb } from '../helpers/db.js';
 import {
   createMockReq,
@@ -140,6 +140,33 @@ describe('auth layer ↔ controller contract', () => {
       await authController.me(req, res, next);
 
       expect(getCapturedResponse(res).statusCode).toBe(404);
+    });
+  });
+
+  describe('cleanupExpiredTokens', () => {
+    it('deletes only expired refresh tokens', async () => {
+      const user = await User.findOne({ where: { email: 'auth-contract@test.com' } });
+
+      const expired = await RefreshToken.create({
+        user_id: user.id,
+        token_hash: 'expired-hash',
+        expires_at: new Date(Date.now() - 1000 * 60 * 60),
+      });
+
+      const valid = await RefreshToken.create({
+        user_id: user.id,
+        token_hash: 'valid-hash',
+        expires_at: new Date(Date.now() + 1000 * 60 * 60),
+      });
+
+      const deleted = await authService.cleanupExpiredTokens();
+
+      expect(deleted).toBe(1);
+
+      const remaining = await RefreshToken.findAll();
+      const remainingHashes = remaining.map((t) => t.token_hash);
+      expect(remainingHashes).not.toContain(expired.token_hash);
+      expect(remainingHashes).toContain(valid.token_hash);
     });
   });
 });

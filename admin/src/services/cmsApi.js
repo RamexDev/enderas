@@ -91,7 +91,7 @@ export const blogApi = {
 // ─── Team ─────────────────────────────────────────────────────────────────────
 
 export const teamApi = {
-  list: () => api.get('/team-members').then(unwrap),
+  list: (params) => api.get('/team-members', { params }).then(unwrapPaginated),
   create: (data) => api.post('/team-members', data).then(unwrap),
   update: (id, data) => api.put(`/team-members/${id}`, data).then(unwrap),
   delete: (id) => api.delete(`/team-members/${id}`).then(unwrap),
@@ -101,7 +101,7 @@ export const teamApi = {
 // ─── Testimonials ─────────────────────────────────────────────────────────────
 
 export const testimonialsApi = {
-  list: () => api.get('/testimonials').then(unwrap),
+  list: (params) => api.get('/testimonials', { params }).then(unwrapPaginated),
   create: (data) => api.post('/testimonials', data).then(unwrap),
   update: (id, data) => api.put(`/testimonials/${id}`, data).then(unwrap),
   delete: (id) => api.delete(`/testimonials/${id}`).then(unwrap),
@@ -111,7 +111,7 @@ export const testimonialsApi = {
 // ─── FAQs ───────────────────────────────────────────────────────────────────
 
 export const faqsApi = {
-  list: () => api.get('/faqs').then(unwrap),
+  list: (params) => api.get('/faqs', { params }).then(unwrapPaginated),
   create: (data) => api.post('/faqs', data).then(unwrap),
   update: (id, data) => api.put(`/faqs/${id}`, data).then(unwrap),
   delete: (id) => api.delete(`/faqs/${id}`).then(unwrap),
@@ -144,7 +144,10 @@ export const contactApi = {
   listMessages: (params) => api.get('/contact-messages', { params }).then(unwrapPaginated),
   getMessage: (id) => api.get(`/contact-messages/${id}`).then(unwrap),
   markRead: (id) => api.patch(`/contact-messages/${id}/read`).then(unwrap),
+  markUnread: (id) => api.patch(`/contact-messages/${id}/unread`).then(unwrap),
   archive: (id) => api.patch(`/contact-messages/${id}/archive`).then(unwrap),
+  unarchive: (id) => api.patch(`/contact-messages/${id}/unarchive`).then(unwrap),
+  destroy: (id) => api.delete(`/contact-messages/${id}`).then(unwrap),
 }
 
 // ─── Media ────────────────────────────────────────────────────────────────────
@@ -172,7 +175,7 @@ export const settingsApi = {
 // ─── Users (super admin) ──────────────────────────────────────────────────────
 
 export const usersApi = {
-  list: () => api.get('/users').then(unwrap),
+  list: (params) => api.get('/users', { params }).then(unwrapPaginated),
   get: (id) => api.get(`/users/${id}`).then(unwrap),
   create: (data) => api.post('/users', data).then(unwrap),
   update: (id, data) => api.put(`/users/${id}`, data).then(unwrap),

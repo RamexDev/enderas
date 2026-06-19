@@ -1,11 +1,13 @@
 import { validationResult } from 'express-validator';
 import * as userService from '../../services/userService.js';
-import { successResponse, errorResponse } from '../../utils/response.js';
+import { successResponse, errorResponse, paginatedResponse } from '../../utils/response.js';
+import { getPagination, getPaginationMeta } from '../../utils/pagination.js';
 
 export async function index(req, res, next) {
   try {
-    const users = await userService.listUsers();
-    return successResponse(res, users);
+    const { page, limit } = getPagination(req.query);
+    const result = await userService.listUsers(page, limit);
+    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit));
   } catch (error) { next(error); }
 }
 

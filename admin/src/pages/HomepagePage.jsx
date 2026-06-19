@@ -153,6 +153,7 @@ export default function HomepagePage() {
         record={crud.editingRecord}
         onClose={crud.closeModal}
         onSave={crud.save}
+        saving={crud.saving}
       />
 
       <ConfirmDialog
@@ -168,7 +169,7 @@ export default function HomepagePage() {
 }
 
 /** Modal for creating or editing a homepage statistic. */
-function StatisticFormModal({ open, record, onClose, onSave }) {
+function StatisticFormModal({ open, record, onClose, onSave, saving }) {
   const { form, setField } = useFormState(recordToForm(record, EMPTY_STAT))
 
   return (
@@ -177,7 +178,7 @@ function StatisticFormModal({ open, record, onClose, onSave }) {
         <FormField label="Label" required><Input value={form.label} onChange={(e) => setField('label', e.target.value)} /></FormField>
         <FormField label="Value" required><Input value={form.value} onChange={(e) => setField('value', e.target.value)} /></FormField>
         <FormField label="Icon"><Input value={form.icon} onChange={(e) => setField('icon', e.target.value)} placeholder="e.g. years, clients" /></FormField>
-        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} />
+        <FormModalFooter onCancel={onClose} onSave={() => onSave(form)} saving={saving} />
       </div>
     </FormModal>
   )

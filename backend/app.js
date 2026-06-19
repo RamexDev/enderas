@@ -7,17 +7,22 @@ import express from 'express';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import env from './src/config/env.js';
 import routes from './src/routes/index.js';
 import { scopedCors } from './src/middleware/cors.js';
+import { requestId } from './src/middleware/requestId.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFound } from './src/middleware/notFound.js';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+import logger from './src/utils/logger.js';
 
 const app = express();
+
+if (!env.isTest) {
+  app.set('trust proxy', 1);
+}
+
+// Request ID for traceability across logs
+app.use(requestId);
 
 // Security headers (XSS, clickjacking, etc.)
 app.use(helmet());
@@ -25,9 +30,9 @@ app.use(helmet());
 // Path-scoped CORS — each client origin may only access its designated endpoints
 app.use(scopedCors);
 
-// Request logging in development only
-if (env.isDev) {
-  app.use(morgan('dev'));
+// Request logging — combined format in prod, dev format in dev (skipped in test)
+if (!env.isTest) {
+  app.use(morgan(env.isDev ? 'dev' : 'combined'));
 }
 
 app.use(express.json({ limit: '10mb' }));
@@ -43,18 +48,28 @@ const authLimiter = rateLimit({
 });
 
 const contactLimiter = rateLimit({
-  windowMs: 60 * 60 * 1000,
-  max: 3,
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  skip: (req) => req.method !== 'POST',
   message: { success: false, message: 'Too many contact submissions, please try again later' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 10,
+  message: { success: false, message: 'Too many refresh attempts, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 app.use('/api/v1/auth/login', authLimiter);
+app.use('/api/v1/auth/refresh', refreshLimiter);
 app.use('/api/v1/public/contact', contactLimiter);
 
 // Serve uploaded media files
-app.use('/uploads', express.static(path.resolve(__dirname, 'src/uploads')));
+app.use('/uploads', express.static(env.upload.resolvedPath));
 
 /** Health check — returns 503 when database is unreachable */
 app.get('/api/v1/health', async (req, res) => {
@@ -63,8 +78,8 @@ app.get('/api/v1/health', async (req, res) => {
   try {
     await sequelize.authenticate();
     dbStatus = 'connected';
-  } catch {
-    dbStatus = 'disconnected';
+  } catch (error) {
+    logger.warn('Health check — database unreachable', { req, error });
   }
 
   const statusCode = dbStatus === 'connected' ? 200 : 503;

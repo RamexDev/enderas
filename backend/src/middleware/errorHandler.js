@@ -3,12 +3,10 @@
  * Maps Sequelize, Multer, and application errors to consistent JSON responses.
  */
 
-import env from '../config/env.js';
+import logger from '../utils/logger.js';
 
 export function errorHandler(err, req, res, _next) {
-  if (env.isDev) {
-    console.error('Error:', err);
-  }
+  logger.error('Unhandled error', { req, error: err });
 
   // express-validator errors passed via next(err) with statusCode 400
   if (err.statusCode === 400 && err.errors) {

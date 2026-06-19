@@ -1,4 +1,6 @@
 import { TeamMember } from '../models/index.js';
+import { pickFields } from '../utils/pickFields.js';
+import { TEAM_MEMBER_FIELDS } from '../constants/fieldAllowlists.js';
 
 export async function listTeamMembers(page = 1, limit = 10) {
   const offset = (page - 1) * limit;
@@ -11,13 +13,13 @@ export async function listTeamMembers(page = 1, limit = 10) {
 }
 
 export async function createTeamMember(data) {
-  return TeamMember.create(data);
+  return TeamMember.create(pickFields(data, TEAM_MEMBER_FIELDS));
 }
 
 export async function updateTeamMember(id, data) {
   const member = await TeamMember.findByPk(id);
   if (!member) throw Object.assign(new Error('Team member not found'), { statusCode: 404 });
-  await member.update(data);
+  await member.update(pickFields(data, TEAM_MEMBER_FIELDS));
   return member;
 }
 

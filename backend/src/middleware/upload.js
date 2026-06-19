@@ -1,6 +1,6 @@
 /**
  * Multer file upload configuration.
- * Stores images in src/uploads/{entity_type}/ with UUID filenames.
+ * Stores images in {UPLOAD_PATH}/{entity_type}/ with UUID filenames.
  * Allowed types: JPEG, PNG, WEBP. Max size from MAX_FILE_SIZE env var.
  */
 
@@ -12,22 +12,61 @@ import env from '../config/env.js';
 
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 
+export const ALLOWED_ENTITY_TYPES = new Set([
+  'general',
+  'services',
+  'gallery',
+  'team',
+  'blog',
+  'posts',
+  'hero-slides',
+  'partners',
+  'testimonials',
+  'settings',
+  'about',
+]);
+
+/**
+ * Resolve a safe upload subdirectory within the configured upload root.
+ * @throws {Error} When entity_type is invalid or path escapes the upload root
+ */
+export function resolveUploadDir(entityType) {
+  const root = env.upload.resolvedPath;
+  const subDir = entityType || 'general';
+
+  if (!ALLOWED_ENTITY_TYPES.has(subDir)) {
+    throw Object.assign(new Error(`Invalid entity_type: ${subDir}`), { statusCode: 400 });
+  }
+
+  const uploadPath = path.resolve(root, subDir);
+  const rootWithSep = root.endsWith(path.sep) ? root : `${root}${path.sep}`;
+
+  if (uploadPath !== root && !uploadPath.startsWith(rootWithSep)) {
+    throw Object.assign(new Error('Invalid upload path'), { statusCode: 400 });
+  }
+
+  if (!fs.existsSync(uploadPath)) {
+    fs.mkdirSync(uploadPath, { recursive: true });
+  }
+
+  return uploadPath;
+}
+
 const storage = multer.diskStorage({
   destination(req, file, cb) {
-    let subDir = 'general';
-    if (req.body.entity_type) {
-      subDir = req.body.entity_type;
-    } else if (req.params.entityType) {
-      subDir = req.params.entityType;
+    try {
+      let subDir = 'general';
+      if (req.body.entity_type) {
+        subDir = req.body.entity_type;
+      } else if (req.params.entityType) {
+        subDir = req.params.entityType;
+      }
+
+      const uploadPath = resolveUploadDir(subDir);
+      cb(null, uploadPath);
+    } catch (error) {
+      cb(error);
     }
-
-    const uploadPath = path.resolve(env.upload.path, subDir);
-
-    if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true });
-    }
-
-    cb(null, uploadPath);
   },
   filename(req, file, cb) {
     const ext = path.extname(file.originalname).toLowerCase();

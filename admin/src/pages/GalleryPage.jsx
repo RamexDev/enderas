@@ -121,7 +121,7 @@ export default function GalleryPage() {
       <Card>
         <CardHeader
           title="Categories"
-          action={<Button size="sm" variant="secondary" onClick={() => setCatModal({ name: '', slug: '' })}>Add category</Button>}
+          action={<Button size="sm" variant="secondary" onClick={() => setCatModal({ name: '' })}>Add category</Button>}
         />
         <CardBody>
           <DataTable
@@ -201,16 +201,15 @@ function GalleryModal({ open, data, categories, onClose, onSave }) {
 }
 
 function CategoryModal({ open, data, onClose, onSave }) {
-  const [form, setForm] = useState({ name: '', slug: '' })
+  const [form, setForm] = useState({ name: '' })
   useEffect(() => {
-    if (data) setForm({ name: data.name || '', slug: data.slug || '' })
+    if (data) setForm({ name: data.name || '' })
   }, [data])
 
   return (
     <Modal open={open} onClose={onClose} title={data?.id ? 'Edit category' : 'Add category'}>
       <div className="space-y-4">
         <FormField label="Name" required><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></FormField>
-        <FormField label="Slug"><Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} /></FormField>
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
           <Button onClick={() => onSave(form)}>Save</Button>
