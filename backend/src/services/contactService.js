@@ -88,6 +88,15 @@ export async function unarchiveMessage(id) {
   return msg;
 }
 
+export async function getUnreadMessages(limit = 3) {
+  const { count, rows } = await ContactMessage.findAndCountAll({
+    where: { is_read: false, is_archived: false },
+    order: [['created_at', 'DESC']],
+    limit,
+  });
+  return { count, messages: rows };
+}
+
 export async function deleteMessage(id) {
   const msg = await ContactMessage.findByPk(id);
   if (!msg) throw new AppError('Message not found', 404);

@@ -4,16 +4,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { toast } from 'sonner'
+import { Eye, EyeOff } from 'lucide-react'
 import { useAuthStore } from '@/store/useAuthStore'
 import { ROUTES } from '@/constants/routes'
 import { getErrorMessage } from '@/utils/errors'
 import Button from '@/components/ui/Button'
-import { Input, FormField, Checkbox } from '@/components/ui/Input'
+import { Input, FormField, Label } from '@/components/ui/Input'
 
 const loginSchema = z.object({
   email: z.string().email('Valid email is required'),
   password: z.string().min(1, 'Password is required'),
-  remember: z.boolean().optional(),
 })
 
 export default function LoginPage() {
@@ -21,6 +21,7 @@ export default function LoginPage() {
   const location = useLocation()
   const login = useAuthStore((s) => s.login)
   const [submitting, setSubmitting] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const appName = import.meta.env.VITE_APP_NAME || 'Enderas CMS'
 
   const {
@@ -29,13 +30,13 @@ export default function LoginPage() {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '', remember: false },
+    defaultValues: { email: '', password: '' },
   })
 
   const onSubmit = async (data) => {
     setSubmitting(true)
     try {
-      await login(data.email, data.password, data.remember)
+      await login(data.email, data.password)
       toast.success('Welcome back')
       const from = location.state?.from?.pathname || ROUTES.DASHBOARD
       navigate(from, { replace: true })
@@ -63,17 +64,32 @@ export default function LoginPage() {
             />
           </FormField>
 
-          <FormField label="Password" error={errors.password?.message} required errorClassName="text-xs text-red-400" labelClassName="text-primary-300">
-            <Input
-              type="password"
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              className="border-primary-700 bg-primary-800 text-white placeholder:text-primary-300"
-              {...register('password')}
-            />
-          </FormField>
-
-          <Checkbox label="Remember me" className="text-primary-300" {...register('remember')} />
+          <div className="space-y-1">
+            <Label htmlFor="password" className="text-primary-300">
+              Password<span className="ml-0.5 text-red-500">*</span>
+            </Label>
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                className="border-primary-700 bg-primary-800 pr-10 text-white placeholder:text-primary-300"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-primary-300 hover:text-primary-100"
+                tabIndex={-1}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            {errors.password?.message && (
+              <p className="text-xs text-red-400">{errors.password.message}</p>
+            )}
+          </div>
 
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? 'Signing in…' : 'Sign in'}

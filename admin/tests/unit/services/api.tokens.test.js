@@ -10,41 +10,26 @@ describe('token storage', () => {
     clearStoredTokens()
   })
 
-  it('stores tokens in sessionStorage by default', () => {
+  it('stores tokens in sessionStorage', () => {
     setStoredTokens({
       accessToken: 'access-123',
       refreshToken: 'refresh-456',
-      remember: false,
     })
 
     const tokens = getStoredTokens()
     expect(tokens.accessToken).toBe('access-123')
     expect(tokens.refreshToken).toBe('refresh-456')
-    expect(tokens.remember).toBe(false)
     expect(sessionStorage.getItem('enderas_access_token')).toBe('access-123')
-    expect(localStorage.getItem('enderas_access_token')).toBeNull()
+    expect(sessionStorage.getItem('enderas_refresh_token')).toBe('refresh-456')
   })
 
-  it('stores tokens in localStorage when remember me is enabled', () => {
-    setStoredTokens({
-      accessToken: 'access-abc',
-      refreshToken: 'refresh-def',
-      remember: true,
-    })
-
-    const tokens = getStoredTokens()
-    expect(tokens.remember).toBe(true)
-    expect(localStorage.getItem('enderas_access_token')).toBe('access-abc')
-    expect(sessionStorage.getItem('enderas_access_token')).toBeNull()
-  })
-
-  it('clears tokens from both storage buckets', () => {
-    setStoredTokens({ accessToken: 'a', refreshToken: 'r', remember: true })
+  it('clears tokens from sessionStorage', () => {
+    setStoredTokens({ accessToken: 'a', refreshToken: 'r' })
     clearStoredTokens()
 
     expect(getStoredTokens().accessToken).toBeNull()
     expect(getStoredTokens().refreshToken).toBeNull()
-    expect(localStorage.getItem('enderas_access_token')).toBeNull()
+    expect(sessionStorage.getItem('enderas_access_token')).toBeNull()
     expect(sessionStorage.getItem('enderas_refresh_token')).toBeNull()
   })
 })

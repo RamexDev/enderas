@@ -31,18 +31,16 @@ export const useAuthStore = create((set, get) => ({
   },
 
   /**
-   * Authenticates the user and persists tokens.
+   * Authenticates the user and persists tokens to sessionStorage.
    * @param {string} email
    * @param {string} password
-   * @param {boolean} [remember=false] - Use localStorage when true, sessionStorage otherwise.
    * @returns {Promise<object>} Authenticated user object.
    */
-  login: async (email, password, remember = false) => {
+  login: async (email, password) => {
     const result = await authApi.login(email, password)
     setStoredTokens({
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
-      remember,
     })
     set({ user: result.user, isAuthenticated: true })
     return result.user

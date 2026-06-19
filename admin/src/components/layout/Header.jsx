@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { useAuthStore } from '@/store/useAuthStore'
 import { ROUTES } from '@/constants/routes'
 import { SidebarToggle } from './Sidebar'
+import NotificationBell from '@/components/common/NotificationBell'
 
 export default function Header({ title, breadcrumbs = [], onMenuClick }) {
   const navigate = useNavigate()
@@ -41,7 +42,9 @@ export default function Header({ title, breadcrumbs = [], onMenuClick }) {
           </div>
         </div>
 
-        <div className="relative">
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <div className="relative">
           <button
             type="button"
             onClick={() => setMenuOpen((v) => !v)}
@@ -72,6 +75,7 @@ export default function Header({ title, breadcrumbs = [], onMenuClick }) {
               </div>
             </>
           )}
+          </div>
         </div>
       </div>
     </header>

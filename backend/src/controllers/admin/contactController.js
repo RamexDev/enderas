@@ -16,6 +16,13 @@ export async function updateContactPage(req, res, next) {
   } catch (error) { next(error); }
 }
 
+export async function unread(req, res, next) {
+  try {
+    const result = await contactService.getUnreadMessages();
+    return successResponse(res, result);
+  } catch (error) { next(error); }
+}
+
 export async function listMessages(req, res, next) {
   try {
     const { page, limit } = getPagination(req.query);

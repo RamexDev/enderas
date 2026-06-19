@@ -141,6 +141,7 @@ export const aboutApi = {
 export const contactApi = {
   getPage: () => api.get('/contact-page').then(unwrap),
   updatePage: (data) => api.put('/contact-page', data).then(unwrap),
+  getUnread: () => api.get('/contact-messages/unread').then(unwrap),
   listMessages: (params) => api.get('/contact-messages', { params }).then(unwrapPaginated),
   getMessage: (id) => api.get(`/contact-messages/${id}`).then(unwrap),
   markRead: (id) => api.patch(`/contact-messages/${id}/read`).then(unwrap),

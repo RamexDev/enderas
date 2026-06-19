@@ -1,10 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Outlet } from 'react-router-dom'
+import { toast } from 'sonner'
+import { useAuthStore } from '@/store/useAuthStore'
+import { useSessionTimeout } from '@/hooks/useSessionTimeout'
 import Sidebar from './Sidebar'
 import Header from './Header'
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const logout = useAuthStore((s) => s.logout)
+
+  useSessionTimeout()
+
+  useEffect(() => {
+    const handler = () => {
+      toast.error('Session expired — please sign in again')
+      logout()
+    }
+    window.addEventListener('auth:session-expired', handler)
+    return () => window.removeEventListener('auth:session-expired', handler)
+  }, [logout])
 
   return (
     <div className="min-h-screen bg-primary-50">

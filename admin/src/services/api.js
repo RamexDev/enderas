@@ -17,49 +17,29 @@ const api = axios.create({
 let refreshPromise = null
 
 /**
- * Returns the browser storage object for the current remember-me preference.
- * @param {boolean} remember - Whether tokens persist in localStorage.
- * @returns {Storage}
- */
-function getStorage(remember) {
-  return remember ? localStorage : sessionStorage
-}
-
-/**
- * Reads access/refresh tokens from the active storage bucket.
- * @returns {{ accessToken: string|null, refreshToken: string|null, remember: boolean }}
+ * Reads access/refresh tokens from sessionStorage.
+ * @returns {{ accessToken: string|null, refreshToken: string|null }}
  */
 export function getStoredTokens() {
-  const remember = localStorage.getItem('enderas_remember') === 'true'
-  const storage = getStorage(remember)
   return {
-    accessToken: storage.getItem('enderas_access_token'),
-    refreshToken: storage.getItem('enderas_refresh_token'),
-    remember,
+    accessToken: sessionStorage.getItem('enderas_access_token'),
+    refreshToken: sessionStorage.getItem('enderas_refresh_token'),
   }
 }
 
 /**
- * Persists tokens to the correct storage and clears the other bucket.
- * @param {{ accessToken?: string, refreshToken?: string, remember: boolean }} tokens
+ * Persists tokens to sessionStorage.
+ * @param {{ accessToken?: string, refreshToken?: string }} tokens
  */
-export function setStoredTokens({ accessToken, refreshToken, remember }) {
-  localStorage.setItem('enderas_remember', remember ? 'true' : 'false')
-  localStorage.removeItem('enderas_access_token')
-  localStorage.removeItem('enderas_refresh_token')
+export function setStoredTokens({ accessToken, refreshToken }) {
   sessionStorage.removeItem('enderas_access_token')
   sessionStorage.removeItem('enderas_refresh_token')
-
-  const storage = getStorage(remember)
-  if (accessToken) storage.setItem('enderas_access_token', accessToken)
-  if (refreshToken) storage.setItem('enderas_refresh_token', refreshToken)
+  if (accessToken) sessionStorage.setItem('enderas_access_token', accessToken)
+  if (refreshToken) sessionStorage.setItem('enderas_refresh_token', refreshToken)
 }
 
-/** Removes all auth tokens from both storage buckets. */
+/** Removes all auth tokens from sessionStorage. */
 export function clearStoredTokens() {
-  localStorage.removeItem('enderas_remember')
-  localStorage.removeItem('enderas_access_token')
-  localStorage.removeItem('enderas_refresh_token')
   sessionStorage.removeItem('enderas_access_token')
   sessionStorage.removeItem('enderas_refresh_token')
 }
@@ -78,7 +58,7 @@ api.interceptors.request.use((config) => {
  * @returns {Promise<string>} New access token.
  */
 async function refreshAccessToken() {
-  const { refreshToken, remember } = getStoredTokens()
+  const { refreshToken } = getStoredTokens()
   if (!refreshToken) throw new ApiError('Session expired', 401)
 
   const { data } = await axios.post(
@@ -90,7 +70,6 @@ async function refreshAccessToken() {
   setStoredTokens({
     accessToken: payload.accessToken,
     refreshToken: payload.refreshToken,
-    remember,
   })
   return payload.accessToken
 }
@@ -116,9 +95,7 @@ api.interceptors.response.use(
       } catch {
         refreshPromise = null
         clearStoredTokens()
-        if (!window.location.pathname.includes('/login')) {
-          window.location.href = '/login'
-        }
+        window.dispatchEvent(new CustomEvent('auth:session-expired'))
       }
     }
 

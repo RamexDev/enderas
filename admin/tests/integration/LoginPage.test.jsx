@@ -62,7 +62,7 @@ describe('LoginPage', () => {
     await user.click(screen.getByRole('button', { name: /sign in/i }))
 
     await waitFor(() => {
-      expect(login).toHaveBeenCalledWith('admin@enderas.com', 'password123', false)
+      expect(login).toHaveBeenCalledWith('admin@enderas.com', 'password123')
     })
     expect(toast.success).toHaveBeenCalledWith('Welcome back')
     expect(mockNavigate).toHaveBeenCalledWith('/dashboard', { replace: true })

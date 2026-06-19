@@ -147,6 +147,7 @@ router.delete('/posts/:id', authorize(ROLES.SUPER_ADMIN, ROLES.EDITOR), blogCont
 router.patch('/posts/:id/publish', authorize(ROLES.SUPER_ADMIN, ROLES.EDITOR), blogController.publish);
 router.patch('/posts/:id/unpublish', authorize(ROLES.SUPER_ADMIN, ROLES.EDITOR), blogController.unpublish);
 
+router.get('/contact-messages/unread', contactController.unread);
 router.get('/contact-messages', contactController.listMessages);
 router.get('/contact-messages/:id', contactController.showMessage);
 router.patch('/contact-messages/:id/read', contactController.markRead);
