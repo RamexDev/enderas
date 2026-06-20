@@ -4,7 +4,7 @@ import { successResponse, errorResponse } from '../../utils/response.js';
 export async function getHomePage(req, res, next) {
   try {
     const data = await homepageService.getHomePage();
-    return successResponse(res, data);
+    return successResponse(res, data, 'Home page retrieved');
   } catch (error) { next(error); }
 }
 
@@ -18,7 +18,7 @@ export async function updateHomePage(req, res, next) {
 export async function listStatistics(req, res, next) {
   try {
     const data = await homepageService.listStatistics();
-    return successResponse(res, data);
+    return successResponse(res, data, 'Statistics retrieved');
   } catch (error) { next(error); }
 }
 
@@ -26,7 +26,10 @@ export async function createStatistic(req, res, next) {
   try {
     const data = await homepageService.createStatistic(req.body);
     return successResponse(res, data, 'Statistic created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function updateStatistic(req, res, next) {
@@ -52,7 +55,7 @@ export async function deleteStatistic(req, res, next) {
 export async function listHeroSlides(req, res, next) {
   try {
     const data = await homepageService.listHeroSlides();
-    return successResponse(res, data);
+    return successResponse(res, data, 'Hero slides retrieved');
   } catch (error) { next(error); }
 }
 
@@ -60,7 +63,10 @@ export async function createHeroSlide(req, res, next) {
   try {
     const data = await homepageService.createHeroSlide(req.body);
     return successResponse(res, data, 'Hero slide created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function updateHeroSlide(req, res, next) {

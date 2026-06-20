@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt';
 import { User } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { validatePasswordStrength } from '../utils/password.js';
 import { pickFields } from '../utils/pickFields.js';
 import { USER_CREATE_FIELDS, USER_UPDATE_FIELDS } from '../constants/fieldAllowlists.js';
@@ -21,7 +22,7 @@ export async function getUserById(id) {
   const user = await User.findByPk(id, {
     attributes: { exclude: ['password'] },
   });
-  if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 });
+  if (!user) throw new AppError(`User with ID ${id} not found`, 404);
   return user;
 }
 
@@ -30,12 +31,12 @@ export async function createUser(data) {
 
   const validation = validatePasswordStrength(data.password);
   if (!validation.valid) {
-    throw Object.assign(new Error(validation.message), { statusCode: 400 });
+    throw new AppError(validation.message, 400);
   }
 
   const existing = await User.findOne({ where: { email: safe.email } });
   if (existing) {
-    throw Object.assign(new Error('Email already in use'), { statusCode: 409 });
+    throw new AppError('Email already in use', 409);
   }
 
   const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
@@ -55,13 +56,13 @@ export async function createUser(data) {
 
 export async function updateUser(id, data) {
   const user = await User.findByPk(id);
-  if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 });
+  if (!user) throw new AppError(`User with ID ${id} not found`, 404);
 
   const safe = pickFields(data, USER_UPDATE_FIELDS);
 
   if (safe.email && safe.email !== user.email) {
     const existing = await User.findOne({ where: { email: safe.email } });
-    if (existing) throw Object.assign(new Error('Email already in use'), { statusCode: 409 });
+    if (existing) throw new AppError('Email already in use', 409);
   }
 
   await user.update(safe);
@@ -73,7 +74,7 @@ export async function updateUser(id, data) {
 
 export async function toggleUserStatus(id) {
   const user = await User.findByPk(id);
-  if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 });
+  if (!user) throw new AppError(`User with ID ${id} not found`, 404);
   await user.update({ is_active: !user.is_active });
 
   const result = user.toJSON();
@@ -83,7 +84,7 @@ export async function toggleUserStatus(id) {
 
 export async function deleteUser(id) {
   const user = await User.findByPk(id);
-  if (!user) throw Object.assign(new Error('User not found'), { statusCode: 404 });
+  if (!user) throw new AppError(`User with ID ${id} not found`, 404);
   await user.destroy();
   return { message: 'User deleted' };
 }

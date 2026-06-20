@@ -1,4 +1,5 @@
 import { Faq } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { pickFields } from '../utils/pickFields.js';
 import { FAQ_FIELDS } from '../constants/fieldAllowlists.js';
 
@@ -18,20 +19,20 @@ export async function createFaq(data) {
 
 export async function updateFaq(id, data) {
   const faq = await Faq.findByPk(id);
-  if (!faq) throw Object.assign(new Error('FAQ not found'), { statusCode: 404 });
+  if (!faq) throw new AppError(`FAQ with ID ${id} not found`, 404);
   await faq.update(pickFields(data, FAQ_FIELDS));
   return faq;
 }
 
 export async function deleteFaq(id) {
   const faq = await Faq.findByPk(id);
-  if (!faq) throw Object.assign(new Error('FAQ not found'), { statusCode: 404 });
+  if (!faq) throw new AppError(`FAQ with ID ${id} not found`, 404);
   await faq.destroy();
 }
 
 export async function toggleFaqStatus(id) {
   const faq = await Faq.findByPk(id);
-  if (!faq) throw Object.assign(new Error('FAQ not found'), { statusCode: 404 });
+  if (!faq) throw new AppError(`FAQ with ID ${id} not found`, 404);
   await faq.update({ is_active: !faq.is_active });
   return faq;
 }

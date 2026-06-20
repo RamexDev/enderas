@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import sequelize from '../config/database.js';
 import { Media } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import logger from '../utils/logger.js';
 
 export async function listMedia(page = 1, limit = 10) {
@@ -17,7 +18,7 @@ export async function listMedia(page = 1, limit = 10) {
 
 export async function deleteMedia(id) {
   const record = await Media.findByPk(id);
-  if (!record) throw Object.assign(new Error('Media not found'), { statusCode: 404 });
+  if (!record) throw new AppError(`Media with ID ${id} not found`, 404);
 
   const t = await sequelize.transaction();
 

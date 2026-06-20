@@ -3,6 +3,7 @@
  */
 
 import { Service } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { generateSlug } from '../utils/slug.js';
 import { pickFields } from '../utils/pickFields.js';
 
@@ -37,13 +38,13 @@ export async function listPublicServices(page = 1, limit = 10) {
 /** Public: fetch single active service by slug */
 export async function getServiceBySlug(slug) {
   const service = await Service.findOne({ where: { slug, is_active: true } });
-  if (!service) throw Object.assign(new Error('Service not found'), { statusCode: 404 });
+  if (!service) throw new AppError('Service not found', 404);
   return service;
 }
 
 export async function getServiceById(id) {
   const service = await Service.findByPk(id);
-  if (!service) throw Object.assign(new Error('Service not found'), { statusCode: 404 });
+  if (!service) throw new AppError(`Service with ID ${id} not found`, 404);
   return service;
 }
 
@@ -55,7 +56,7 @@ export async function createService(data) {
 
 export async function updateService(id, data) {
   const service = await Service.findByPk(id);
-  if (!service) throw Object.assign(new Error('Service not found'), { statusCode: 404 });
+  if (!service) throw new AppError(`Service with ID ${id} not found`, 404);
   const safe = pickFields(data, SERVICE_FIELDS);
   const slug = safe.slug || (safe.title ? generateSlug(safe.title) : undefined);
   await service.update({ ...safe, ...(slug ? { slug } : {}) });
@@ -64,14 +65,14 @@ export async function updateService(id, data) {
 
 export async function deleteService(id) {
   const service = await Service.findByPk(id);
-  if (!service) throw Object.assign(new Error('Service not found'), { statusCode: 404 });
+  if (!service) throw new AppError(`Service with ID ${id} not found`, 404);
   await service.destroy();
 }
 
 /** Toggle is_active flag for a service */
 export async function toggleServiceStatus(id) {
   const service = await Service.findByPk(id);
-  if (!service) throw Object.assign(new Error('Service not found'), { statusCode: 404 });
+  if (!service) throw new AppError(`Service with ID ${id} not found`, 404);
   await service.update({ is_active: !service.is_active });
   return service;
 }

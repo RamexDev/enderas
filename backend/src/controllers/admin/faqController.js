@@ -6,7 +6,7 @@ export async function index(req, res, next) {
   try {
     const { page, limit } = getPagination(req.query);
     const result = await faqService.listFaqs(page, limit);
-    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit));
+    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit), 'FAQs retrieved');
   } catch (error) { next(error); }
 }
 
@@ -14,7 +14,10 @@ export async function create(req, res, next) {
   try {
     const faq = await faqService.createFaq(req.body);
     return successResponse(res, faq, 'FAQ created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function update(req, res, next) {

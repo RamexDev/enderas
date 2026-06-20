@@ -6,6 +6,7 @@
 import { Op } from 'sequelize';
 import bcrypt from 'bcrypt';
 import { User, RefreshToken } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt.js';
 import { hashRefreshToken } from '../utils/tokenHash.js';
 import { validatePasswordStrength } from '../utils/password.js';
@@ -29,16 +30,16 @@ export async function loginUser(email, password) {
   const user = await User.findOne({ where: { email } });
 
   if (!user) {
-    throw Object.assign(new Error('Invalid email or password'), { statusCode: 401 });
+    throw new AppError('Invalid email or password', 401);
   }
 
   if (!user.is_active) {
-    throw Object.assign(new Error('Account is disabled'), { statusCode: 403 });
+    throw new AppError('Account is disabled', 403);
   }
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    throw Object.assign(new Error('Invalid email or password'), { statusCode: 401 });
+    throw new AppError('Invalid email or password', 401);
   }
 
   await user.update({ last_login_at: new Date() });
@@ -68,7 +69,7 @@ export async function refreshAccessToken(refreshTokenStr) {
     decoded = verifyRefreshToken(refreshTokenStr);
   } catch (error) {
     logger.debug('Refresh token verification failed', { error: error.message });
-    throw Object.assign(new Error('Invalid refresh token'), { statusCode: 401 });
+    throw new AppError('Invalid refresh token', 401);
   }
 
   const storedToken = await RefreshToken.findOne({
@@ -76,18 +77,18 @@ export async function refreshAccessToken(refreshTokenStr) {
   });
 
   if (!storedToken) {
-    throw Object.assign(new Error('Refresh token not found'), { statusCode: 401 });
+    throw new AppError('Refresh token not found', 401);
   }
 
   if (new Date() > storedToken.expires_at) {
     await storedToken.destroy();
-    throw Object.assign(new Error('Refresh token expired'), { statusCode: 401 });
+    throw new AppError('Refresh token expired', 401);
   }
 
   const user = await User.findByPk(decoded.id);
   if (!user || !user.is_active) {
     await storedToken.destroy();
-    throw Object.assign(new Error('User not found or disabled'), { statusCode: 401 });
+    throw new AppError('User not found or disabled', 401);
   }
 
   // Token rotation: destroy old, create new
@@ -121,7 +122,7 @@ export async function getCurrentUser(userId) {
   });
 
   if (!user) {
-    throw Object.assign(new Error('User not found'), { statusCode: 404 });
+    throw new AppError(`User with ID ${userId} not found`, 404);
   }
 
   return user;
@@ -132,17 +133,17 @@ export async function changePassword(userId, oldPassword, newPassword) {
   const user = await User.findByPk(userId);
 
   if (!user) {
-    throw Object.assign(new Error('User not found'), { statusCode: 404 });
+    throw new AppError(`User with ID ${userId} not found`, 404);
   }
 
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {
-    throw Object.assign(new Error('Current password is incorrect'), { statusCode: 400 });
+    throw new AppError('Current password is incorrect', 400);
   }
 
   const validation = validatePasswordStrength(newPassword);
   if (!validation.valid) {
-    throw Object.assign(new Error(validation.message), { statusCode: 400 });
+    throw new AppError(validation.message, 400);
   }
 
   const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);

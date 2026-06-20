@@ -56,34 +56,34 @@ export async function listContactMessages(page = 1, limit = 10, archived = false
 
 export async function getContactMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   return msg;
 }
 
 export async function markMessageRead(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   await msg.update({ is_read: true });
   return msg;
 }
 
 export async function archiveMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   await msg.update({ is_archived: true });
   return msg;
 }
 
 export async function markMessageUnread(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   await msg.update({ is_read: false });
   return msg;
 }
 
 export async function unarchiveMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   await msg.update({ is_archived: false });
   return msg;
 }
@@ -99,7 +99,7 @@ export async function getUnreadMessages(limit = 3) {
 
 export async function deleteMessage(id) {
   const msg = await ContactMessage.findByPk(id);
-  if (!msg) throw new AppError('Message not found', 404);
+  if (!msg) throw new AppError(`Message with ID ${id} not found`, 404);
   await msg.destroy();
   return { id };
 }

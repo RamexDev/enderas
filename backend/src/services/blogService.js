@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Post, Category, PostCategory } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { generateSlug } from '../utils/slug.js';
 import { pickFields } from '../utils/pickFields.js';
 import { POST_FIELDS, BLOG_CATEGORY_FIELDS } from '../constants/fieldAllowlists.js';
@@ -41,13 +42,13 @@ export async function listPosts(page = 1, limit = 10, filters = {}) {
 
 export async function getPostBySlug(slug) {
   const post = await Post.findOne({ where: { slug }, include: postIncludes });
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError('Post not found', 404);
   return post;
 }
 
 export async function getPostById(id) {
   const post = await Post.findByPk(id, { include: postIncludes });
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError(`Post with ID ${id} not found`, 404);
   return post;
 }
 
@@ -74,7 +75,7 @@ export async function createPost(data, authorId) {
 
 export async function updatePost(id, data) {
   const post = await Post.findByPk(id);
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError('Post not found', 404);
 
   const safe = pickFields(data, POST_FIELDS);
   const slug = safe.slug || (safe.title ? generateSlug(safe.title) : undefined);
@@ -97,20 +98,20 @@ export async function updatePost(id, data) {
 
 export async function deletePost(id) {
   const post = await Post.findByPk(id);
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError(`Post with ID ${id} not found`, 404);
   await post.destroy();
 }
 
 export async function publishPost(id) {
   const post = await Post.findByPk(id);
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError(`Post with ID ${id} not found`, 404);
   await post.update({ status: 'published', published_at: new Date() });
   return post;
 }
 
 export async function unpublishPost(id) {
   const post = await Post.findByPk(id);
-  if (!post) throw Object.assign(new Error('Post not found'), { statusCode: 404 });
+  if (!post) throw new AppError(`Post with ID ${id} not found`, 404);
   await post.update({ status: 'draft', published_at: null });
   return post;
 }
@@ -127,7 +128,7 @@ export async function createCategory(data) {
 
 export async function updateCategory(id, data) {
   const cat = await Category.findByPk(id);
-  if (!cat) throw Object.assign(new Error('Category not found'), { statusCode: 404 });
+  if (!cat) throw new AppError(`Category with ID ${id} not found`, 404);
   const safe = pickFields(data, BLOG_CATEGORY_FIELDS);
   const slug = safe.slug || (safe.name ? generateSlug(safe.name) : undefined);
   await cat.update({ ...safe, ...(slug ? { slug } : {}) });
@@ -136,6 +137,6 @@ export async function updateCategory(id, data) {
 
 export async function deleteCategory(id) {
   const cat = await Category.findByPk(id);
-  if (!cat) throw Object.assign(new Error('Category not found'), { statusCode: 404 });
+  if (!cat) throw new AppError(`Category with ID ${id} not found`, 404);
   await cat.destroy();
 }

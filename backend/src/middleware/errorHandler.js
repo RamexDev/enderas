@@ -12,7 +12,7 @@ export function errorHandler(err, req, res, _next) {
   if (err.statusCode === 400 && err.errors) {
     return res.status(400).json({
       success: false,
-      message: err.message || 'Validation error',
+      message: err.errors[0]?.msg || err.message || 'Invalid data provided',
       errors: err.errors,
     });
   }
@@ -35,7 +35,7 @@ export function errorHandler(err, req, res, _next) {
       field: e.path,
       message: e.message,
     }));
-    return res.status(400).json({ success: false, message: 'Validation error', errors });
+    return res.status(400).json({ success: false, message: errors[0]?.message || 'Invalid data provided', errors });
   }
 
   if (err.name === 'SequelizeUniqueConstraintError') {
@@ -47,7 +47,7 @@ export function errorHandler(err, req, res, _next) {
   }
 
   if (err.name === 'SequelizeForeignKeyConstraintError') {
-    return res.status(400).json({ success: false, message: 'Referenced resource not found' });
+    return res.status(400).json({ success: false, message: 'Related record not found' });
   }
 
   const statusCode = err.statusCode || 500;

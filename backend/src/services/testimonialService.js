@@ -1,4 +1,5 @@
 import { Testimonial } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { pickFields } from '../utils/pickFields.js';
 import { TESTIMONIAL_FIELDS } from '../constants/fieldAllowlists.js';
 
@@ -18,20 +19,20 @@ export async function createTestimonial(data) {
 
 export async function updateTestimonial(id, data) {
   const testimonial = await Testimonial.findByPk(id);
-  if (!testimonial) throw Object.assign(new Error('Testimonial not found'), { statusCode: 404 });
+  if (!testimonial) throw new AppError(`Testimonial with ID ${id} not found`, 404);
   await testimonial.update(pickFields(data, TESTIMONIAL_FIELDS));
   return testimonial;
 }
 
 export async function deleteTestimonial(id) {
   const testimonial = await Testimonial.findByPk(id);
-  if (!testimonial) throw Object.assign(new Error('Testimonial not found'), { statusCode: 404 });
+  if (!testimonial) throw new AppError(`Testimonial with ID ${id} not found`, 404);
   await testimonial.destroy();
 }
 
 export async function toggleTestimonialStatus(id) {
   const testimonial = await Testimonial.findByPk(id);
-  if (!testimonial) throw Object.assign(new Error('Testimonial not found'), { statusCode: 404 });
+  if (!testimonial) throw new AppError(`Testimonial with ID ${id} not found`, 404);
   await testimonial.update({ is_active: !testimonial.is_active });
   return testimonial;
 }

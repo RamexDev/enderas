@@ -7,7 +7,7 @@ export async function index(req, res, next) {
   try {
     const { page, limit } = getPagination(req.query);
     const result = await mediaService.listMedia(page, limit);
-    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit));
+    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit), 'Media files retrieved');
   } catch (error) { next(error); }
 }
 

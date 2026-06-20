@@ -4,7 +4,7 @@ import { successResponse, errorResponse } from '../../utils/response.js';
 export async function getAboutPage(req, res, next) {
   try {
     const data = await aboutService.getAboutPage();
-    return successResponse(res, data);
+    return successResponse(res, data, 'About page retrieved');
   } catch (error) { next(error); }
 }
 
@@ -12,13 +12,16 @@ export async function updateAboutPage(req, res, next) {
   try {
     const data = await aboutService.updateAboutPage(req.body);
     return successResponse(res, data, 'About page updated');
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function listCoreValues(req, res, next) {
   try {
     const data = await aboutService.listCoreValues();
-    return successResponse(res, data);
+    return successResponse(res, data, 'Core values retrieved');
   } catch (error) { next(error); }
 }
 
@@ -26,7 +29,10 @@ export async function createCoreValue(req, res, next) {
   try {
     const data = await aboutService.createCoreValue(req.body);
     return successResponse(res, data, 'Core value created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function updateCoreValue(req, res, next) {
@@ -52,7 +58,7 @@ export async function deleteCoreValue(req, res, next) {
 export async function listPartners(req, res, next) {
   try {
     const data = await aboutService.listPartners();
-    return successResponse(res, data);
+    return successResponse(res, data, 'Partners retrieved');
   } catch (error) { next(error); }
 }
 
@@ -60,7 +66,10 @@ export async function createPartner(req, res, next) {
   try {
     const data = await aboutService.createPartner(req.body);
     return successResponse(res, data, 'Partner created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function updatePartner(req, res, next) {

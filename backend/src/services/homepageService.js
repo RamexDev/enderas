@@ -4,6 +4,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import { HomePage, Statistic, HeroSlide, Service, GalleryItem, TeamMember, Testimonial, Faq } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { pickFields } from '../utils/pickFields.js';
 import {
   HOME_PAGE_FIELDS,
@@ -39,14 +40,14 @@ export async function createStatistic(data) {
 
 export async function updateStatistic(id, data) {
   const stat = await Statistic.findByPk(id);
-  if (!stat) throw Object.assign(new Error('Statistic not found'), { statusCode: 404 });
+  if (!stat) throw new AppError(`Statistic with ID ${id} not found`, 404);
   await stat.update(pickFields(data, STATISTIC_FIELDS));
   return stat;
 }
 
 export async function deleteStatistic(id) {
   const stat = await Statistic.findByPk(id);
-  if (!stat) throw Object.assign(new Error('Statistic not found'), { statusCode: 404 });
+  if (!stat) throw new AppError(`Statistic with ID ${id} not found`, 404);
   await stat.destroy();
 }
 
@@ -60,20 +61,20 @@ export async function createHeroSlide(data) {
 
 export async function updateHeroSlide(id, data) {
   const slide = await HeroSlide.findByPk(id);
-  if (!slide) throw Object.assign(new Error('Hero slide not found'), { statusCode: 404 });
+  if (!slide) throw new AppError(`Hero slide with ID ${id} not found`, 404);
   await slide.update(pickFields(data, HERO_SLIDE_FIELDS));
   return slide;
 }
 
 export async function deleteHeroSlide(id) {
   const slide = await HeroSlide.findByPk(id);
-  if (!slide) throw Object.assign(new Error('Hero slide not found'), { statusCode: 404 });
+  if (!slide) throw new AppError(`Hero slide with ID ${id} not found`, 404);
   await slide.destroy();
 }
 
 export async function toggleHeroSlideStatus(id) {
   const slide = await HeroSlide.findByPk(id);
-  if (!slide) throw Object.assign(new Error('Hero slide not found'), { statusCode: 404 });
+  if (!slide) throw new AppError(`Hero slide with ID ${id} not found`, 404);
   await slide.update({ is_active: !slide.is_active });
   return slide;
 }

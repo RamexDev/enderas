@@ -6,7 +6,7 @@ export async function index(req, res, next) {
   try {
     const { page, limit } = getPagination(req.query);
     const result = await teamService.listTeamMembers(page, limit);
-    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit));
+    return paginatedResponse(res, result.data, getPaginationMeta(result.total, result.page, result.limit), 'Team members retrieved');
   } catch (error) { next(error); }
 }
 
@@ -14,7 +14,10 @@ export async function create(req, res, next) {
   try {
     const member = await teamService.createTeamMember(req.body);
     return successResponse(res, member, 'Team member created', 201);
-  } catch (error) { next(error); }
+  } catch (error) {
+    if (error.statusCode) return errorResponse(res, error.message, error.statusCode);
+    next(error);
+  }
 }
 
 export async function update(req, res, next) {

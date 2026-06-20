@@ -27,21 +27,21 @@ describe('service layer ↔ controller contract', () => {
     it('getServiceById throws { message, statusCode: 404 } for missing id', async () => {
       await expectServiceError(
         () => serviceService.getServiceById(uuidv4()),
-        { message: 'Service not found', statusCode: 404 },
+        { message: /Service with ID .* not found/, statusCode: 404 },
       );
     });
 
     it('updateService throws { message, statusCode: 404 } for missing id', async () => {
       await expectServiceError(
         () => serviceService.updateService(uuidv4(), { title: 'Nope' }),
-        { message: 'Service not found', statusCode: 404 },
+        { message: /Service with ID .* not found/, statusCode: 404 },
       );
     });
 
     it('deleteService throws { message, statusCode: 404 } for missing id', async () => {
       await expectServiceError(
         () => serviceService.deleteService(uuidv4()),
-        { message: 'Service not found', statusCode: 404 },
+        { message: /Service with ID .* not found/, statusCode: 404 },
       );
     });
 
@@ -64,7 +64,7 @@ describe('service layer ↔ controller contract', () => {
       const { statusCode, body } = getCapturedResponse(res);
       expect(statusCode).toBe(404);
       expect(body.success).toBe(false);
-      expect(body.message).toBe('Service not found');
+      expect(body.message).toMatch(/Service with ID .* not found/);
       expect(next).not.toHaveBeenCalled();
     });
 
@@ -76,7 +76,7 @@ describe('service layer ↔ controller contract', () => {
       await serviceController.destroy(req, res, next);
 
       expect(getCapturedResponse(res).statusCode).toBe(404);
-      expect(getCapturedResponse(res).body.message).toBe('Service not found');
+      expect(getCapturedResponse(res).body.message).toMatch(/Service with ID .* not found/);
     });
 
     it('toggleStatus → 404 when service not found', async () => {

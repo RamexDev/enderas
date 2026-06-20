@@ -6,7 +6,8 @@ export async function login(req, res, next) {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return errorResponse(res, 'Validation failed', 400, errors.array());
+      const firstMsg = errors.array()[0]?.msg || 'Validation failed';
+      return errorResponse(res, firstMsg, 400, errors.array());
     }
 
     const { email, password } = req.body;
@@ -24,7 +25,8 @@ export async function refresh(req, res, next) {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return errorResponse(res, 'Validation failed', 400, errors.array());
+      const firstMsg = errors.array()[0]?.msg || 'Validation failed';
+      return errorResponse(res, firstMsg, 400, errors.array());
     }
 
     const { refresh_token } = req.body;
@@ -51,7 +53,7 @@ export async function logout(req, res, next) {
 export async function me(req, res, next) {
   try {
     const user = await authService.getCurrentUser(req.user.id);
-    return successResponse(res, user);
+    return successResponse(res, user, 'Profile retrieved');
   } catch (error) {
     if (error.statusCode) {
       return errorResponse(res, error.message, error.statusCode);
@@ -64,7 +66,8 @@ export async function changePassword(req, res, next) {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return errorResponse(res, 'Validation failed', 400, errors.array());
+      const firstMsg = errors.array()[0]?.msg || 'Validation failed';
+      return errorResponse(res, firstMsg, 400, errors.array());
     }
 
     const { old_password, new_password } = req.body;

@@ -147,7 +147,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(getContactMessage(999)).rejects.toThrow(AppError);
-      await expect(getContactMessage(999)).rejects.toThrow('Message not found');
+      await expect(getContactMessage(999)).rejects.toThrow('Message with ID 999 not found');
       try {
         await getContactMessage(999);
       } catch (error) {
@@ -168,7 +168,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(markMessageRead(999)).rejects.toThrow(AppError);
-      await expect(markMessageRead(999)).rejects.toThrow('Message not found');
+      await expect(markMessageRead(999)).rejects.toThrow('Message with ID 999 not found');
     });
   });
 
@@ -184,7 +184,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(archiveMessage(999)).rejects.toThrow(AppError);
-      await expect(archiveMessage(999)).rejects.toThrow('Message not found');
+      await expect(archiveMessage(999)).rejects.toThrow('Message with ID 999 not found');
     });
   });
 
@@ -209,7 +209,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(markMessageUnread(999)).rejects.toThrow(AppError);
-      await expect(markMessageUnread(999)).rejects.toThrow('Message not found');
+      await expect(markMessageUnread(999)).rejects.toThrow('Message with ID 999 not found');
     });
   });
 
@@ -225,7 +225,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(unarchiveMessage(999)).rejects.toThrow(AppError);
-      await expect(unarchiveMessage(999)).rejects.toThrow('Message not found');
+      await expect(unarchiveMessage(999)).rejects.toThrow('Message with ID 999 not found');
     });
   });
 
@@ -241,7 +241,7 @@ describe('contactService', () => {
     it('throws AppError with 404 when not found', async () => {
       mockFindByPk.mockResolvedValue(null);
       await expect(deleteMessage(999)).rejects.toThrow(AppError);
-      await expect(deleteMessage(999)).rejects.toThrow('Message not found');
+      await expect(deleteMessage(999)).rejects.toThrow('Message with ID 999 not found');
     });
   });
 });

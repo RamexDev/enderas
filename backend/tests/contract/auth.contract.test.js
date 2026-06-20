@@ -63,7 +63,7 @@ describe('auth layer ↔ controller contract', () => {
     it('getCurrentUser throws 404 for missing user', async () => {
       await expectServiceError(
         () => authService.getCurrentUser(99999),
-        { message: 'User not found', statusCode: 404 },
+        { message: /User with ID 99999 not found/, statusCode: 404 },
       );
     });
 

@@ -1,4 +1,5 @@
 import { TeamMember } from '../models/index.js';
+import { AppError } from '../utils/AppError.js';
 import { pickFields } from '../utils/pickFields.js';
 import { TEAM_MEMBER_FIELDS } from '../constants/fieldAllowlists.js';
 
@@ -18,20 +19,20 @@ export async function createTeamMember(data) {
 
 export async function updateTeamMember(id, data) {
   const member = await TeamMember.findByPk(id);
-  if (!member) throw Object.assign(new Error('Team member not found'), { statusCode: 404 });
+  if (!member) throw new AppError(`Team member with ID ${id} not found`, 404);
   await member.update(pickFields(data, TEAM_MEMBER_FIELDS));
   return member;
 }
 
 export async function deleteTeamMember(id) {
   const member = await TeamMember.findByPk(id);
-  if (!member) throw Object.assign(new Error('Team member not found'), { statusCode: 404 });
+  if (!member) throw new AppError(`Team member with ID ${id} not found`, 404);
   await member.destroy();
 }
 
 export async function toggleTeamMemberStatus(id) {
   const member = await TeamMember.findByPk(id);
-  if (!member) throw Object.assign(new Error('Team member not found'), { statusCode: 404 });
+  if (!member) throw new AppError(`Team member with ID ${id} not found`, 404);
   await member.update({ is_active: !member.is_active });
   return member;
 }
