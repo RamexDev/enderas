@@ -15,6 +15,7 @@ import { scopedCors } from './src/middleware/cors.js';
 import { requestId } from './src/middleware/requestId.js';
 import { errorHandler } from './src/middleware/errorHandler.js';
 import { notFound } from './src/middleware/notFound.js';
+import sequelize from './src/config/database.js';
 import logger from './src/utils/logger.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -35,10 +36,11 @@ app.use(scopedCors);
 
 // Request logging — combined format in prod, dev format in dev (skipped in test)
 if (!env.isTest) {
-  app.use(morgan(env.isDev ? 'dev' : 'combined'));
+  const morganStream = { write: (msg) => logger.info(msg.trim()) };
+  app.use(morgan(env.isDev ? 'dev' : 'combined', { stream: morganStream }));
 }
 
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // Brute-force protection on sensitive public endpoints
@@ -71,6 +73,16 @@ app.use('/api/v1/auth/login', authLimiter);
 app.use('/api/v1/auth/refresh', refreshLimiter);
 app.use('/api/v1/public/contact', contactLimiter);
 
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: { success: false, message: 'Too many requests, please try again later' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+app.use('/api/v1', generalLimiter);
+
 // Serve uploaded media files
 app.use('/uploads', express.static(env.upload.resolvedPath));
 
@@ -79,10 +91,9 @@ app.use('/seed-assets', express.static(path.join(__dirname, 'src/seed-assets')))
 
 /** Health check — returns 503 when database is unreachable */
 app.get('/api/v1/health', async (req, res) => {
-  const { default: sequelize } = await import('./src/config/database.js');
   let dbStatus = 'disconnected';
   try {
-    await sequelize.authenticate();
+    await sequelize.query('SELECT 1');
     dbStatus = 'connected';
   } catch (error) {
     logger.warn('Health check — database unreachable', { req, error });

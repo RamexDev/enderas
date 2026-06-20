@@ -11,6 +11,7 @@ import logger from './src/utils/logger.js';
 import { cleanupExpiredTokens } from './src/services/authService.js';
 
 let server;
+let tokenCleanupInterval;
 
 async function start() {
   try {
@@ -19,7 +20,18 @@ async function start() {
     logger.info(`Database connected: ${dbInfo}`);
 
     await cleanupExpiredTokens();
-    setInterval(cleanupExpiredTokens, 60 * 60 * 1000);
+
+    let running = false;
+    tokenCleanupInterval = setInterval(async () => {
+      if (running) return;
+      running = true;
+      try {
+        await cleanupExpiredTokens();
+      } finally {
+        running = false;
+      }
+    }, 60 * 60 * 1000);
+
     logger.debug('Expired refresh token cleanup scheduled (every 60 min)');
 
     if (env.isDev) {
@@ -45,18 +57,40 @@ async function start() {
 }
 
 /** Graceful shutdown — close HTTP server and database pool on SIGTERM/SIGINT */
+let shuttingDown = false;
+
 async function shutdown(signal) {
+  if (shuttingDown) return;
+  shuttingDown = true;
+
   logger.info(`${signal} received, shutting down gracefully`);
-  if (server) {
-    server.close(async () => {
-      await sequelize.close();
-      logger.info('Server closed');
-      process.exit(0);
-    });
-  } else {
+
+  if (tokenCleanupInterval) {
+    clearInterval(tokenCleanupInterval);
+  }
+
+  if (!server) {
     await sequelize.close();
     process.exit(0);
+    return;
   }
+
+  // Stop accepting new connections
+  server.close(async () => {
+    await sequelize.close();
+    process.exit(0);
+  });
+
+  // Fallback: force-close idle connections and shutdown after 10s
+  const timer = setTimeout(() => {
+    if (typeof server.closeAllConnections === 'function') {
+      server.closeAllConnections();
+    }
+    sequelize.close().catch(() => {});
+    process.exit(0);
+  }, 10000);
+
+  timer.unref();
 }
 
 process.on('SIGTERM', () => shutdown('SIGTERM'));
@@ -68,7 +102,8 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (reason) => {
-  logger.warn('Unhandled promise rejection', { error: reason instanceof Error ? reason : new Error(String(reason)) });
+  logger.error('Unhandled promise rejection — shutting down', { error: reason instanceof Error ? reason : new Error(String(reason)) });
+  shutdown('UNHANDLED_REJECTION');
 });
 
 start();
