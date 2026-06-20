@@ -1,0 +1,122 @@
+@import "tailwindcss";
+@import "./styles/globals.css";
+
+/* Class-based dark mode toggle (required for manual theme switch in Tailwind v4) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-primary-50: #f1f4f9;
+  --color-primary-100: #dde4ef;
+  --color-primary-200: #b9c8df;
+  --color-primary-300: #8aa3c8;
+  --color-primary-400: #567aae;
+  --color-primary-500: #365a93;
+  --color-primary-600: #274679;
+  --color-primary-700: #1d3861;
+  --color-primary-800: #132645;
+  --color-primary-900: #0b1f3a;
+  --color-primary-950: #070f1f;
+
+  --color-gold-50: #fbf7ed;
+  --color-gold-100: #f5ebd0;
+  --color-gold-200: #ecd49c;
+  --color-gold-300: #e0b96b;
+  --color-gold-400: #d4a64a;
+  --color-gold-500: #c9a24b;
+  --color-gold-600: #a87f33;
+  --color-gold-700: #855f2b;
+  --color-gold-800: #6d4d28;
+  --color-gold-900: #5c4024;
+
+  --color-sand-50: #faf8f3;
+  --color-sand-100: #f3eee2;
+  --color-sand-200: #e7dcc4;
+
+  --color-success-500: #16a34a;
+  --color-success-600: #15803d;
+  --color-warning-500: #d97706;
+  --color-warning-600: #b45309;
+  --color-error-500: #dc2626;
+  --color-error-600: #b91c1c;
+
+  --font-heading: "Fraunces", serif;
+  --font-body: "Inter", system-ui, sans-serif;
+
+  --animate-ken-burns: ken-burns 12s ease-out infinite alternate;
+  --animate-marquee: marquee 20s linear infinite;
+  --animate-shimmer: shimmer 1.8s ease-in-out infinite;
+
+  @keyframes ken-burns {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.05) translate(-0.5%, -0.5%); }
+  }
+
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+  }
+}
+
+@layer utilities {
+  @media (max-width: 1023px), (prefers-reduced-motion: reduce) {
+    .animate-ken-burns {
+      animation: none !important;
+    }
+  }
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  html:not(.dark) {
+    color-scheme: light;
+  }
+
+  body {
+    @apply overflow-x-hidden bg-sand-50 text-primary-900 antialiased dark:bg-primary-950 dark:text-primary-100;
+    min-height: 100dvh;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img {
+    @apply max-w-full;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply border border-white/20 bg-white/70 shadow-lg backdrop-blur-xl dark:border-primary-700/50 dark:bg-primary-900/70;
+  }
+
+  .glass-dark {
+    @apply border border-white/10 bg-primary-950/75 shadow-xl backdrop-blur-xl;
+  }
+
+  .section-padding {
+    @apply py-14 sm:py-16 md:py-20 lg:py-28;
+  }
+
+  .text-gradient-gold {
+    @apply bg-gradient-to-r from-gold-300 via-gold-500 to-gold-300 bg-clip-text text-transparent;
+  }
+}
