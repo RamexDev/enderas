@@ -16,7 +16,6 @@ import { Container, PageHero, BlogCard } from '@/components/preview/PreviewAtoms
 import { Badge, EmptyState } from '@/components/ui/Loading'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicBlogApi } from '@/services/publicApi'
 import { blogApi } from '@/services/cmsApi'
 import { mapBlogPost } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
@@ -31,7 +30,7 @@ export default function BlogPagePreview() {
 
   const fetcher = useCallback(async () => {
     const [published, allPosts] = await Promise.all([
-      publicBlogApi.list({ limit: 100 }),
+      blogApi.list({ limit: 100, status: 'published' }),
       blogApi.list({ limit: 100 }).catch(() => ({ data: [], meta: {} })),
     ])
     return {
@@ -71,6 +70,9 @@ export default function BlogPagePreview() {
 }
 
 function BlogBody({ published, drafts, pageKey, sections }) {
+  const openEdit = useEditorStore((s) => s.openEdit)
+  const openNewRecord = useEditorStore((s) => s.openNewRecord)
+
   return (
     <div className="bg-sand-50">
       <PageHero
@@ -89,11 +91,13 @@ function BlogBody({ published, drafts, pageKey, sections }) {
                 {published.length} published · {drafts.length} draft{drafts.length === 1 ? '' : 's'}
               </p>
             </div>
-            <EditOverlay section={sections.categoriesSection} pageKey={pageKey}>
-              <span className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700">
-                Manage categories
-              </span>
-            </EditOverlay>
+            <button
+              type="button"
+              onClick={() => openEdit(sections.categoriesSection, null, pageKey)}
+              className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700 hover:bg-primary-50"
+            >
+              Manage categories
+            </button>
           </div>
 
           {/* Drafts first — they need attention */}
@@ -156,11 +160,13 @@ function BlogBody({ published, drafts, pageKey, sections }) {
 
           {/* "Add new" affordance */}
           <div className="mt-10 flex justify-center">
-            <EditOverlay section={sections.postsSection} pageKey={pageKey}>
-              <span className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600">
-                + Write a new post
-              </span>
-            </EditOverlay>
+            <button
+              type="button"
+              onClick={() => openNewRecord(sections.postsSection, pageKey)}
+              className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600 hover:border-primary-400 hover:text-primary-800"
+            >
+              + Write a new post
+            </button>
           </div>
         </Container>
       </section>

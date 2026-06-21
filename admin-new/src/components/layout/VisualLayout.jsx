@@ -21,6 +21,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Menu } from 'lucide-react'
 import { useAuthStore } from '@/store/useAuthStore'
+import { useSessionTimeout } from '@/hooks/useSessionTimeout'
 import Sidebar from './Sidebar'
 import EditDrawer from '@/components/preview/EditDrawer'
 
@@ -28,6 +29,8 @@ export default function VisualLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const location = useLocation()
   const logout = useAuthStore((s) => s.logout)
+
+  useSessionTimeout()
 
   useEffect(() => {
     const onSessionExpired = async () => {

@@ -243,9 +243,16 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
     load()
   }, [load])
 
-  // If the overlay was opened on a specific record (e.g. user clicked the
-  // second hero slide), jump straight to its form.
+  // If the overlay was opened via openNewRecord, jump straight to the "add
+  // new" form without waiting for items to load.
   useEffect(() => {
+    if (preselectedRecord?.__isNew) {
+      setEditing(emptyRecordFor(section))
+      setView('form')
+      return
+    }
+    // If opened on a specific record (e.g. second hero slide), find it and
+    // jump straight to its form.
     if (preselectedRecord?.id && items.length > 0) {
       const found = items.find((it) => it.id === preselectedRecord.id)
       if (found) {
@@ -338,27 +345,7 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
     setEditing(null)
   }
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-12 text-primary-500">
-        <Loader2 className="h-6 w-6 animate-spin" />
-      </div>
-    )
-  }
-
-  if (error) {
-    return (
-      <div className="p-5">
-        <EmptyState
-          icon={AlertCircle}
-          title="Unable to load collection"
-          description={error}
-          action={<Button onClick={load}>Retry</Button>}
-        />
-      </div>
-    )
-  }
-
+  // Form view takes priority — for "add new" the items aren't needed yet.
   if (view === 'form' && editing) {
     return (
       <div className="flex h-full flex-col">
@@ -377,6 +364,27 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
           onSave={handleSave}
           saving={saving}
           saveLabel={editing.id ? 'Save changes' : 'Create'}
+        />
+      </div>
+    )
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12 text-primary-500">
+        <Loader2 className="h-6 w-6 animate-spin" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-5">
+        <EmptyState
+          icon={AlertCircle}
+          title="Unable to load collection"
+          description={error}
+          action={<Button onClick={load}>Retry</Button>}
         />
       </div>
     )

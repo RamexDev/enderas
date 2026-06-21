@@ -21,6 +21,11 @@ export const useEditorStore = create((set, get) => ({
   openEdit: (section, record, pageKey) =>
     set({ activeEdit: { section, record, pageKey } }),
 
+  /** Opens the drawer for a collection section directly in "add new" form
+   *  mode — skips the list view entirely. */
+  openNewRecord: (section, pageKey) =>
+    set({ activeEdit: { section, record: { __isNew: true }, pageKey } }),
+
   closeEdit: () => set({ activeEdit: null }),
 
   setEditMode: (on) => set({ editMode: on }),

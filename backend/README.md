@@ -65,7 +65,7 @@ npm run dev
 | `JWT_REFRESH_SECRET`    | Refresh token secret           |                                |
 | `JWT_ACCESS_EXPIRES_IN` | Access token expiry            | `15m`                          |
 | `JWT_REFRESH_EXPIRES_IN`| Refresh token expiry           | `7d`                           |
-| `ADMIN_URL`             | Admin CMS browser origin(s)    | `http://localhost:5173`        |
+| `ADMIN_URL`             | Admin CMS browser origin(s)    | `http://localhost:5175,http://localhost:5176` |
 | `FRONTEND_URL`          | Public site browser origin(s)  | `http://localhost:5174`        |
 | `API_BASE_URL`          | Backend base URL               | `http://localhost:5000/api/v1` |
 | `UPLOAD_PATH`           | File upload directory          | `./src/uploads`                |
@@ -80,7 +80,7 @@ npm run dev
 | `ADMIN_EMAIL`           | Admin notification recipient   | (optional)                     |
 | `NOTIFICATION_WEBHOOK_URL` | Webhook URL for new messages | (optional)                  |
 
-> **Production:** `SUPER_ADMIN_PASSWORD` is required when `NODE_ENV=production`. The server will refuse to start without it.
+> **Required:** `ADMIN_URL` and `FRONTEND_URL` must always be set (development and production). In production, `SUPER_ADMIN_PASSWORD` and `DB_PASSWORD` are also required.
 
 > **Notifications:** SMTP and `NOTIFICATION_WEBHOOK_URL` are optional. When configured, new contact form submissions automatically trigger an email and/or webhook POST. Failures are logged but never block the API response.
 
@@ -95,11 +95,11 @@ CORS is path-scoped: each browser origin may only call the API surface it is mea
 
 Use comma-separated values when you need both `localhost` and `127.0.0.1` in development.
 
-**Local development** (admin on 5173, public site on 5174 when both run):
+**Local development** (admin on 5175/5176, public site on 5173):
 
 ```env
-ADMIN_URL=http://localhost:5173,http://127.0.0.1:5173
-FRONTEND_URL=http://localhost:5174,http://127.0.0.1:5174
+ADMIN_URL=http://localhost:5175,http://localhost:5176,http://127.0.0.1:5175,http://127.0.0.1:5176
+FRONTEND_URL=http://localhost:5173,http://127.0.0.1:5173
 ```
 
 **Production** example:
@@ -118,10 +118,10 @@ FRONTEND_URL=https://enderas.com
 | App | Default URL | Notes |
 | --- | ----------- | ----- |
 | Backend API | `http://localhost:5000/api/v1` | Set `PORT` in `.env` |
-| Admin CMS | `http://localhost:5173` | Fixed in `admin/vite.config.js` |
-| Public frontend | `http://localhost:5173` or `5174` | Vite picks the next free port if 5173 is taken |
+| Admin CMS | `http://localhost:5175` or `http://localhost:5176` | Fixed in `admin-new/vite.config.js` / `admin/vite.config.js` |
+| Public frontend | `http://localhost:5173` | Vite picks the next free port if 5173 is taken |
 
-Run all three together: backend → admin → frontend. Set `ADMIN_URL` and `FRONTEND_URL` to match each app's browser origin.
+Run all three together: backend → admin → frontend. `ADMIN_URL` and `FRONTEND_URL` must be set in `.env` to match each app's browser origin.
 
 ## Database Seeding
 

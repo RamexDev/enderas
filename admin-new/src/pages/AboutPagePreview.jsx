@@ -17,7 +17,7 @@ import {
 } from '@/components/preview/PreviewAtoms'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicAboutApi } from '@/services/publicApi'
+import { aboutApi, teamApi, homepageApi } from '@/services/cmsApi'
 import { mapAboutPageData } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
 
@@ -28,7 +28,22 @@ export default function AboutPagePreview() {
   const pageKey = 'about'
   const reloadToken = useEditorStore((s) => s.getReloadToken(pageKey))
 
-  const fetcher = useCallback(async () => mapAboutPageData(await publicAboutApi.get()), [])
+  const fetcher = useCallback(async () => {
+    const [about, coreValues, partners, teamResult, homePage] = await Promise.all([
+      aboutApi.get(),
+      aboutApi.listCoreValues(),
+      aboutApi.listPartners(),
+      teamApi.list({ limit: 100 }),
+      homepageApi.get().catch(() => null),
+    ])
+    const cta = homePage ? {
+      title: homePage.contact_cta_title,
+      body: homePage.contact_cta_description,
+      primary_label: homePage.contact_cta_button_text,
+      primary_link: homePage.contact_cta_button_link,
+    } : null
+    return mapAboutPageData({ about, coreValues, partners, teamMembers: teamResult.data, cta })
+  }, [])
   const { data, loading, error, reload } = useAsyncData(fetcher, [reloadToken])
 
   const aboutContentSection = useMemo(() => byId('about-content'), [])

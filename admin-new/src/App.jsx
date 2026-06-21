@@ -8,8 +8,7 @@ import AppRoutes from '@/routes/AppRoutes'
 import { PageLoader } from '@/components/ui/Loading'
 
 export default function App() {
-  const initialize = useAuthStore((s) => s.initialize)
-  const isLoading = useAuthStore((s) => s.isLoading)
+  const { initialize, isLoading } = useAuthStore()
 
   useEffect(() => {
     initialize()
@@ -17,7 +16,7 @@ export default function App() {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-primary-950">
+      <div className="flex min-h-screen items-center justify-center">
         <PageLoader />
       </div>
     )

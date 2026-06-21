@@ -11,7 +11,7 @@ import PreviewPage from '@/components/preview/PreviewPage'
 import { Container, PageHero, CtaBand } from '@/components/preview/PreviewAtoms'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicServicesApi, publicCtaApi } from '@/services/publicApi'
+import { servicesApi, homepageApi } from '@/services/cmsApi'
 import { mapService, mapCtaData } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
 
@@ -23,13 +23,19 @@ export default function ServicesPagePreview() {
   const reloadToken = useEditorStore((s) => s.getReloadToken(pageKey))
 
   const fetcher = useCallback(async () => {
-    const [servicesResult, ctaResult] = await Promise.all([
-      publicServicesApi.list({ limit: 100 }),
-      publicCtaApi.get().catch(() => null),
+    const [servicesResult, homePage] = await Promise.all([
+      servicesApi.list({ limit: 100 }),
+      homepageApi.get().catch(() => null),
     ])
+    const cta = homePage ? {
+      title: homePage.contact_cta_title,
+      body: homePage.contact_cta_description,
+      primary_label: homePage.contact_cta_button_text,
+      primary_link: homePage.contact_cta_button_link,
+    } : null
     return {
       services: servicesResult.data.map(mapService),
-      cta: ctaResult ? mapCtaData(ctaResult) : null,
+      cta: cta ? mapCtaData(cta) : null,
     }
   }, [])
 
@@ -79,41 +85,35 @@ function ServicesBody({ services, cta, activeId, setActiveId, pageKey }) {
             </div>
           ) : (
             <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
-              {/* Service nav (left column) */}
+              {/* Service nav (left column) — selection only, edit on detail panel */}
               <div className="lg:col-span-4">
                 <div className="lg:sticky lg:top-28 space-y-2">
                   {services.map((s) => (
-                    <EditOverlay
+                    <button
                       key={s.id}
-                      section={servicesSection}
-                      record={{ id: s.id }}
-                      pageKey={pageKey}
+                      type="button"
+                      onClick={() => setActiveId(s.id)}
+                      className={
+                        'flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors ' +
+                        (current?.id === s.id
+                          ? 'border-gold-400 bg-gold-50'
+                          : 'border-primary-100 bg-white hover:border-primary-200') +
+                        (s.active === false ? ' opacity-60' : '')
+                      }
                     >
-                      <button
-                        type="button"
-                        onClick={() => setActiveId(s.id)}
-                        className={
-                          'flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors ' +
-                          (current?.id === s.id
-                            ? 'border-gold-400 bg-gold-50'
-                            : 'border-primary-100 bg-white hover:border-primary-200') +
-                          (s.active === false ? ' opacity-60' : '')
-                        }
-                      >
-                        <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-500/15 text-gold-600">
-                          <ServiceIcon name={s.icon} />
-                        </span>
-                        <div className="min-w-0 flex-1">
-                          <h3 className="text-sm font-semibold text-primary-900">{s.title}</h3>
-                          <p className="mt-0.5 line-clamp-2 text-xs text-primary-600">{s.excerpt}</p>
-                          {s.active === false && (
-                            <span className="mt-1 inline-block rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-600">
-                              Inactive
-                            </span>
-                          )}
-                        </div>
-                      </button>
-                    </EditOverlay>
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-500/15 text-gold-600">
+                        <ServiceIcon name={s.icon} />
+                      </span>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-sm font-semibold text-primary-900">{s.title}</h3>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-primary-600">{s.excerpt}</p>
+                        {s.active === false && (
+                          <span className="mt-1 inline-block rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-600">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
+                    </button>
                   ))}
                 </div>
               </div>

@@ -46,7 +46,7 @@ export function Label({ className, children, ...props }) {
   )
 }
 
-export function FormField({ label, error, children, required, id, help, className }) {
+export function FormField({ label, error, children, required, id, help, className, errorClassName, labelClassName }) {
   const generatedId = useId()
   const fieldId = id || generatedId
   const childWithId = isValidElement(children)
@@ -56,14 +56,14 @@ export function FormField({ label, error, children, required, id, help, classNam
   return (
     <div className={className}>
       {label && (
-        <Label htmlFor={fieldId}>
+        <Label htmlFor={fieldId} className={labelClassName}>
           {label}
           {required && <span className="ml-0.5 text-red-500">*</span>}
         </Label>
       )}
       {childWithId}
       {help && <p className="mt-1 text-xs text-primary-500">{help}</p>}
-      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
+      {error && <p className={errorClassName || 'mt-1 text-xs text-red-600'}>{error}</p>}
     </div>
   )
 }

@@ -1,7 +1,7 @@
 /**
  * Environment configuration loader and validator.
  * Loads .env, validates required variables, and exports typed config object.
- * Exits process on missing required vars or invalid production config.
+ * Exits process on missing or invalid config.
  */
 
 import dotenv from 'dotenv';
@@ -44,7 +44,7 @@ const WEAK_JWT_SECRETS = new Set([
 const MIN_JWT_SECRET_LENGTH = 32;
 
 /** Parse a comma-separated list of browser origins (trims whitespace, drops empties). */
-function parseOrigins(value, fallback = '') {
+function parseOrigins(value, fallback) {
   const raw = value || fallback;
   if (!raw) return [];
   return raw
@@ -53,9 +53,6 @@ function parseOrigins(value, fallback = '') {
     .filter(Boolean);
 }
 
-const defaultAdminOrigins = 'http://localhost:5173,http://127.0.0.1:5173';
-const defaultFrontendOrigins = 'http://localhost:5174,http://127.0.0.1:5174';
-
 // Legacy CLIENT_URLS: first origin → admin, remaining → frontend
 const legacyClientUrls = parseOrigins(process.env.CLIENT_URLS);
 const legacyAdminFallback = legacyClientUrls[0] || process.env.CLIENT_URL;
@@ -63,14 +60,8 @@ const legacyFrontendFallback = legacyClientUrls.length > 1
   ? legacyClientUrls.slice(1).join(',')
   : undefined;
 
-const adminUrls = parseOrigins(
-  process.env.ADMIN_URL,
-  legacyAdminFallback || defaultAdminOrigins,
-);
-const frontendUrls = parseOrigins(
-  process.env.FRONTEND_URL,
-  legacyFrontendFallback || defaultFrontendOrigins,
-);
+const adminUrls = parseOrigins(process.env.ADMIN_URL, legacyAdminFallback);
+const frontendUrls = parseOrigins(process.env.FRONTEND_URL, legacyFrontendFallback);
 const mediaUrls = [...new Set([...adminUrls, ...frontendUrls])];
 
 const uploadPathRaw = process.env.UPLOAD_PATH || './src/uploads';
@@ -116,6 +107,40 @@ if (!isTest) {
   }
 }
 
+// URLs are required in every environment
+if (!process.env.ADMIN_URL && !legacyAdminFallback) {
+  failValidation('ADMIN_URL (or CLIENT_URLS) is required. Set it in .env');
+}
+if (!process.env.FRONTEND_URL && !legacyFrontendFallback) {
+  failValidation('FRONTEND_URL (or CLIENT_URLS) is required. Set it in .env');
+}
+
+if (nodeEnv === 'development') {
+  const ADMIN_ALLOWED_PORTS = ['5175', '5176'];
+  const FRONTEND_ALLOWED_PORTS = ['5173'];
+
+  for (const origin of adminUrls) {
+    try {
+      const port = new URL(origin).port;
+      if (!ADMIN_ALLOWED_PORTS.includes(port)) {
+        failValidation(`ADMIN_URL origin "${origin}" uses port ${port}, but only ${ADMIN_ALLOWED_PORTS.join(', ')} allowed in development`);
+      }
+    } catch {
+      failValidation(`Invalid URL in ADMIN_URL: "${origin}"`);
+    }
+  }
+  for (const origin of frontendUrls) {
+    try {
+      const port = new URL(origin).port;
+      if (!FRONTEND_ALLOWED_PORTS.includes(port)) {
+        failValidation(`FRONTEND_URL origin "${origin}" uses port ${port}, but only ${FRONTEND_ALLOWED_PORTS.join(', ')} allowed in development`);
+      }
+    } catch {
+      failValidation(`Invalid URL in FRONTEND_URL: "${origin}"`);
+    }
+  }
+}
+
 if (isProd) {
   if (!process.env.SUPER_ADMIN_PASSWORD) {
     failValidation('SUPER_ADMIN_PASSWORD is required when NODE_ENV=production');
@@ -123,17 +148,6 @@ if (isProd) {
 
   if (!process.env.DB_PASSWORD) {
     failValidation('DB_PASSWORD is required when NODE_ENV=production');
-  }
-
-  const hasExplicitAdminOrigins = Boolean(process.env.ADMIN_URL || legacyAdminFallback);
-  const hasExplicitFrontendOrigins = Boolean(process.env.FRONTEND_URL || legacyFrontendFallback);
-
-  if (!hasExplicitAdminOrigins) {
-    failValidation('ADMIN_URL (or CLIENT_URLS) is required when NODE_ENV=production');
-  }
-
-  if (!hasExplicitFrontendOrigins) {
-    failValidation('FRONTEND_URL (or CLIENT_URLS) is required when NODE_ENV=production');
   }
 
   if (hasLocalhostOrigin(adminUrls) || hasLocalhostOrigin(frontendUrls)) {

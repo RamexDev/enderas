@@ -73,16 +73,6 @@ app.use('/api/v1/auth/login', authLimiter);
 app.use('/api/v1/auth/refresh', refreshLimiter);
 app.use('/api/v1/public/contact', contactLimiter);
 
-const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  message: { success: false, message: 'Too many requests, please try again later' },
-  standardHeaders: true,
-  legacyHeaders: false,
-});
-
-app.use('/api/v1', generalLimiter);
-
 // Serve uploaded media files
 app.use('/uploads', express.static(env.upload.resolvedPath));
 

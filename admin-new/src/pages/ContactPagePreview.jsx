@@ -13,7 +13,7 @@ import PreviewPage from '@/components/preview/PreviewPage'
 import { Container, PageHero } from '@/components/preview/PreviewAtoms'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicContactApi, publicSettingsApi } from '@/services/publicApi'
+import { contactApi, settingsApi } from '@/services/cmsApi'
 import { mapSettings, DEFAULT_SITE_SETTINGS } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
 import { extractMapEmbedUrl } from '@/utils/helpers'
@@ -27,8 +27,8 @@ export default function ContactPagePreview() {
 
   const fetcher = useCallback(async () => {
     const [contactPage, settingsResult] = await Promise.allSettled([
-      publicContactApi.getPage(),
-      publicSettingsApi.get(),
+      contactApi.getPage(),
+      settingsApi.get(),
     ])
     const contact = contactPage.status === 'fulfilled' ? contactPage.value : {}
     const apiSettings = settingsResult.status === 'fulfilled' ? settingsResult.value : {}

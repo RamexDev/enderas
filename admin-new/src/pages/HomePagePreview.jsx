@@ -29,7 +29,7 @@ import {
 } from '@/components/preview/PreviewAtoms'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicHomeApi, publicBlogApi } from '@/services/publicApi'
+import { homepageApi, servicesApi, galleryApi, testimonialsApi, faqsApi, blogApi } from '@/services/cmsApi'
 import { mapHomePageData, mapBlogPost, INTRO_PILLARS, INTRO_IMAGES } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
 
@@ -41,12 +41,28 @@ export default function HomePagePreview() {
   const reloadToken = useEditorStore((s) => s.getReloadToken(pageKey))
 
   const fetcher = useCallback(async () => {
-    const [homePayload, blogResult] = await Promise.all([
-      publicHomeApi.get(),
-      publicBlogApi.list({ limit: 3 }),
+    const [homePage, heroSlides, statistics, servicesResult, galleryResult, testimonialsResult, faqsResult, blogResult] = await Promise.all([
+      homepageApi.get(),
+      homepageApi.listHeroSlides(),
+      homepageApi.listStatistics(),
+      servicesApi.list({ limit: 100 }),
+      galleryApi.list({ limit: 100 }),
+      testimonialsApi.list({ limit: 100 }),
+      faqsApi.list({ limit: 100 }),
+      blogApi.list({ limit: 3 }),
     ])
+    const payload = {
+      homePage,
+      heroSlides,
+      statistics,
+      services: servicesResult.data,
+      galleryItems: galleryResult.data,
+      teamMembers: [],
+      testimonials: testimonialsResult.data,
+      faqs: faqsResult.data,
+    }
     return {
-      home: mapHomePageData(homePayload),
+      home: mapHomePageData(payload),
       latestPosts: blogResult.data.map(mapBlogPost),
     }
   }, [])
@@ -65,6 +81,7 @@ export default function HomePagePreview() {
   const visibilitySection = useMemo(() => byId('homepage-visibility'), [])
   const ctaSection = useMemo(() => byId('homepage-cta'), [])
   const seoSection = useMemo(() => byId('homepage-seo'), [])
+  const blogPostsSection = useMemo(() => EDITABLE_SECTIONS.blog.find((s) => s.id === 'blog-posts'), [])
 
   return (
     <PreviewPage
@@ -93,6 +110,7 @@ export default function HomePagePreview() {
             visibilitySection,
             ctaSection,
             seoSection,
+            blogPostsSection,
           }}
         />
       )}
@@ -101,6 +119,7 @@ export default function HomePagePreview() {
 }
 
 function HomePageBody({ data, pageKey, sections }) {
+  const openEdit = useEditorStore((s) => s.openEdit)
   const {
     slides,
     intro,
@@ -285,11 +304,13 @@ function HomePageBody({ data, pageKey, sections }) {
                 title={testimonialsTitle.title}
                 intro={testimonialsTitle.intro}
               />
-              <EditOverlay section={sections.visibilitySection} pageKey={pageKey}>
-                <span className="rounded-md border border-primary-200 bg-white px-3 py-1.5 text-xs text-primary-500">
-                  Visibility settings
-                </span>
-              </EditOverlay>
+              <button
+                type="button"
+                onClick={() => openEdit(sections.visibilitySection, null, pageKey)}
+                className="rounded-md border border-primary-200 bg-white px-3 py-1.5 text-xs text-primary-500 hover:bg-primary-50"
+              >
+                Visibility settings
+              </button>
             </div>
             {testimonials.length === 0 ? (
               <EmptyBlock message="No testimonials yet." />
@@ -345,11 +366,13 @@ function HomePageBody({ data, pageKey, sections }) {
       {!visibility.showTestimonials && !visibility.showFaq && (
         <section className="section-padding">
           <Container>
-            <EditOverlay section={sections.visibilitySection} pageKey={pageKey}>
-              <div className="rounded-xl border border-dashed border-primary-200 bg-white px-5 py-4 text-center text-sm text-primary-500">
-                Optional sections (testimonials, FAQ) are currently hidden. Click to manage visibility.
-              </div>
-            </EditOverlay>
+            <button
+              type="button"
+              onClick={() => openEdit(sections.visibilitySection, null, pageKey)}
+              className="w-full rounded-xl border border-dashed border-primary-200 bg-white px-5 py-4 text-center text-sm text-primary-500 hover:border-primary-300 hover:text-primary-700"
+            >
+              Optional sections (testimonials, FAQ) are currently hidden. Click to manage visibility.
+            </button>
           </Container>
         </section>
       )}
@@ -367,7 +390,14 @@ function HomePageBody({ data, pageKey, sections }) {
           ) : (
             <div className="mt-10 grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
               {latestPosts.map((p) => (
-                <BlogCard key={p.id} post={p} />
+                <EditOverlay
+                  key={p.id}
+                  section={sections.blogPostsSection}
+                  record={{ id: p.id }}
+                  pageKey={pageKey}
+                >
+                  <BlogCard post={p} />
+                </EditOverlay>
               ))}
             </div>
           )}

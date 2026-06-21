@@ -1,8 +1,14 @@
 /**
- * @fileoverview Error helpers used by the API layer and components.
+ * @fileoverview API error types and user-facing message extraction.
  */
 
+/** Structured error thrown by the Axios response interceptor. */
 export class ApiError extends Error {
+  /**
+   * @param {string} message
+   * @param {number} [status]
+   * @param {Array} [errors]
+   */
   constructor(message, status, errors = []) {
     super(message)
     this.name = 'ApiError'
@@ -12,29 +18,28 @@ export class ApiError extends Error {
 }
 
 /**
- * Returns a human-readable message from any thrown error.
- * @param {Error|ApiError} error
+ * Returns a human-readable message from any thrown value.
+ * @param {unknown} error
  * @returns {string}
  */
 export function getErrorMessage(error) {
-  if (!error) return 'An unexpected error occurred'
   if (error instanceof ApiError) return error.message
-  if (error.response?.data?.message) return error.response.data.message
-  if (error.message) return error.message
+  if (error?.response?.data?.message) return error.response.data.message
+  if (error?.message) return error.message
   return 'An unexpected error occurred'
 }
 
 /**
- * Returns a list of validation error strings from an API response.
- * @param {Error|ApiError} error
+ * Extracts validation error strings from an API error response.
+ * @param {unknown} error
  * @returns {string[]}
  */
 export function getValidationErrors(error) {
-  if (!error) return []
-  if (error instanceof ApiError) return error.errors || []
-  if (error.response?.data?.errors) {
-    const errs = error.response.data.errors
-    if (Array.isArray(errs)) return errs.map((e) => (typeof e === 'string' ? e : e.msg))
+  if (error instanceof ApiError && error.errors?.length) {
+    return error.errors.map((e) => e.msg || e.message).filter(Boolean)
+  }
+  if (error?.response?.data?.errors?.length) {
+    return error.response.data.errors.map((e) => e.msg || e.message).filter(Boolean)
   }
   return []
 }

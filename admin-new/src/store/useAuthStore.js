@@ -52,6 +52,6 @@ export const useAuthStore = create((set, get) => ({
 
   hasRole: (...roles) => {
     const { user } = get()
-    return Boolean(user) && roles.includes(user.role)
+    return user && roles.includes(user.role)
   },
 }))

@@ -11,7 +11,7 @@ import PreviewPage from '@/components/preview/PreviewPage'
 import { Container, PageHero, CtaBand, PropertyCard } from '@/components/preview/PreviewAtoms'
 import { useAsyncData } from '@/hooks/useAsyncData'
 import { useEditorStore } from '@/store/useEditorStore'
-import { publicGalleryApi, publicCtaApi } from '@/services/publicApi'
+import { galleryApi, homepageApi } from '@/services/cmsApi'
 import { mapGalleryItem, mapCtaData } from '@/utils/mappers'
 import { EDITABLE_SECTIONS } from '@/constants/editableSections'
 
@@ -32,13 +32,19 @@ export default function GalleryPagePreview() {
   const reloadToken = useEditorStore((s) => s.getReloadToken(pageKey))
 
   const fetcher = useCallback(async () => {
-    const [galleryResult, ctaResult] = await Promise.all([
-      publicGalleryApi.list({ limit: 100 }),
-      publicCtaApi.get().catch(() => null),
+    const [galleryResult, homePage] = await Promise.all([
+      galleryApi.list({ limit: 100 }),
+      homepageApi.get().catch(() => null),
     ])
+    const cta = homePage ? {
+      title: homePage.contact_cta_title,
+      body: homePage.contact_cta_description,
+      primary_label: homePage.contact_cta_button_text,
+      primary_link: homePage.contact_cta_button_link,
+    } : null
     return {
       items: galleryResult.data.map(mapGalleryItem),
-      cta: ctaResult ? mapCtaData(ctaResult) : null,
+      cta: cta ? mapCtaData(cta) : null,
     }
   }, [])
 
@@ -71,6 +77,9 @@ export default function GalleryPagePreview() {
 }
 
 function GalleryBody({ items, cta, pageKey, sections }) {
+  const openEdit = useEditorStore((s) => s.openEdit)
+  const openNewRecord = useEditorStore((s) => s.openNewRecord)
+
   return (
     <div className="bg-sand-50">
       <PageHero
@@ -83,11 +92,13 @@ function GalleryBody({ items, cta, pageKey, sections }) {
         <Container>
           {/* Categories chip — opens the categories editor */}
           <div className="mb-8 flex justify-end">
-            <EditOverlay section={sections.categoriesSection} pageKey={pageKey}>
-              <span className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700">
-                Manage categories
-              </span>
-            </EditOverlay>
+            <button
+              type="button"
+              onClick={() => openEdit(sections.categoriesSection, null, pageKey)}
+              className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700 hover:bg-primary-50"
+            >
+              Manage categories
+            </button>
           </div>
 
           {items.length === 0 ? (
@@ -113,11 +124,13 @@ function GalleryBody({ items, cta, pageKey, sections }) {
 
           {items.length > 0 && (
             <div className="mt-10 flex justify-center">
-              <EditOverlay section={sections.itemsSection} pageKey={pageKey}>
-                <span className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600">
-                  + Add a new gallery item
-                </span>
-              </EditOverlay>
+              <button
+                type="button"
+                onClick={() => openNewRecord(sections.itemsSection, pageKey)}
+                className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600 hover:border-primary-400 hover:text-primary-800"
+              >
+                + Add a new gallery item
+              </button>
             </div>
           )}
         </Container>
