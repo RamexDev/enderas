@@ -39,7 +39,7 @@ export default function ServicesPagePreview() {
     }
   }, [])
 
-  const { data, loading, error, reload } = useAsyncData(fetcher, [reloadToken])
+  const { data, loading, refreshing, error, reload } = useAsyncData(fetcher, [reloadToken])
   const [activeId, setActiveId] = useState(null)
 
   return (
@@ -48,6 +48,7 @@ export default function ServicesPagePreview() {
       subtitle="All services. Active ones appear on the public site and the homepage."
       livePath="/services"
       loading={loading}
+      refreshing={refreshing}
       error={error}
       onRetry={reload}
       reloadToken={reloadToken}
@@ -70,7 +71,7 @@ function ServicesBody({ services, cta, activeId, setActiveId, pageKey }) {
   const current = services.find((s) => s.id === activeId) || services[0] || null
 
   return (
-    <div className="bg-sand-50">
+    <div className="bg-sand-50 dark:bg-primary-950">
       <PageHero
         eyebrow="Our services"
         title="One platform. The full real-asset lifecycle."
@@ -80,7 +81,7 @@ function ServicesBody({ services, cta, activeId, setActiveId, pageKey }) {
       <section className="section-padding">
         <Container>
           {services.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-12 text-center text-sm text-primary-500">
+            <div className="rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-12 text-center text-sm text-primary-500 dark:border-primary-700 dark:bg-primary-900/50 dark:text-primary-400">
               No services yet. Use the button below to add the first one.
             </div>
           ) : (
@@ -93,22 +94,22 @@ function ServicesBody({ services, cta, activeId, setActiveId, pageKey }) {
                       key={s.id}
                       type="button"
                       onClick={() => setActiveId(s.id)}
-                      className={
+                       className={
                         'flex w-full items-start gap-3 rounded-xl border p-4 text-left transition-colors ' +
                         (current?.id === s.id
-                          ? 'border-gold-400 bg-gold-50'
-                          : 'border-primary-100 bg-white hover:border-primary-200') +
+                          ? 'border-gold-400 bg-gold-50 dark:bg-gold-900/20'
+                          : 'border-primary-100 bg-white hover:border-primary-200 dark:border-primary-800 dark:bg-primary-900 dark:hover:border-primary-700') +
                         (s.active === false ? ' opacity-60' : '')
                       }
                     >
-                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-500/15 text-gold-600">
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gold-500/15 text-gold-600 dark:text-gold-400">
                         <ServiceIcon name={s.icon} />
                       </span>
                       <div className="min-w-0 flex-1">
-                        <h3 className="text-sm font-semibold text-primary-900">{s.title}</h3>
-                        <p className="mt-0.5 line-clamp-2 text-xs text-primary-600">{s.excerpt}</p>
+                        <h3 className="text-sm font-semibold text-primary-900 dark:text-white">{s.title}</h3>
+                        <p className="mt-0.5 line-clamp-2 text-xs text-primary-600 dark:text-primary-300">{s.excerpt}</p>
                         {s.active === false && (
-                          <span className="mt-1 inline-block rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-600">
+                          <span className="mt-1 inline-block rounded-full bg-primary-100 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-600 dark:bg-primary-800 dark:text-primary-300">
                             Inactive
                           </span>
                         )}
@@ -126,17 +127,17 @@ function ServicesBody({ services, cta, activeId, setActiveId, pageKey }) {
                     record={{ id: current.id }}
                     pageKey={pageKey}
                   >
-                    <div className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm">
-                      <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 sm:aspect-[21/9]">
+                    <div className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm dark:border-primary-800 dark:bg-primary-900">
+                      <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 sm:aspect-[21/9] dark:bg-primary-800">
                         {current.image ? (
                           <img src={current.image} alt="" className="h-full w-full object-cover" />
                         ) : (
-                          <div className="flex h-full w-full items-center justify-center text-primary-300">No image</div>
+                          <div className="flex h-full w-full items-center justify-center text-primary-300 dark:text-primary-500">No image</div>
                         )}
                       </div>
                       <div className="p-6 sm:p-8">
-                        <h2 className="font-heading text-2xl font-semibold text-primary-900">{current.title}</h2>
-                        <p className="mt-3 text-base leading-relaxed text-primary-700">
+                        <h2 className="font-heading text-2xl font-semibold text-primary-900 dark:text-white">{current.title}</h2>
+                        <p className="mt-3 text-base leading-relaxed text-primary-700 dark:text-primary-200">
                           {current.description || current.excerpt || 'No description set.'}
                         </p>
                         <div className="mt-6 flex flex-wrap gap-3">

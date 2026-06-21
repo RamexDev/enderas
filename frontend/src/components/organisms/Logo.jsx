@@ -34,7 +34,7 @@ export default function Logo({ onClick, light = false }) {
       <span
         className={`min-w-0 truncate text-left font-heading text-base font-semibold tracking-tight sm:text-lg lg:text-xl ${light ? 'text-white' : 'text-primary-900 dark:text-white'}`}
       >
-        <span className="block truncate">{settings.appName}</span>
+        <span className="block truncate text-zinc-400 dark:text-white">{settings.appName}</span>
         <span className="-mt-0.5 hidden truncate font-body text-[10px] font-normal uppercase tracking-[0.25em] text-gold-600 dark:text-gold-400 sm:block">
           {settings.tagline}
         </span>

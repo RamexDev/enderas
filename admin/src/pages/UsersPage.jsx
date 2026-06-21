@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { Plus, Pencil, Trash2, Power } from 'lucide-react'
+import { Plus, Trash2, Power } from 'lucide-react'
 import { usersApi } from '@/services/cmsApi'
 import { getErrorMessage } from '@/utils/errors'
 import { ROLES } from '@/constants/roles'
@@ -11,7 +11,7 @@ import Button from '@/components/ui/Button'
 import Pagination, { DataTable } from '@/components/ui/DataTable'
 import Badge, { StatusBadge } from '@/components/ui/Badge'
 import Modal, { ConfirmDialog } from '@/components/ui/Modal'
-import { Input, FormField, Select } from '@/components/ui/Input'
+import { Input, FormField } from '@/components/ui/Input'
 
 export default function UsersPage() {
   const { items, meta, loading, loadPage } = usePaginatedList(
@@ -24,13 +24,8 @@ export default function UsersPage() {
 
   const handleSave = async (form) => {
     try {
-      if (modal?.id) {
-        await usersApi.update(modal.id, { name: form.name, email: form.email, role: form.role })
-        toast.success('User updated')
-      } else {
-        await usersApi.create(form)
-        toast.success('User created')
-      }
+      await usersApi.create({ ...form, role: ROLES.EDITOR })
+      toast.success('User created')
       setModal(null)
       loadPage(meta.page)
     } catch (err) {
@@ -91,9 +86,12 @@ export default function UsersPage() {
             label: 'Actions',
             render: (row) => (
               <div className="flex gap-1">
-                <Button size="sm" variant="ghost" onClick={() => setModal(row)}><Pencil className="h-4 w-4" /></Button>
-                <Button size="sm" variant="ghost" onClick={() => handleToggle(row.id)}><Power className="h-4 w-4" /></Button>
-                <Button size="sm" variant="ghost" onClick={() => setDeleteId(row.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                {row.role !== ROLES.SUPER_ADMIN && (
+                  <>
+                    <Button size="sm" variant="ghost" onClick={() => handleToggle(row.id)}><Power className="h-4 w-4" /></Button>
+                    <Button size="sm" variant="ghost" onClick={() => setDeleteId(row.id)}><Trash2 className="h-4 w-4 text-red-500" /></Button>
+                  </>
+                )}
               </div>
             ),
           },
@@ -107,32 +105,16 @@ export default function UsersPage() {
 }
 
 function UserModal({ open, data, onClose, onSave }) {
-  const [form, setForm] = useState({ name: '', email: '', password: '', role: ROLES.EDITOR })
-  useEffect(() => {
-    if (data) setForm({
-      name: data.name || '',
-      email: data.email || '',
-      password: '',
-      role: data.role || ROLES.EDITOR,
-    })
-  }, [data])
+  const [form, setForm] = useState({ name: '', email: '', password: '' })
 
   return (
-    <Modal open={open} onClose={onClose} title={data?.id ? 'Edit user' : 'Add user'}>
+    <Modal open={open} onClose={onClose} title="Add user">
       <div className="space-y-4">
         <FormField label="Name" required><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></FormField>
         <FormField label="Email" required><Input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></FormField>
-        {!data?.id && (
-          <FormField label="Password" required>
-            <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
-            <p className="mt-1 text-xs text-primary-500">Min 12 chars with upper, lower, number, and special character.</p>
-          </FormField>
-        )}
-        <FormField label="Role">
-          <Select value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
-            <option value={ROLES.EDITOR}>Editor</option>
-            <option value={ROLES.SUPER_ADMIN}>Super Admin</option>
-          </Select>
+        <FormField label="Password" required>
+          <Input type="password" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+          <p className="mt-1 text-xs text-primary-500">Min 12 chars with upper, lower, number, and special character.</p>
         </FormField>
         <div className="flex justify-end gap-3">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>

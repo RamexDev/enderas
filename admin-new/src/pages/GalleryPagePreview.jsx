@@ -48,7 +48,7 @@ export default function GalleryPagePreview() {
     }
   }, [])
 
-  const { data, loading, error, reload } = useAsyncData(fetcher, [reloadToken])
+  const { data, loading, refreshing, error, reload } = useAsyncData(fetcher, [reloadToken])
 
   const categoriesSection = useMemo(() => byId('gallery-categories'), [])
   const itemsSection = useMemo(() => byId('gallery-items'), [])
@@ -59,6 +59,7 @@ export default function GalleryPagePreview() {
       subtitle="All gallery items. Categories and items can be edited in place."
       livePath="/gallery"
       loading={loading}
+      refreshing={refreshing}
       error={error}
       onRetry={reload}
       reloadToken={reloadToken}
@@ -81,7 +82,7 @@ function GalleryBody({ items, cta, pageKey, sections }) {
   const openNewRecord = useEditorStore((s) => s.openNewRecord)
 
   return (
-    <div className="bg-sand-50">
+    <div className="bg-sand-50 dark:bg-primary-950">
       <PageHero
         eyebrow="Selected engagements"
         title="Assets we value, manage and broker."
@@ -95,14 +96,14 @@ function GalleryBody({ items, cta, pageKey, sections }) {
             <button
               type="button"
               onClick={() => openEdit(sections.categoriesSection, null, pageKey)}
-              className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700 hover:bg-primary-50"
+              className="inline-flex items-center gap-2 rounded-lg border border-primary-200 bg-white px-4 py-2 text-xs font-medium text-primary-700 hover:bg-primary-50 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-200 dark:hover:bg-primary-800"
             >
               Manage categories
             </button>
           </div>
 
           {items.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-12 text-center text-sm text-primary-500">
+            <div className="rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-12 text-center text-sm text-primary-500 dark:border-primary-700 dark:bg-primary-900/50 dark:text-primary-400">
               No gallery items yet. Click any tile placeholder to add the first one — or use the "Gallery items" button below.
             </div>
           ) : (
@@ -127,7 +128,7 @@ function GalleryBody({ items, cta, pageKey, sections }) {
               <button
                 type="button"
                 onClick={() => openNewRecord(sections.itemsSection, pageKey)}
-                className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600 hover:border-primary-400 hover:text-primary-800"
+                className="inline-flex items-center gap-2 rounded-lg border border-dashed border-primary-300 bg-white px-5 py-2.5 text-sm text-primary-600 hover:border-primary-400 hover:text-primary-800 dark:border-primary-600 dark:bg-primary-900 dark:text-primary-300 dark:hover:border-primary-500 dark:hover:text-white"
               >
                 + Add a new gallery item
               </button>

@@ -172,7 +172,7 @@ const POST_FIELDS = [
   f('content', 'Content', 'textarea', { full: true, rows: 12, help: 'Plain text or HTML. The public site sanitises HTML and renders paragraphs from line breaks.' }),
   f('featured_image', 'Featured image', 'image', { full: true }),
   f('status', 'Status', 'select', { full: true, options: [{ value: 'draft', label: 'Draft' }, { value: 'published', label: 'Published' }] }),
-  f('categories', 'Categories', 'blogCategoryMultiSelect', { full: true }),
+  f('categories', 'Category', 'blogCategorySelect', { full: true }),
   f('meta_title', 'SEO title', 'text', { full: true }),
   f('meta_description', 'SEO description', 'textarea', { full: true, rows: 2 }),
 ]
@@ -255,7 +255,7 @@ export function emptyRecordFor(section) {
   const record = {}
   for (const field of section.fields) {
     if (field.type === 'toggle') record[field.key] = true
-    else if (field.type === 'blogCategoryMultiSelect') record[field.key] = []
+    else     if (field.type === 'blogCategorySelect') record[field.key] = []
     else record[field.key] = ''
   }
   return record

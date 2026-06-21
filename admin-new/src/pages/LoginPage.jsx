@@ -38,7 +38,7 @@ export default function LoginPage() {
     try {
       await login(data.email, data.password)
       toast.success('Welcome back')
-      const from = location.state?.from?.pathname || ROUTES.HOME
+      const from = location.state?.from?.pathname || ROUTES.DASHBOARD
       navigate(from, { replace: true })
     } catch (err) {
       toast.error(getErrorMessage(err))

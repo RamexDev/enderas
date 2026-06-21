@@ -20,13 +20,20 @@ import {
   Images,
   Users,
   UserCircle,
+  LayoutDashboard,
 } from 'lucide-react'
 
 export const NAV_GROUPS = [
   {
+    label: 'Overview',
+    items: [
+      { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+    ],
+  },
+  {
     label: 'Website pages',
     items: [
-      { to: '/', label: 'Home', icon: Home },
+      { to: '/home', label: 'Home', icon: Home },
       { to: '/about', label: 'About', icon: Info },
       { to: '/services', label: 'Services', icon: Briefcase },
       { to: '/gallery', label: 'Gallery', icon: ImageIcon },
@@ -39,6 +46,7 @@ export const NAV_GROUPS = [
     items: [
       { to: '/messages', label: 'Messages', icon: MessageSquare },
       { to: '/media', label: 'Media library', icon: Images },
+      { to: '/profile', label: 'Profile', icon: UserCircle },
       { to: '/settings', label: 'Site settings', icon: Settings, superAdminOnly: true },
       { to: '/users', label: 'Users', icon: Users, superAdminOnly: true },
     ],

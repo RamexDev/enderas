@@ -2,7 +2,7 @@
  * @fileoverview FieldRenderer — maps a SectionDef's field list to actual form
  * controls. Supports all field types declared in editableSections.js:
  *   text, textarea, email, toggle, image, select,
- *   galleryCategorySelect, blogCategoryMultiSelect
+ *   galleryCategorySelect, blogCategorySelect
  *
  * The two "select" variants fetch their option lists on mount from the right
  * admin endpoints (gallery categories / blog categories).
@@ -80,8 +80,8 @@ export default function FieldRenderer({ field, value, onChange }) {
     case 'galleryCategorySelect':
       return <GalleryCategorySelectField field={field} value={value} onChange={onChange} />
 
-    case 'blogCategoryMultiSelect':
-      return <BlogCategoryMultiSelectField field={field} value={value || []} onChange={onChange} />
+    case 'blogCategorySelect':
+      return <BlogCategorySelectField field={field} value={value} onChange={onChange} />
 
     default:
       return null
@@ -120,7 +120,7 @@ function GalleryCategorySelectField({ field, value, onChange }) {
   )
 }
 
-function BlogCategoryMultiSelectField({ field, value, onChange }) {
+function BlogCategorySelectField({ field, value, onChange }) {
   const [categories, setCategories] = useState([])
 
   useEffect(() => {
@@ -138,41 +138,18 @@ function BlogCategoryMultiSelectField({ field, value, onChange }) {
     }
   }, [])
 
-  const selected = Array.isArray(value) ? value : []
-
-  const toggle = (id) => {
-    if (selected.includes(id)) {
-      onChange(selected.filter((v) => v !== id))
-    } else {
-      onChange([...selected, id])
-    }
-  }
+  const selected = Array.isArray(value) && value.length > 0 ? value[0] : ''
 
   return (
     <FormField label={field.label} help={field.help} className={field.full ? 'sm:col-span-2' : ''}>
-      <div className="flex flex-wrap gap-2 rounded-lg border border-primary-200 bg-white p-2">
-        {categories.length === 0 && (
-          <span className="px-2 py-1 text-xs text-primary-400">No categories defined yet.</span>
-        )}
-        {categories.map((c) => {
-          const on = selected.includes(c.id)
-          return (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => toggle(c.id)}
-              className={
-                'rounded-full px-3 py-1 text-xs font-medium transition-colors ' +
-                (on
-                  ? 'bg-gold-500 text-primary-950'
-                  : 'bg-primary-100 text-primary-700 hover:bg-primary-200')
-              }
-            >
-              {c.name}
-            </button>
-          )
-        })}
-      </div>
+      <Select value={selected} onChange={(e) => onChange(e.target.value ? [e.target.value] : [])}>
+        <option value="">— No category —</option>
+        {categories.map((c) => (
+          <option key={c.id} value={c.id}>
+            {c.name}
+          </option>
+        ))}
+      </Select>
     </FormField>
   )
 }

@@ -22,7 +22,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
           className={cn(
             'mb-3 flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em]',
             align === 'center' && 'justify-center',
-            light ? 'text-gold-400' : 'text-gold-600',
+            light ? 'text-gold-400' : 'text-gold-600 dark:text-gold-400',
           )}
         >
           <span className="block h-px w-8 bg-gold-500" />
@@ -33,7 +33,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
         <h2
           className={cn(
             'font-heading text-[clamp(1.625rem,4vw,2.75rem)] font-semibold leading-[1.1]',
-            light ? 'text-white' : 'text-primary-900',
+            light ? 'text-white' : 'text-primary-900 dark:text-white',
           )}
         >
           {title}
@@ -43,7 +43,7 @@ export function SectionHeading({ eyebrow, title, intro, align = 'left', light = 
         <p
           className={cn(
             'mt-3 text-base leading-relaxed',
-            light ? 'text-primary-200/80' : 'text-primary-700/90',
+            light ? 'text-primary-200/80' : 'text-primary-700/90 dark:text-primary-200/80',
           )}
         >
           {intro}
@@ -58,7 +58,7 @@ export function Eyebrow({ children, light = false }) {
     <div
       className={cn(
         'flex items-center gap-2.5 text-xs font-semibold uppercase tracking-[0.2em]',
-        light ? 'text-gold-400' : 'text-gold-600',
+        light ? 'text-gold-400' : 'text-gold-600 dark:text-gold-400',
       )}
     >
       <span className="block h-px w-8 bg-gold-500" />
@@ -123,17 +123,17 @@ export function CtaBand({ cta }) {
 
 export function ServiceCard({ service }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm">
-      <div className="relative aspect-[16/10] overflow-hidden bg-primary-100">
+    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm dark:border-primary-800 dark:bg-primary-900">
+      <div className="relative aspect-[16/10] overflow-hidden bg-primary-100 dark:bg-primary-800">
         {service.image ? (
           <img src={service.image} alt="" className="h-full w-full object-cover" loading="lazy" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-primary-300">No image</div>
+          <div className="flex h-full w-full items-center justify-center text-primary-300 dark:text-primary-500">No image</div>
         )}
       </div>
       <div className="p-5 sm:p-6">
-        <h3 className="font-heading text-lg font-semibold text-primary-900">{service.title}</h3>
-        <p className="mt-2 line-clamp-2 text-sm text-primary-600">{service.excerpt}</p>
+        <h3 className="font-heading text-lg font-semibold text-primary-900 dark:text-white">{service.title}</h3>
+        <p className="mt-2 line-clamp-2 text-sm text-primary-600 dark:text-primary-300">{service.excerpt}</p>
       </div>
     </article>
   )
@@ -166,39 +166,39 @@ export function PropertyCard({ item }) {
 export function StatCard({ stat }) {
   return (
     <div className="text-center">
-      <div className="font-heading text-4xl font-semibold text-gold-600 sm:text-5xl">
+      <div className="font-heading text-4xl font-semibold text-gold-600 sm:text-5xl dark:text-gold-400">
         {stat.prefix}
         {stat.value}
         {stat.suffix}
       </div>
-      <div className="mt-2 text-sm text-primary-700">{stat.label}</div>
+      <div className="mt-2 text-sm text-primary-700 dark:text-primary-300">{stat.label}</div>
     </div>
   )
 }
 
 export function BlogCard({ post }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm">
-      <div className="relative aspect-[16/9] overflow-hidden bg-primary-100">
+    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm dark:border-primary-800 dark:bg-primary-900">
+      <div className="relative aspect-[16/9] overflow-hidden bg-primary-100 dark:bg-primary-800">
         {post.image ? (
           <img src={post.image} alt="" className="h-full w-full object-cover" loading="lazy" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-primary-300">No image</div>
+          <div className="flex h-full w-full items-center justify-center text-primary-300 dark:text-primary-500">No image</div>
         )}
         <div className="absolute left-3 top-3">
-          <span className="inline-flex rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-800">
+          <span className="inline-flex rounded-full bg-white/95 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-primary-800 dark:bg-primary-950/95 dark:text-primary-200">
             {post.category}
           </span>
         </div>
       </div>
       <div className="p-5">
-        <div className="flex items-center gap-2 text-xs text-primary-500">
+        <div className="flex items-center gap-2 text-xs text-primary-500 dark:text-primary-400">
           <span>{post.author}</span>
           <span>•</span>
           <span>{post.readTime} min read</span>
         </div>
-        <h3 className="mt-2 font-heading text-lg font-semibold text-primary-900">{post.title}</h3>
-        <p className="mt-1.5 line-clamp-2 text-sm text-primary-600">{post.excerpt}</p>
+        <h3 className="mt-2 font-heading text-lg font-semibold text-primary-900 dark:text-white">{post.title}</h3>
+        <p className="mt-1.5 line-clamp-2 text-sm text-primary-600 dark:text-primary-300">{post.excerpt}</p>
       </div>
     </article>
   )
@@ -206,12 +206,12 @@ export function BlogCard({ post }) {
 
 export function TeamCard({ member }) {
   return (
-    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm">
-      <div className="relative aspect-[3/4] overflow-hidden bg-primary-100">
+    <article className="overflow-hidden rounded-2xl border border-primary-100 bg-white shadow-sm dark:border-primary-800 dark:bg-primary-900">
+      <div className="relative aspect-[3/4] overflow-hidden bg-primary-100 dark:bg-primary-800">
         {member.image ? (
           <img src={member.image} alt="" className="h-full w-full object-cover" loading="lazy" />
         ) : (
-          <div className="flex h-full w-full items-center justify-center text-primary-300">No photo</div>
+          <div className="flex h-full w-full items-center justify-center text-primary-300 dark:text-primary-500">No photo</div>
         )}
         <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary-950/85 to-transparent p-4">
           <h3 className="font-heading text-base font-semibold text-white">{member.name}</h3>
@@ -219,7 +219,7 @@ export function TeamCard({ member }) {
         </div>
       </div>
       {member.bio && (
-        <p className="line-clamp-3 p-4 text-xs leading-relaxed text-primary-600">{member.bio}</p>
+        <p className="line-clamp-3 p-4 text-xs leading-relaxed text-primary-600 dark:text-primary-300">{member.bio}</p>
       )}
     </article>
   )
@@ -227,19 +227,19 @@ export function TeamCard({ member }) {
 
 export function TestimonialCard({ item }) {
   return (
-    <blockquote className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm">
-      <p className="text-sm leading-relaxed text-primary-800">"{item.content}"</p>
+    <blockquote className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm dark:border-primary-800 dark:bg-primary-900">
+      <p className="text-sm leading-relaxed text-primary-800 dark:text-primary-200">"{item.content}"</p>
       <footer className="mt-4 flex items-center gap-3">
         {item.image ? (
           <img src={item.image} alt="" className="h-11 w-11 rounded-full object-cover" />
         ) : (
-          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/15 text-gold-600">
+          <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gold-500/15 text-gold-600 dark:text-gold-400">
             <span className="font-heading text-sm font-semibold">{(item.name || '?')[0]}</span>
           </div>
         )}
         <div>
-          <div className="text-sm font-semibold text-primary-900">{item.name}</div>
-          {item.company && <div className="text-xs text-primary-500">{item.company}</div>}
+          <div className="text-sm font-semibold text-primary-900 dark:text-white">{item.name}</div>
+          {item.company && <div className="text-xs text-primary-500 dark:text-primary-400">{item.company}</div>}
         </div>
       </footer>
     </blockquote>
@@ -249,12 +249,12 @@ export function TestimonialCard({ item }) {
 export function FaqItem({ item, defaultOpen }) {
   // Plain controlled-by-default accordion item — single open per page section.
   return (
-    <details className="group rounded-xl border border-primary-100 bg-white p-4" open={defaultOpen}>
-      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-primary-900">
+    <details className="group rounded-xl border border-primary-100 bg-white p-4 dark:border-primary-800 dark:bg-primary-900" open={defaultOpen}>
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-primary-900 dark:text-white">
         {item.question}
-        <span className="ml-auto shrink-0 text-primary-400 transition-transform group-open:rotate-180">▾</span>
+        <span className="ml-auto shrink-0 text-primary-400 transition-transform group-open:rotate-180 dark:text-primary-500">▾</span>
       </summary>
-      <p className="mt-2 text-sm leading-relaxed text-primary-600">{item.answer}</p>
+      <p className="mt-2 text-sm leading-relaxed text-primary-600 dark:text-primary-300">{item.answer}</p>
     </details>
   )
 }

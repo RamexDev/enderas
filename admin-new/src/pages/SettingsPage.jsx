@@ -112,9 +112,9 @@ export default function SettingsPage() {
       ) : (
         <div className="space-y-6">
           {FIELD_GROUPS.map((group) => (
-            <div key={group.label} className="rounded-xl border border-primary-200 bg-white">
-              <div className="border-b border-primary-100 px-5 py-4">
-                <h3 className="text-sm font-semibold text-primary-900">{group.label}</h3>
+            <div key={group.label} className="rounded-xl border border-primary-200 bg-white dark:border-primary-800 dark:bg-primary-900">
+              <div className="border-b border-primary-100 px-5 py-4 dark:border-primary-800">
+                <h3 className="text-sm font-semibold text-primary-900 dark:text-white">{group.label}</h3>
               </div>
               <div className="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
                 {group.fields.map((field) => {

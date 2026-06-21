@@ -114,9 +114,9 @@ export default function MediaPage() {
           {items.map((item) => (
             <div
               key={item.id}
-              className="group overflow-hidden rounded-xl border border-primary-100 bg-white shadow-sm"
+              className="group overflow-hidden rounded-xl border border-primary-100 bg-white shadow-sm dark:border-primary-800 dark:bg-primary-900"
             >
-              <div className="relative aspect-square bg-primary-50">
+              <div className="relative aspect-square bg-primary-50 dark:bg-primary-800">
                 <img
                   src={mediaUrl(item.path)}
                   alt={item.original_name || item.filename}
@@ -143,10 +143,10 @@ export default function MediaPage() {
                 </div>
               </div>
               <div className="p-2">
-                <div className="truncate text-xs font-medium text-primary-800" title={item.original_name || item.filename}>
+                <div className="truncate text-xs font-medium text-primary-800 dark:text-primary-200" title={item.original_name || item.filename}>
                   {item.original_name || item.filename}
                 </div>
-                <div className="mt-0.5 flex items-center justify-between text-[10px] text-primary-400">
+                <div className="mt-0.5 flex items-center justify-between text-[10px] text-primary-400 dark:text-primary-500">
                   <span>{formatFileSize(item.file_size)}</span>
                   <span>{formatDate(item.created_at)}</span>
                 </div>
@@ -157,7 +157,7 @@ export default function MediaPage() {
       )}
 
       <Modal open={confirmDelete !== null} onClose={() => setConfirmDelete(null)} title="Delete media" size="sm">
-        <p className="text-sm text-primary-600">
+        <p className="text-sm text-primary-600 dark:text-primary-300">
           This file may be used by content on the website. Deleting it will leave any references pointing at a missing image. This action cannot be undone.
         </p>
         <div className="mt-6 flex justify-end gap-3">

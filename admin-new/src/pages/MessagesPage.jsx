@@ -97,13 +97,13 @@ export default function MessagesPage() {
       title="Messages"
       subtitle="Inquiries submitted through the public contact form."
       action={
-        <div className="inline-flex rounded-lg border border-primary-200 bg-white p-0.5">
+        <div className="inline-flex rounded-lg border border-primary-200 bg-white p-0.5 dark:border-primary-700 dark:bg-primary-900">
           <button
             type="button"
             onClick={() => setView('inbox')}
             className={
               'rounded-md px-3 py-1.5 text-xs font-medium transition-colors ' +
-              (view === 'inbox' ? 'bg-primary-900 text-white' : 'text-primary-600 hover:bg-primary-50')
+              (view === 'inbox' ? 'bg-primary-900 text-white dark:bg-primary-700' : 'text-primary-600 hover:bg-primary-50 dark:text-primary-300 dark:hover:bg-primary-800')
             }
           >
             Inbox
@@ -113,7 +113,7 @@ export default function MessagesPage() {
             onClick={() => setView('archived')}
             className={
               'rounded-md px-3 py-1.5 text-xs font-medium transition-colors ' +
-              (view === 'archived' ? 'bg-primary-900 text-white' : 'text-primary-600 hover:bg-primary-50')
+              (view === 'archived' ? 'bg-primary-900 text-white dark:bg-primary-700' : 'text-primary-600 hover:bg-primary-50 dark:text-primary-300 dark:hover:bg-primary-800')
             }
           >
             Archived
@@ -132,35 +132,35 @@ export default function MessagesPage() {
           description={view === 'archived' ? 'Archived messages will appear here.' : 'New inquiries from the contact form will appear here.'}
         />
       ) : (
-        <div className="overflow-hidden rounded-xl border border-primary-200 bg-white">
-          <ul className="divide-y divide-primary-100">
+        <div className="overflow-hidden rounded-xl border border-primary-200 bg-white dark:border-primary-800 dark:bg-primary-900">
+          <ul className="divide-y divide-primary-100 dark:divide-primary-800">
             {items.map((msg) => (
               <li
                 key={msg.id}
-                className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-primary-50/50"
+                className="flex cursor-pointer items-center gap-3 px-4 py-3 hover:bg-primary-50/50 dark:hover:bg-primary-800/50"
                 onClick={() => openMessage(msg)}
               >
                 <span className="shrink-0">
                   {msg.is_read ? (
-                    <MailOpen className="h-4 w-4 text-primary-400" />
+                    <MailOpen className="h-4 w-4 text-primary-400 dark:text-primary-500" />
                   ) : (
-                    <Mail className="h-4 w-4 text-gold-500" />
+                    <Mail className="h-4 w-4 text-gold-500 dark:text-gold-400" />
                   )}
                 </span>
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className={'truncate text-sm ' + (msg.is_read ? 'font-medium text-primary-700' : 'font-semibold text-primary-900')}>
-                      {msg.name}
-                    </span>
-                    {!msg.is_read && <Badge variant="info">New</Badge>}
+                      <span className={'truncate text-sm ' + (msg.is_read ? 'font-medium text-primary-700 dark:text-primary-300' : 'font-semibold text-primary-900 dark:text-white')}>
+                        {msg.name}
+                      </span>
+                      {!msg.is_read && <Badge variant="info">New</Badge>}
+                    </div>
+                    <div className="mt-0.5 truncate text-xs text-primary-500 dark:text-primary-400">
+                      <span className="font-medium text-primary-700 dark:text-primary-200">{msg.subject}</span>
+                      <span className="mx-1.5">·</span>
+                      <span className="truncate">{msg.message}</span>
+                    </div>
                   </div>
-                  <div className="mt-0.5 truncate text-xs text-primary-500">
-                    <span className="font-medium text-primary-700">{msg.subject}</span>
-                    <span className="mx-1.5">·</span>
-                    <span className="truncate">{msg.message}</span>
-                  </div>
-                </div>
-                <span className="shrink-0 text-xs text-primary-400">{formatDateTime(msg.created_at)}</span>
+                  <span className="shrink-0 text-xs text-primary-400 dark:text-primary-500">{formatDateTime(msg.created_at)}</span>
               </li>
             ))}
           </ul>
@@ -176,30 +176,30 @@ export default function MessagesPage() {
       >
         {active && (
           <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <div>
-                <div className="text-xs uppercase tracking-wider text-primary-400">From</div>
-                <div className="font-medium text-primary-900">{active.name}</div>
-              </div>
-              <div>
-                <div className="text-xs uppercase tracking-wider text-primary-400">Email</div>
-                <a href={`mailto:${active.email}`} className="font-medium text-gold-600 hover:underline">
-                  {active.email}
-                </a>
-              </div>
-              {active.phone && (
+              <div className="grid grid-cols-2 gap-3 text-sm">
                 <div>
-                  <div className="text-xs uppercase tracking-wider text-primary-400">Phone</div>
-                  <div className="font-medium text-primary-900">{active.phone}</div>
+                  <div className="text-xs uppercase tracking-wider text-primary-400 dark:text-primary-500">From</div>
+                  <div className="font-medium text-primary-900 dark:text-white">{active.name}</div>
                 </div>
-              )}
-              <div>
-                <div className="text-xs uppercase tracking-wider text-primary-400">Received</div>
-                <div className="font-medium text-primary-900">{formatDateTime(active.created_at)}</div>
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-primary-400 dark:text-primary-500">Email</div>
+                  <a href={`mailto:${active.email}`} className="font-medium text-gold-600 hover:underline dark:text-gold-400">
+                    {active.email}
+                  </a>
+                </div>
+                {active.phone && (
+                  <div>
+                    <div className="text-xs uppercase tracking-wider text-primary-400 dark:text-primary-500">Phone</div>
+                    <div className="font-medium text-primary-900 dark:text-white">{active.phone}</div>
+                  </div>
+                )}
+                <div>
+                  <div className="text-xs uppercase tracking-wider text-primary-400 dark:text-primary-500">Received</div>
+                  <div className="font-medium text-primary-900 dark:text-white">{formatDateTime(active.created_at)}</div>
+                </div>
               </div>
-            </div>
-            <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-4">
-              <div className="whitespace-pre-wrap text-sm leading-relaxed text-primary-800">
+              <div className="rounded-lg border border-primary-100 bg-primary-50/50 p-4 dark:border-primary-700 dark:bg-primary-800/50">
+                <div className="whitespace-pre-wrap text-sm leading-relaxed text-primary-800 dark:text-primary-200">
                 {active.message}
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function MessagesPage() {
       </Modal>
 
       <Modal open={confirmDelete !== null} onClose={() => setConfirmDelete(null)} title="Delete message" size="sm">
-        <p className="text-sm text-primary-600">This will permanently delete the message. This action cannot be undone.</p>
+        <p className="text-sm text-primary-600 dark:text-primary-300">This will permanently delete the message. This action cannot be undone.</p>
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="secondary" onClick={() => setConfirmDelete(null)}>
             Cancel

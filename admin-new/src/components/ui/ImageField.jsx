@@ -49,12 +49,12 @@ export default function ImageField({ label, value, onChange, required, help }) {
             </button>
           </div>
         ) : (
-          <div className="flex h-32 w-full max-w-xs items-center justify-center rounded-lg border border-dashed border-primary-300 bg-primary-50 text-xs text-primary-500">
-            No image selected
-          </div>
+            <div className="flex h-32 w-full max-w-xs items-center justify-center rounded-lg border border-dashed border-primary-300 bg-primary-50 text-xs text-primary-500 dark:border-primary-600 dark:bg-primary-900/50 dark:text-primary-400">
+              No image selected
+            </div>
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-primary-200 bg-white px-3 py-2 text-sm font-medium text-primary-900 hover:bg-primary-50">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-primary-200 bg-white px-3 py-2 text-sm font-medium text-primary-900 hover:bg-primary-50 dark:border-primary-700 dark:bg-primary-900 dark:text-primary-100 dark:hover:bg-primary-800">
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp"

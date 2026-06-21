@@ -33,14 +33,14 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
       <div className="absolute inset-0 bg-primary-950/60 backdrop-blur-sm" onClick={onClose} />
       <div
         className={cn(
-          'relative z-10 w-full rounded-xl border border-primary-200 bg-white shadow-xl',
+          'relative z-10 w-full rounded-xl border border-primary-200 bg-white shadow-xl dark:border-primary-800 dark:bg-primary-900',
           sizes[size],
         )}
         role="dialog"
         aria-modal="true"
       >
-        <div className="flex items-center justify-between border-b border-primary-100 px-5 py-4">
-          <h2 className="text-lg font-semibold text-primary-900">{title}</h2>
+        <div className="flex items-center justify-between border-b border-primary-100 px-5 py-4 dark:border-primary-800">
+          <h2 className="text-lg font-semibold text-primary-900 dark:text-white">{title}</h2>
           <Button variant="ghost" size="sm" onClick={onClose} aria-label="Close">
             <X className="h-4 w-4" />
           </Button>
@@ -54,7 +54,7 @@ export default function Modal({ open, onClose, title, children, size = 'md' }) {
 export function ConfirmDialog({ open, onClose, onConfirm, title, message, confirmLabel = 'Confirm', loading, danger = true }) {
   return (
     <Modal open={open} onClose={onClose} title={title} size="sm">
-      <p className="text-sm text-primary-600">{message}</p>
+      <p className="text-sm text-primary-600 dark:text-primary-300">{message}</p>
       <div className="mt-6 flex justify-end gap-3">
         <Button variant="secondary" onClick={onClose} disabled={loading}>
           Cancel

@@ -4,6 +4,7 @@ import { AppError } from '../utils/AppError.js';
 import { validatePasswordStrength } from '../utils/password.js';
 import { pickFields } from '../utils/pickFields.js';
 import { USER_CREATE_FIELDS, USER_UPDATE_FIELDS } from '../constants/fieldAllowlists.js';
+import { ROLES } from '../constants/roles.js';
 
 const SALT_ROUNDS = 12;
 
@@ -57,6 +58,9 @@ export async function createUser(data) {
 export async function updateUser(id, data) {
   const user = await User.findByPk(id);
   if (!user) throw new AppError(`User with ID ${id} not found`, 404);
+  if (user.role === ROLES.SUPER_ADMIN) {
+    throw new AppError('Cannot modify a super admin', 403);
+  }
 
   const safe = pickFields(data, USER_UPDATE_FIELDS);
 
@@ -75,6 +79,9 @@ export async function updateUser(id, data) {
 export async function toggleUserStatus(id) {
   const user = await User.findByPk(id);
   if (!user) throw new AppError(`User with ID ${id} not found`, 404);
+  if (user.role === ROLES.SUPER_ADMIN) {
+    throw new AppError('Cannot toggle status of a super admin', 403);
+  }
   await user.update({ is_active: !user.is_active });
 
   const result = user.toJSON();
@@ -85,6 +92,9 @@ export async function toggleUserStatus(id) {
 export async function deleteUser(id) {
   const user = await User.findByPk(id);
   if (!user) throw new AppError(`User with ID ${id} not found`, 404);
+  if (user.role === ROLES.SUPER_ADMIN) {
+    throw new AppError('Cannot delete a super admin', 403);
+  }
   await user.destroy();
   return { message: 'User deleted' };
 }

@@ -63,12 +63,18 @@
     font-family: var(--font-body);
     scroll-behavior: smooth;
   }
+  html.dark { color-scheme: dark; }
+  html:not(.dark) { color-scheme: light; }
   body {
     overflow-x: hidden;
     background-color: var(--color-sand-50);
     color: var(--color-primary-900);
     -webkit-font-smoothing: antialiased;
     min-height: 100dvh;
+  }
+  :where(.dark) body {
+    background-color: var(--color-primary-950);
+    color: var(--color-primary-100);
   }
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
@@ -143,6 +149,12 @@
 }
 .scroll-area::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-primary-400);
+}
+.dark .scroll-area::-webkit-scrollbar-thumb {
+  background-color: var(--color-primary-600);
+}
+.dark .scroll-area::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary-500);
 }
 
 /* When the editor drawer is open we lock the preview scroll */

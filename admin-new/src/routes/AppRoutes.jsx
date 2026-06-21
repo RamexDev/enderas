@@ -17,9 +17,11 @@ import ServicesPagePreview from '@/pages/ServicesPagePreview'
 import GalleryPagePreview from '@/pages/GalleryPagePreview'
 import BlogPagePreview from '@/pages/BlogPagePreview'
 import ContactPagePreview from '@/pages/ContactPagePreview'
+import DashboardPage from '@/pages/DashboardPage'
 import MessagesPage from '@/pages/MessagesPage'
 import MediaPage from '@/pages/MediaPage'
 import SettingsPage from '@/pages/SettingsPage'
+import ProfilePage from '@/pages/ProfilePage'
 import UsersPage from '@/pages/UsersPage'
 import NotFoundPage from '@/pages/NotFoundPage'
 
@@ -44,7 +46,8 @@ export default function AppRoutes() {
             </ProtectedRoute>
           }
         >
-          <Route index element={<HomePagePreview />} />
+          <Route index element={<DashboardPage />} />
+          <Route path={ROUTES.HOME} element={<HomePagePreview />} />
           <Route path={ROUTES.ABOUT} element={<AboutPagePreview />} />
           <Route path={ROUTES.SERVICES} element={<ServicesPagePreview />} />
           <Route path={ROUTES.GALLERY} element={<GalleryPagePreview />} />
@@ -52,6 +55,7 @@ export default function AppRoutes() {
           <Route path={ROUTES.CONTACT} element={<ContactPagePreview />} />
           <Route path={ROUTES.MESSAGES} element={<MessagesPage />} />
           <Route path={ROUTES.MEDIA} element={<MediaPage />} />
+          <Route path={ROUTES.PROFILE} element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
           <Route
             path={ROUTES.SETTINGS}
             element={

@@ -6,20 +6,15 @@
  */
 import { useCallback, useEffect, useState } from 'react'
 import { toast } from 'sonner'
-import { Loader2, Plus, Pencil, Power, Trash2, UserPlus } from 'lucide-react'
+import { Loader2, Plus, Power, Trash2, UserPlus } from 'lucide-react'
 import ManagePage from '@/components/preview/ManagePage'
 import Button from '@/components/ui/Button'
 import { Badge, PageLoader, EmptyState, StatusBadge } from '@/components/ui/Loading'
 import Modal, { ConfirmDialog } from '@/components/ui/Modal'
-import { FormField, Input, Select } from '@/components/ui/Input'
+import { FormField, Input } from '@/components/ui/Input'
 import { usersApi } from '@/services/cmsApi'
 import { getErrorMessage } from '@/utils/errors'
 import { formatDate } from '@/utils/helpers'
-
-const ROLES = [
-  { value: 'editor', label: 'Editor' },
-  { value: 'super_admin', label: 'Super admin' },
-]
 
 const EMPTY_USER = {
   name: '',
@@ -72,18 +67,13 @@ export default function UsersPage() {
       const payload = {
         name: editing.name,
         email: editing.email,
-        role: editing.role,
+        role: 'editor',
       }
-      if (editing._isNew && editing.password) {
+      if (editing.password) {
         payload.password = editing.password
       }
-      if (editing.id) {
-        await usersApi.update(editing.id, payload)
-        toast.success('User updated')
-      } else {
-        await usersApi.create(payload)
-        toast.success('User created')
-      }
+      await usersApi.create(payload)
+      toast.success('User created')
       setEditing(null)
       load()
     } catch (err) {
@@ -132,10 +122,10 @@ export default function UsersPage() {
           action={<Button onClick={() => setEditing({ ...EMPTY_USER, _isNew: true })}>New user</Button>}
         />
       ) : (
-        <div className="overflow-hidden rounded-xl border border-primary-200 bg-white">
+        <div className="overflow-hidden rounded-xl border border-primary-200 bg-white dark:border-primary-800 dark:bg-primary-900">
           <table className="w-full">
             <thead>
-              <tr className="border-b border-primary-100 bg-primary-50 text-left text-xs uppercase tracking-wider text-primary-600">
+              <tr className="border-b border-primary-100 bg-primary-50 text-left text-xs uppercase tracking-wider text-primary-600 dark:border-primary-800 dark:bg-primary-800 dark:text-primary-300">
                 <th className="px-4 py-3">Name</th>
                 <th className="px-4 py-3">Email</th>
                 <th className="px-4 py-3">Role</th>
@@ -144,11 +134,11 @@ export default function UsersPage() {
                 <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-primary-100">
+            <tbody className="divide-y divide-primary-100 dark:divide-primary-800">
               {items.map((user) => (
-                <tr key={user.id} className="hover:bg-primary-50/40">
-                  <td className="px-4 py-3 text-sm font-medium text-primary-900">{user.name}</td>
-                  <td className="px-4 py-3 text-sm text-primary-700">{user.email}</td>
+                <tr key={user.id} className="hover:bg-primary-50/40 dark:hover:bg-primary-800/40">
+                  <td className="px-4 py-3 text-sm font-medium text-primary-900 dark:text-white">{user.name}</td>
+                  <td className="px-4 py-3 text-sm text-primary-700 dark:text-primary-300">{user.email}</td>
                   <td className="px-4 py-3">
                     {user.role === 'super_admin' ? (
                       <Badge variant="gold">Super admin</Badge>
@@ -159,33 +149,29 @@ export default function UsersPage() {
                   <td className="px-4 py-3">
                     <StatusBadge active={user.is_active} />
                   </td>
-                  <td className="px-4 py-3 text-xs text-primary-500">{formatDate(user.created_at)}</td>
+                  <td className="px-4 py-3 text-xs text-primary-500 dark:text-primary-400">{formatDate(user.createdAt)}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-end gap-1">
-                      <button
-                        type="button"
-                        title="Edit"
-                        onClick={() => setEditing({ ...user })}
-                        className="rounded p-1.5 text-primary-500 hover:bg-primary-100 hover:text-primary-900"
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        title={user.is_active ? 'Deactivate' : 'Activate'}
-                        onClick={() => handleToggle(user)}
-                        className="rounded p-1.5 text-primary-500 hover:bg-primary-100 hover:text-primary-900"
-                      >
-                        <Power className="h-3.5 w-3.5" />
-                      </button>
-                      <button
-                        type="button"
-                        title="Delete"
-                        onClick={() => setConfirmDelete(user)}
-                        className="rounded p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                      {user.role !== 'super_admin' && (
+                        <>
+                          <button
+                            type="button"
+                            title={user.is_active ? 'Deactivate' : 'Activate'}
+                            onClick={() => handleToggle(user)}
+                            className="rounded p-1.5 text-primary-500 hover:bg-primary-100 hover:text-primary-900 dark:text-primary-400 dark:hover:bg-primary-700 dark:hover:text-white"
+                          >
+                            <Power className="h-3.5 w-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            title="Delete"
+                            onClick={() => setConfirmDelete(user)}
+                            className="rounded p-1.5 text-red-500 hover:bg-red-50 hover:text-red-700"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </td>
                 </tr>
@@ -195,11 +181,11 @@ export default function UsersPage() {
         </div>
       )}
 
-      {/* Edit / create modal */}
+      {/* Create user modal */}
       <Modal
         open={editing !== null}
         onClose={() => setEditing(null)}
-        title={editing?._isNew ? 'New user' : 'Edit user'}
+        title="New user"
         size="md"
       >
         {editing && (
@@ -217,38 +203,24 @@ export default function UsersPage() {
                 onChange={(e) => setEditing({ ...editing, email: e.target.value })}
               />
             </FormField>
-            <FormField label="Role" required>
-              <Select
-                value={editing.role || 'editor'}
-                onChange={(e) => setEditing({ ...editing, role: e.target.value })}
-              >
-                {ROLES.map((r) => (
-                  <option key={r.value} value={r.value}>
-                    {r.label}
-                  </option>
-                ))}
-              </Select>
+            <FormField
+              label="Password"
+              required
+              help="At least 12 characters, with uppercase, lowercase, number, and special character."
+            >
+              <Input
+                type="password"
+                value={editing.password || ''}
+                onChange={(e) => setEditing({ ...editing, password: e.target.value })}
+              />
             </FormField>
-            {editing._isNew && (
-              <FormField
-                label="Password"
-                required
-                help="At least 12 characters, with uppercase, lowercase, number, and special character."
-              >
-                <Input
-                  type="password"
-                  value={editing.password || ''}
-                  onChange={(e) => setEditing({ ...editing, password: e.target.value })}
-                />
-              </FormField>
-            )}
             <div className="flex justify-end gap-3 pt-2">
               <Button variant="secondary" onClick={() => setEditing(null)} disabled={saving}>
                 Cancel
               </Button>
               <Button onClick={handleSave} disabled={saving}>
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
-                {saving ? 'Saving…' : editing._isNew ? 'Create user' : 'Save changes'}
+                {saving ? 'Saving…' : 'Create user'}
               </Button>
             </div>
           </div>

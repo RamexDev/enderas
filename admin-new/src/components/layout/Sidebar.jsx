@@ -10,6 +10,7 @@ import { LogOut, X, UserCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useEditorStore } from '@/store/useEditorStore'
+import { useSiteStore } from '@/store/useSiteStore'
 import { getVisibleNavGroups } from '@/constants/navigation'
 import { ROUTES } from '@/constants/routes'
 import { cn } from '@/utils/cn'
@@ -19,6 +20,7 @@ export default function Sidebar({ open, onClose }) {
   const user = useAuthStore((s) => s.user)
   const logout = useAuthStore((s) => s.logout)
   const setEditMode = useEditorStore((s) => s.setEditMode)
+  const logo = useSiteStore((s) => s.logo)
   const navigate = useNavigate()
   const navGroups = getVisibleNavGroups(user?.role)
 
@@ -50,8 +52,12 @@ export default function Sidebar({ open, onClose }) {
       >
         <div className="flex items-center justify-between border-b border-primary-800/70 px-4 py-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-gold-500 font-heading text-base font-semibold text-primary-950">
-              E
+            <div className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-lg">
+              {logo ? (
+                <img src={logo} alt="" className="h-full w-full object-contain p-1" />
+              ) : (
+                <span className="font-heading text-base font-semibold text-primary-950">E</span>
+              )}
             </div>
             <div className="min-w-0">
               <h1 className="truncate text-sm font-semibold text-white">{appName}</h1>

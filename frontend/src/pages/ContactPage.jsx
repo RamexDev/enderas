@@ -158,7 +158,6 @@ export default function ContactPage() {
                         <FormField
                           label="Phone"
                           type="tel"
-                          required
                           placeholder="+251 911 234 567"
                           autoComplete="tel"
                           error={errors.phone?.message}

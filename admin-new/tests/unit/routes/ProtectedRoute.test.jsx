@@ -23,7 +23,7 @@ function renderProtected(initialPath = '/settings', superAdminOnly = true) {
           }
         />
         <Route path={ROUTES.LOGIN} element={<div>Login page</div>} />
-        <Route path={ROUTES.HOME} element={<div>Home</div>} />
+        <Route path={ROUTES.DASHBOARD} element={<div>Dashboard</div>} />
       </Routes>
     </MemoryRouter>,
   )
@@ -64,6 +64,6 @@ describe('ProtectedRoute', () => {
     })
 
     renderProtected('/settings', true)
-    expect(screen.getByText('Home')).toBeInTheDocument()
+    expect(screen.getByText('Dashboard')).toBeInTheDocument()
   })
 })

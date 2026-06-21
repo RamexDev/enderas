@@ -38,7 +38,7 @@ export default function ContactPagePreview() {
     }
   }, [])
 
-  const { data, loading, error, reload } = useAsyncData(fetcher, [reloadToken])
+  const { data, loading, refreshing, error, reload } = useAsyncData(fetcher, [reloadToken])
 
   const contactSection = useMemo(() => byId('contact-page'), [])
   const settingsSection = useMemo(() => byId('site-settings'), [])
@@ -49,6 +49,7 @@ export default function ContactPagePreview() {
       subtitle="Address, phone, email, and the Google Map embed shown on /contact."
       livePath="/contact"
       loading={loading}
+      refreshing={refreshing}
       error={error}
       onRetry={reload}
       reloadToken={reloadToken}
@@ -70,7 +71,7 @@ function ContactBody({ contact, settings, pageKey, sections }) {
   const mapUrl = extractMapEmbedUrl(contact.google_map_embed || settings.mapEmbedUrl)
 
   return (
-    <div className="bg-sand-50">
+    <div className="bg-sand-50 dark:bg-primary-950">
       <PageHero
         eyebrow="Get in touch"
         title="Speak with an Enderas partner."
@@ -82,9 +83,9 @@ function ContactBody({ contact, settings, pageKey, sections }) {
           <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
             {/* Contact form preview (not editable — it's a visitor-facing form) */}
             <div className="lg:col-span-7">
-              <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm sm:p-8">
-                <h3 className="font-heading text-xl font-semibold text-primary-900">Send us a message</h3>
-                <p className="mt-1 text-sm text-primary-500">
+              <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm sm:p-8 dark:border-primary-800 dark:bg-primary-900">
+                <h3 className="font-heading text-xl font-semibold text-primary-900 dark:text-white">Send us a message</h3>
+                <p className="mt-1 text-sm text-primary-500 dark:text-primary-400">
                   This form is filled in by visitors — its fields are not CMS-managed.
                 </p>
                 <div className="mt-6 space-y-4">
@@ -133,7 +134,7 @@ function ContactBody({ contact, settings, pageKey, sections }) {
       {/* Map embed */}
       <section className="pb-16 lg:pb-28">
         <Container>
-          <div className="overflow-hidden rounded-2xl border border-primary-100 shadow-sm">
+          <div className="overflow-hidden rounded-2xl border border-primary-100 shadow-sm dark:border-primary-800">
             <div className="aspect-[16/10] sm:aspect-[21/9]">
               {mapUrl ? (
                 <iframe
@@ -144,7 +145,7 @@ function ContactBody({ contact, settings, pageKey, sections }) {
                   referrerPolicy="no-referrer-when-downgrade"
                 />
               ) : (
-                <div className="flex h-full w-full items-center justify-center bg-primary-100 text-sm text-primary-500">
+                <div className="flex h-full w-full items-center justify-center bg-primary-100 text-sm text-primary-500 dark:bg-primary-800 dark:text-primary-400">
                   No Google Map embed configured.
                 </div>
               )}
@@ -209,13 +210,13 @@ function ContactBody({ contact, settings, pageKey, sections }) {
 function FakeField({ label, placeholder, type = 'text', textarea = false }) {
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-medium text-primary-700">{label}</label>
+      <label className="mb-1.5 block text-xs font-medium text-primary-700 dark:text-primary-300">{label}</label>
       {textarea ? (
-        <div className="h-24 rounded-lg border border-primary-200 bg-primary-50/40 px-3 py-2 text-xs text-primary-400">
+        <div className="h-24 rounded-lg border border-primary-200 bg-primary-50/40 px-3 py-2 text-xs text-primary-400 dark:border-primary-700 dark:bg-primary-800/40 dark:text-primary-500">
           {placeholder}
         </div>
       ) : (
-        <div className="h-10 rounded-lg border border-primary-200 bg-primary-50/40 px-3 py-2 text-xs text-primary-400">
+        <div className="h-10 rounded-lg border border-primary-200 bg-primary-50/40 px-3 py-2 text-xs text-primary-400 dark:border-primary-700 dark:bg-primary-800/40 dark:text-primary-500">
           {placeholder}
         </div>
       )}

@@ -44,7 +44,7 @@ export default function AboutPagePreview() {
     } : null
     return mapAboutPageData({ about, coreValues, partners, teamMembers: teamResult.data, cta })
   }, [])
-  const { data, loading, error, reload } = useAsyncData(fetcher, [reloadToken])
+  const { data, loading, refreshing, error, reload } = useAsyncData(fetcher, [reloadToken])
 
   const aboutContentSection = useMemo(() => byId('about-content'), [])
   const coreValuesSection = useMemo(() => byId('core-values'), [])
@@ -57,6 +57,7 @@ export default function AboutPagePreview() {
       subtitle="History, mission, vision, core values, team, and partners."
       livePath="/about"
       loading={loading}
+      refreshing={refreshing}
       error={error}
       onRetry={reload}
       reloadToken={reloadToken}
@@ -77,7 +78,7 @@ function AboutBody({ data, pageKey, sections }) {
   const { heroEyebrow, heroTitle, heroIntro, heroImage, history, mission, vision, values, team, partners, cta } = data
 
   return (
-    <div className="bg-sand-50">
+    <div className="bg-sand-50 dark:bg-primary-950">
       {/* Hero — copy is hardcoded in the public site; only the intro reflects
           the about page meta_description. The hero image is a static seed
           asset, so we don't wrap it in an EditOverlay. */}
@@ -89,20 +90,20 @@ function AboutBody({ data, pageKey, sections }) {
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
             <EditOverlay section={sections.aboutContentSection} pageKey={pageKey} className="lg:col-span-7">
               <SectionHeading eyebrow="Our story" title="History" />
-              <div className="mt-4 space-y-4 text-base leading-relaxed text-primary-700/90">
+              <div className="mt-4 space-y-4 text-base leading-relaxed text-primary-700/90 dark:text-primary-200/90">
                 {history ? (
                   history.split(/\n\n+/).map((p, i) => <p key={i}>{p}</p>)
                 ) : (
-                  <p className="italic text-primary-400">No history text set yet. Click to add some.</p>
+                  <p className="italic text-primary-400 dark:text-primary-500">No history text set yet. Click to add some.</p>
                 )}
               </div>
             </EditOverlay>
 
             <div className="space-y-6 lg:col-span-5">
-              <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm">
-                <h3 className="font-heading text-lg font-semibold text-primary-900">Mission</h3>
-                <p className="mt-2 text-sm leading-relaxed text-primary-700">
-                  {mission || <span className="italic text-primary-400">Not set.</span>}
+              <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm dark:border-primary-800 dark:bg-primary-900">
+                <h3 className="font-heading text-lg font-semibold text-primary-900 dark:text-white">Mission</h3>
+                <p className="mt-2 text-sm leading-relaxed text-primary-700 dark:text-primary-200">
+                  {mission || <span className="italic text-primary-400 dark:text-primary-500">Not set.</span>}
                 </p>
               </div>
               <div className="rounded-2xl border border-primary-100 bg-primary-900 p-6 text-white shadow-sm">
@@ -117,11 +118,11 @@ function AboutBody({ data, pageKey, sections }) {
       </section>
 
       {/* Core values */}
-      <section className="border-y border-primary-100 bg-white py-16 sm:py-20 lg:py-28">
+      <section className="border-y border-primary-100 bg-white py-16 sm:py-20 lg:py-28 dark:border-primary-800 dark:bg-primary-900">
         <Container>
           <SectionHeading eyebrow="What we stand for" title="Core values that shape every engagement." align="center" />
           {values.length === 0 ? (
-            <div className="mt-10 rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-10 text-center text-sm text-primary-500">
+            <div className="mt-10 rounded-xl border border-dashed border-primary-200 bg-primary-50/50 px-6 py-10 text-center text-sm text-primary-500 dark:border-primary-700 dark:bg-primary-900/50 dark:text-primary-400">
               No core values yet.
             </div>
           ) : (
@@ -133,12 +134,12 @@ function AboutBody({ data, pageKey, sections }) {
                   record={{ id: v.id }}
                   pageKey={pageKey}
                 >
-                  <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm">
+                  <div className="rounded-2xl border border-primary-100 bg-white p-6 shadow-sm dark:border-primary-800 dark:bg-primary-900">
                     <div className="font-heading text-3xl font-semibold text-gold-500/30">
                       {String(i + 1).padStart(2, '0')}
                     </div>
-                    <h3 className="mt-2 font-heading text-base font-semibold text-primary-900">{v.title}</h3>
-                    {v.body && <p className="mt-1.5 text-sm leading-relaxed text-primary-600">{v.body}</p>}
+                    <h3 className="mt-2 font-heading text-base font-semibold text-primary-900 dark:text-white">{v.title}</h3>
+                    {v.body && <p className="mt-1.5 text-sm leading-relaxed text-primary-600 dark:text-primary-300">{v.body}</p>}
                   </div>
                 </EditOverlay>
               ))}

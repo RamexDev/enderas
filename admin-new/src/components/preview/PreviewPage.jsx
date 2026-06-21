@@ -27,6 +27,7 @@ export default function PreviewPage({
   subtitle,
   livePath,
   loading,
+  refreshing,
   error,
   onRetry,
   reloadToken,
@@ -41,7 +42,7 @@ export default function PreviewPage({
 
   return (
     <div className="flex min-h-screen flex-col">
-      <PreviewToolbar title={title} subtitle={subtitle} livePath={livePath} onRefresh={onRetry} refreshing={loading} />
+      <PreviewToolbar title={title} subtitle={subtitle} livePath={livePath} onRefresh={onRetry} refreshing={refreshing} />
       <div className="flex-1">
         {loading ? (
           <PageLoader label="Loading preview…" />

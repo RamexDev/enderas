@@ -25,7 +25,7 @@ export function ProtectedRoute({ children, superAdminOnly = false }) {
   }
 
   if (superAdminOnly && !isSuperAdmin(user?.role)) {
-    return <Navigate to={ROUTES.HOME} replace />
+    return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
   return children || <Outlet />
@@ -41,7 +41,7 @@ export function GuestRoute({ children }) {
   if (isLoading) return <PageLoader />
 
   if (isAuthenticated) {
-    return <Navigate to={ROUTES.HOME} replace />
+    return <Navigate to={ROUTES.DASHBOARD} replace />
   }
 
   return children

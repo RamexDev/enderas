@@ -79,7 +79,7 @@ export default function EditDrawer() {
         aria-hidden="true"
       />
       <aside
-        className="fixed right-0 top-0 z-[80] flex h-full w-full max-w-xl flex-col bg-white shadow-2xl"
+        className="fixed right-0 top-0 z-[80] flex h-full w-full max-w-xl flex-col bg-white shadow-2xl dark:bg-primary-950"
         role="dialog"
         aria-modal="true"
         aria-label={`Edit ${section.label}`}
@@ -110,7 +110,7 @@ export default function EditDrawer() {
 
 function DrawerHeader({ section, onClose }) {
   return (
-    <header className="flex items-center justify-between border-b border-primary-100 bg-primary-900 px-5 py-4 text-white">
+    <header className="flex items-center justify-between border-b border-primary-800 bg-primary-900 px-5 py-4 text-white dark:border-primary-700">
       <div className="min-w-0">
         <h2 className="truncate font-heading text-base font-semibold">{section.label}</h2>
         {section.description && (
@@ -180,7 +180,7 @@ function SingletonEditor({ section, pageKey, onSaved }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12 text-primary-500">
+      <div className="flex items-center justify-center py-12 text-primary-500 dark:text-primary-400">
         <Loader2 className="h-6 w-6 animate-spin" />
       </div>
     )
@@ -352,7 +352,7 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
         <button
           type="button"
           onClick={handleBack}
-          className="flex items-center gap-1.5 px-5 py-3 text-sm font-medium text-primary-600 hover:bg-primary-50 hover:text-primary-900"
+          className="flex items-center gap-1.5 px-5 py-3 text-sm font-medium text-primary-600 hover:bg-primary-50 hover:text-primary-900 dark:text-primary-400 dark:hover:bg-primary-800 dark:hover:text-primary-100"
         >
           <ArrowLeft className="h-4 w-4" /> Back to list
         </button>
@@ -371,7 +371,7 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12 text-primary-500">
+      <div className="flex items-center justify-center py-12 text-primary-500 dark:text-primary-400">
         <Loader2 className="h-6 w-6 animate-spin" />
       </div>
     )
@@ -397,7 +397,7 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
     <div className="flex h-full flex-col">
       <div className="flex-1 p-5">
         <div className="mb-4 flex items-center justify-between">
-          <p className="text-sm text-primary-500">
+          <p className="text-sm text-primary-500 dark:text-primary-400">
             {items.length} record{items.length === 1 ? '' : 's'}
           </p>
           <Button size="sm" onClick={handleAddNew}>
@@ -420,7 +420,7 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
             {items.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center gap-3 rounded-lg border border-primary-100 bg-white p-3 hover:border-primary-200"
+                className="flex items-center gap-3 rounded-lg border border-primary-100 bg-white p-3 hover:border-primary-200 dark:border-primary-800 dark:bg-primary-900 dark:hover:border-primary-700"
               >
                 {item.image ? (
                   <img
@@ -452,8 +452,8 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
                   </div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <div className="truncate text-sm font-medium text-primary-900">
-                    {item[titleKey] || <span className="italic text-primary-400">(untitled)</span>}
+                  <div className="truncate text-sm font-medium text-primary-900 dark:text-white">
+                    {item[titleKey] || <span className="italic text-primary-400 dark:text-primary-500">(untitled)</span>}
                   </div>
                   <div className="mt-0.5 flex flex-wrap items-center gap-1.5">
                     {section.supportsToggle && 'is_active' in item && (
@@ -521,9 +521,9 @@ function CollectionEditor({ section, pageKey, preselectedRecord, onSaved }) {
 
 function IconAction({ children, onClick, title, variant = 'ghost' }) {
   const styles = {
-    ghost: 'text-primary-500 hover:bg-primary-100 hover:text-primary-900',
-    primary: 'text-primary-700 hover:bg-gold-100 hover:text-gold-700',
-    danger: 'text-red-500 hover:bg-red-50 hover:text-red-700',
+    ghost: 'text-primary-500 hover:bg-primary-100 hover:text-primary-900 dark:text-primary-400 dark:hover:bg-primary-800 dark:hover:text-primary-100',
+    primary: 'text-primary-700 hover:bg-gold-100 hover:text-gold-700 dark:text-primary-200 dark:hover:bg-gold-900/30',
+    danger: 'text-red-500 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/30',
   }
   return (
     <button
@@ -556,7 +556,7 @@ function FormGrid({ section, record, onChange }) {
 
 function DrawerFooter({ onCancel, onSave, saving, saveLabel }) {
   return (
-    <footer className="border-t border-primary-100 bg-primary-50/50 px-5 py-4">
+    <footer className="border-t border-primary-100 bg-primary-50/50 px-5 py-4 dark:border-primary-800 dark:bg-primary-900/50">
       <div className="flex items-center justify-end gap-3">
         {onCancel && (
           <Button variant="secondary" onClick={onCancel} disabled={saving}>

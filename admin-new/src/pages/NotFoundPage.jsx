@@ -16,10 +16,10 @@ export default function NotFoundPage() {
           The page you're looking for doesn't exist or has been moved.
         </p>
         <Link
-          to={ROUTES.HOME}
+          to={ROUTES.DASHBOARD}
           className="mt-6 inline-flex items-center gap-2 rounded-lg bg-gold-500 px-5 py-2.5 text-sm font-semibold text-primary-950 hover:bg-gold-400"
         >
-          Back to the homepage editor
+          Back to dashboard
         </Link>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { useId, cloneElement, isValidElement } from 'react'
 import { cn } from '@/utils/cn'
 
 const baseControl =
-  'w-full rounded-lg border bg-white px-3 py-2 text-sm text-primary-900 placeholder:text-primary-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500 disabled:bg-primary-50 disabled:text-primary-500'
+  'w-full rounded-lg border bg-white px-3 py-2 text-sm text-primary-900 placeholder:text-primary-400 focus:outline-none focus:ring-2 focus:ring-gold-500/40 focus:border-gold-500 disabled:bg-primary-50 disabled:text-primary-500 dark:border-primary-700 dark:bg-primary-950 dark:text-white dark:placeholder:text-primary-500 dark:disabled:bg-primary-800 dark:disabled:text-primary-400'
 
 export function Input({ className, error, ...props }) {
   return (
@@ -40,7 +40,7 @@ export function Select({ className, error, children, ...props }) {
 
 export function Label({ className, children, ...props }) {
   return (
-    <label className={cn('mb-1.5 block text-sm font-medium text-primary-800', className)} {...props}>
+    <label className={cn('mb-1.5 block text-sm font-medium text-primary-800 dark:text-primary-200', className)} {...props}>
       {children}
     </label>
   )
@@ -75,20 +75,20 @@ export function Checkbox({ label, checked, onChange, className, ...props }) {
         type="checkbox"
         checked={checked}
         onChange={onChange}
-        className="h-4 w-4 rounded border-primary-300 text-gold-500 focus:ring-gold-500/40"
+        className="h-4 w-4 rounded border-primary-300 text-gold-500 focus:ring-gold-500/40 dark:border-primary-600"
         {...props}
       />
-      {label && <span className="text-sm text-primary-800">{label}</span>}
+      {label && <span className="text-sm text-primary-800 dark:text-primary-200">{label}</span>}
     </label>
   )
 }
 
 export function Toggle({ checked, onChange, label, description }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-lg border border-primary-200 bg-white px-3 py-2.5">
+    <div className="flex items-start justify-between gap-4 rounded-lg border border-primary-200 bg-white px-3 py-2.5 dark:border-primary-700 dark:bg-primary-900">
       <div>
-        {label && <div className="text-sm font-medium text-primary-800">{label}</div>}
-        {description && <div className="mt-0.5 text-xs text-primary-500">{description}</div>}
+        {label && <div className="text-sm font-medium text-primary-800 dark:text-primary-200">{label}</div>}
+        {description && <div className="mt-0.5 text-xs text-primary-500 dark:text-primary-400">{description}</div>}
       </div>
       <button
         type="button"
@@ -97,7 +97,7 @@ export function Toggle({ checked, onChange, label, description }) {
         onClick={() => onChange(!checked)}
         className={cn(
           'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500/40',
-          checked ? 'bg-gold-500' : 'bg-primary-200',
+          checked ? 'bg-gold-500' : 'bg-primary-200 dark:bg-primary-700',
         )}
       >
         <span

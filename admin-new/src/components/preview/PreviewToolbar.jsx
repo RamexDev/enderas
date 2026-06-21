@@ -16,39 +16,41 @@ const FRONTEND_URL =
 /**
  * @param {{ title: string, subtitle?: string, onRefresh?: () => void, refreshing?: boolean, livePath?: string }} props
  */
-export default function PreviewToolbar({ title, subtitle, onRefresh, refreshing, livePath = '/' }) {
+export default function PreviewToolbar({ title, subtitle, onRefresh, refreshing, livePath = '/', hideModeToggle = false }) {
   const editMode = useEditorStore((s) => s.editMode)
   const setEditMode = useEditorStore((s) => s.setEditMode)
 
   const liveUrl = `${FRONTEND_URL.replace(/\/$/, '')}${livePath}`
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-primary-200 bg-white px-4 py-2.5">
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-primary-200 bg-white px-4 py-2.5 dark:border-primary-800 dark:bg-primary-900">
       <div className="min-w-0">
-        <h2 className="truncate text-sm font-semibold text-primary-900">{title}</h2>
-        {subtitle && <p className="truncate text-xs text-primary-500">{subtitle}</p>}
+        <h2 className="truncate text-sm font-semibold text-primary-900 dark:text-white">{title}</h2>
+        {subtitle && <p className="truncate text-xs text-primary-500 dark:text-primary-400">{subtitle}</p>}
       </div>
       <div className="flex items-center gap-2">
+        {!hideModeToggle && (
         <button
           type="button"
           onClick={() => setEditMode(!editMode)}
           className={cn(
             'inline-flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-colors',
             editMode
-              ? 'bg-gold-100 text-gold-700 ring-1 ring-inset ring-gold-200'
-              : 'bg-primary-100 text-primary-700 hover:bg-primary-200',
+              ? 'bg-primary-100 text-primary-700 hover:bg-primary-200'
+              : 'bg-gold-100 text-gold-700 ring-1 ring-inset ring-gold-200',
           )}
-          title="Toggle hover-to-edit affordances"
+          title={editMode ? 'Switch to preview mode' : 'Switch to edit mode'}
         >
-          {editMode ? <PencilRuler className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
-          {editMode ? 'Edit mode' : 'Preview mode'}
+          {editMode ? <Eye className="h-3.5 w-3.5" /> : <PencilRuler className="h-3.5 w-3.5" />}
+          {editMode ? 'Preview' : 'Edit'}
         </button>
+        )}
         {onRefresh && (
           <button
             type="button"
             onClick={onRefresh}
             disabled={refreshing}
-            className="inline-flex items-center gap-1.5 rounded-md bg-primary-100 px-2.5 py-1.5 text-xs font-medium text-primary-700 hover:bg-primary-200 disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 rounded-md bg-primary-100 px-2.5 py-1.5 text-xs font-medium text-primary-700 hover:bg-primary-200 disabled:opacity-50 dark:bg-primary-800 dark:text-primary-200 dark:hover:bg-primary-700"
             title="Refresh preview"
           >
             <RefreshCw className={cn('h-3.5 w-3.5', refreshing && 'animate-spin')} />
@@ -59,7 +61,7 @@ export default function PreviewToolbar({ title, subtitle, onRefresh, refreshing,
           href={liveUrl}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-1.5 rounded-md bg-primary-900 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-primary-800"
+          className="inline-flex items-center gap-1.5 rounded-md bg-primary-900 px-2.5 py-1.5 text-xs font-medium text-white hover:bg-primary-800 dark:bg-primary-700 dark:hover:bg-primary-600"
           title="Open the live public site in a new tab"
         >
           <ExternalLink className="h-3.5 w-3.5" />
